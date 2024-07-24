@@ -7,16 +7,6 @@ export default function App() {
       <Button color="secondary">Secondary</Button>
       <Button color="success">Success</Button>
       <Button color="warning">Warning</Button>
-      <div
-        style={{
-          backgroundColor: "#0012F5",
-          color: "#ffffff",
-          borderRadius: "4px",
-          padding: "8px 16px",
-        }}
-      >
-        Lorem ipsum
-      </div>
     </div>
   );
 }
