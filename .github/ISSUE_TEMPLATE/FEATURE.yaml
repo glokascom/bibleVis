@@ -1,0 +1,50 @@
+name: Feature
+description: UI and code
+title: ""
+projects: ["glokascom/1"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Task description:"
+      description: Provide a clear and concise overview of what needs to be done and why. This should succinctly capture the main goal of the task.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: "Examples and links:"
+      description: Include examples or links to resources that will help understand the task (e.g., similar features, documentation, articles).
+    validations:
+      required: false
+  - type: input
+    id: layout
+    attributes:
+      label: "Links to the layout:"
+      description: Provide links to design layouts or prototypes if the task involves UI/UX design. This helps developers understand the visual and functional requirements.
+    validations:
+      required: false
+  - type: textarea
+    id: details
+    attributes:
+      label: "____________________"
+      value: |
+        ### Evaluation criteria:
+        1.
+        2.
+
+        ### General solution:
+
+        ### Implementation steps:
+        1.
+        2.
+
+        ### New components and functions:
+
+        ### Changes in components and functions:
+
+        ### Tests:
+
+        ### Additional information:
+    validations:
+      required: false

@@ -1,0 +1,92 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+projects: ["glokascom/1"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Error description:"
+      description: "Clearly describe the error or issue that has occurred. This should provide enough detail to understand what the problem is, including any error messages, unexpected behaviors, or other symptoms of the issue."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce the error:"
+      description: "List the specific steps required to reproduce the error. This should be a clear, step-by-step guide that someone else can follow to see the same issue. Include as much detail as possible, such as inputs, actions, or conditions that trigger the problem."
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior:"
+      description: "Explain what the expected outcome should be when the steps are followed correctly. This should describe how the system or application is supposed to behave or what the correct result should be."
+    validations:
+      required: false
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual behavior:"
+      description: "Describe the actual outcome that occurs when the steps are followed. This should detail any discrepancies between the expected and actual behavior, including any error messages or incorrect results."
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots:"
+      description: "Provide screenshots or other visual aids that help illustrate the issue. This can include error messages, user interface problems, or any other visual clues that make the issue easier to understand."
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: "Additional information:"
+      description: "Include any other relevant details that might help in diagnosing or fixing the issue. This can include system information, versions of relevant software, configuration settings, or anything else that could be useful."
+    validations:
+      required: false
+  - type: dropdown
+    id: OS
+    attributes:
+      label: "OS"
+      description: "What version of OS are you running?"
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - Mac
+        - Mobile
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: "Browsers"
+      description: "What browsers are you seeing the problem on?"
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Opera
+        - Yandex
+        - Brave
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant log output"
+      description: "Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks."
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: solution
+    attributes:
+      label: "The intended solution:"
+      description: "Suggest a solution or a way to resolve the issue if you have one. This can be a proposed fix, a workaround, or any other recommendation that might help address the problem. If you are unsure of the solution, you can skip this section."
+    validations:
+      required: false

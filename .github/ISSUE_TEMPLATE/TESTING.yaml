@@ -1,0 +1,33 @@
+name: Testing
+description: Testing
+title: "[Testing]: "
+projects: ["glokascom/1"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Task description:"
+      description: Provide a detailed overview of the task that needs to be tested.
+    validations:
+      required: true
+  - type: textarea
+    id: evaluation
+    attributes:
+      label: "Evaluation criteria"
+      description: Define the criteria that will be used to determine if the task has been successfully completed.
+    validations:
+      required: false
+  - type: textarea
+    id: test
+    attributes:
+      label: "Test scenarios:"
+      description: List the specific scenarios or use cases that will be tested.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: "Additional information:"
+      description: Include any other details that might be relevant for testing.
+    validations:
+      required: false
