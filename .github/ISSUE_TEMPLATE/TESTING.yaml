@@ -28,6 +28,6 @@ body:
     id: additional
     attributes:
       label: "Additional information:"
-      description: List the specific scenarios or use cases that will be tested.
+      description: Include any other details that might be relevant for testing.
     validations:
       required: false

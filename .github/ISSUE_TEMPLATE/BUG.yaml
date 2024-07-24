@@ -51,6 +51,7 @@ body:
     attributes:
       label: "OS"
       description: "What version of OS are you running?"
+      multiple: true
       options:
         - Windows
         - Linux
