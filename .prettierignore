@@ -1,0 +1,16 @@
+.prettierignore
+.prettierrc
+.gitignore
+node_modules
+.husky
+.next
+public
+.vscode
+.git
+yarn.lock
+.eslintrc.json
+package.json
+*.ico
+jsconfig.json
+styles/globals.css
+README.md
