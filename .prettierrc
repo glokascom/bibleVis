@@ -6,5 +6,6 @@
     "trailingComma": "es5",
     "singleQuote": true,
     "bracketSameLine": false,
-    "semi": false
+    "semi": false,
+    "plugins": ["prettier-plugin-tailwindcss"]
 }
