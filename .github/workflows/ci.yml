@@ -31,4 +31,5 @@ jobs:
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
         run: |
-          npx commitlint --from ${GITHUB_EVENT_PULL_REQUEST_HEAD_SHA}~${GITHUB_EVENT_PULL_REQUEST_COMMITS} --to ${GITHUB_EVENT_PULL_REQUEST_HEAD_SHA} --verbose
+          BASE_SHA=$(git merge-base origin/main HEAD)
+          npx commitlint --from $BASE_SHA --to HEAD --verbose
