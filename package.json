@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "postinstall": "husky"
   },
   "dependencies": {
     "@nextui-org/react": "2.4.6",
@@ -26,6 +26,7 @@
     "eslint-config-next": "14.2.5",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.2",
+    "lint-staged": "^13.2.0",
     "postcss": "^8.4.39",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.5",
@@ -38,7 +39,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ]
   }
 }
