@@ -2,8 +2,8 @@ import { Inter } from 'next/font/google'
 
 import { dir } from 'i18next'
 
-import { languages } from '../i18n/settings'
-import { Providers } from '../providers'
+import { languages } from '@/app/i18n/settings'
+import { Providers } from '@/app/providers'
 
 import '@/styles/globals.css'
 
