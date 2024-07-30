@@ -1,0 +1,8 @@
+{
+    "title": "Hello",
+    "default": "Default",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "success": "Success",
+    "warning": "Warning"
+}
