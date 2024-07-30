@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "postinstall": "husky",
-    "test": "vitest && playwright test",
+    "test": "vitest run && playwright test",
     "test:e2e": "playwright test",
     "test:unit": "vitest"
   },
