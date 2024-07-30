@@ -1,8 +1,7 @@
 import Link from 'next/link'
 
+import ButtonsBlock from '@/app/components/ButtonsBlock'
 import { useTranslation } from '@/app/i18n'
-
-import ButtonsBlock from '../components/ButtonsBlock'
 
 export default async function Page({ params: { lng } }) {
   const { t } = await useTranslation(lng)
