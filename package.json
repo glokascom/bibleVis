@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
-    "@vitest/ui": "^2.0.4",
     "accept-language": "^3.0.18",
     "autoprefixer": "^10.4.19",
     "framer-motion": "11.3.12",
