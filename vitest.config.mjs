@@ -12,7 +12,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    include: ['**/unit_tests/**/*.test.{js,jsx}'],
+    include: ['./__tests__/**/*.test.{js,jsx}'],
     globals: true, // Это автоматически добавляет expect в глобальное пространство
     setupFiles: ['./setupTests.js'],
   },
