@@ -1,0 +1,96 @@
+{
+  "openapi": "3.0.3",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "info": {
+    "description": "This documentation for BibleVis API.",
+    "title": "BibleVis API.",
+    "license": {
+      "name": "MIT",
+      "url": "http: //opensource.org/licenses/MIT"
+    },
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Test"
+    }
+  ],
+  "paths": {
+    "/api/hello": {
+      "get": {
+        "summary": "Returns a greeting message.",
+        "description": "Returns a personalized greeting message.",
+        "tags": [
+          "Test"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the person to greet."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON object with a personalized greeting message.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Привет, имя!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The name parameter is missing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Parameter 'name' is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}
