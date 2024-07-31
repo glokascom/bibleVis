@@ -1,0 +1,29 @@
+{
+  "apiFolder": "app/api",
+  "schemaFolders": [
+    "models"
+  ],
+  "definition": {
+    "openapi": "3.0.3",
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "info": {
+      "description": "This documentation for BibleVis API.",
+      "title": "BibleVis API.",
+      "license": {
+        "name": "MIT",
+        "url": "http: //opensource.org/licenses/MIT"
+      },
+      "version": "1.0.0"
+    },
+    "tags": [
+      {
+        "name": "Test"
+      }
+    ]
+  }
+}
