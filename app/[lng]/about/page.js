@@ -11,6 +11,11 @@ export default function Page() {
           <span className="text-lg font-semibold">Home</span>
         </div>
       </Link>
+      <Link href="/doc">
+        <div className="cursor-pointer rounded-lg bg-purple-500 p-4 text-white hover:bg-purple-600">
+          <span className="text-lg font-semibold">API Documentation</span>
+        </div>
+      </Link>
     </div>
   )
 }
