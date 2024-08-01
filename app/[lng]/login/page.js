@@ -1,6 +1,17 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+
 import { login, signup } from './actions'
 
 export default function LoginPage() {
+  const router = useRouter()
+
+  const handleGoogleLogin = () => {
+    console.log(11)
+    router.push('/api/auth/google')
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
       <form className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg">
@@ -25,7 +36,7 @@ export default function LoginPage() {
           required
           className="w-64 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <div className="flex space-x-4">
+        <div className="flex flex-col space-y-4">
           <button
             formAction={login}
             className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
@@ -37,6 +48,13 @@ export default function LoginPage() {
             className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
           >
             Регистрация
+          </button>
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="flex items-center justify-center rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          >
+            Войти через Google
           </button>
         </div>
       </form>
