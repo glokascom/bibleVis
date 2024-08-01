@@ -9,7 +9,7 @@ acceptLanguage.languages(languages)
 export const config = {
   // matcher: '/:lng*'
   matcher: [
-    '/((?!api|_next/static|doc|_next/image|favicon.ico|icon[1,2,3,4].png|swagger.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api|_next/static|doc|_next/image|favicon.ico|swagger.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
 
