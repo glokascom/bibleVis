@@ -22,6 +22,11 @@ export default async function Page({ params: { lng } }) {
           <span className="text-lg font-semibold">API Documentation</span>
         </div>
       </Link>
+      <Link href="/login">
+        <div className="cursor-pointer rounded-lg bg-yellow-500 p-4 text-white hover:bg-yellow-600">
+          <span className="text-lg font-semibold">Authentication</span>
+        </div>
+      </Link>
     </div>
   )
 }
