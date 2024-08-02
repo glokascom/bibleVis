@@ -10,7 +10,6 @@ export default function CallbackPage() {
   useEffect(() => {
     async function handleRedirect() {
       const response = await fetch('/api/auth/google/callback')
-      console.log(response, 13)
       if (response.ok) {
         router.push('/private')
       } else {

@@ -5,10 +5,13 @@ import { createClient } from '@/app/supabase/server'
 export async function GET() {
   const supabase = createClient()
 
-  const { error } = await supabase.auth.getSessionFromUrl()
+  const { error } = await supabase.auth.getSessionFromUrl({
+    storeSession: true,
+  })
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-  console.log(122)
-  return NextResponse.json({ message: 'Успешно авторизован' })
+
+  return NextResponse.redirect('/private')
 }

@@ -15,6 +15,6 @@ export async function GET() {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-  console.log(data?.url, 18)
-  return NextResponse.redirect(data?.url || '/private')
+
+  return NextResponse.redirect(data.url)
 }

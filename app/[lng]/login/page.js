@@ -8,7 +8,6 @@ export default function LoginPage() {
   const router = useRouter()
 
   const handleGoogleLogin = () => {
-    console.log(11)
     router.push('/api/auth/google')
   }
 
