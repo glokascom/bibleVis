@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-import { login, signup } from './actions'
+import { forgotPassword, login, signup } from './actions'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -23,7 +23,7 @@ export default function LoginPage() {
           name="email"
           type="email"
           required
-          className="w-64 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-64 rounded-md border border-gray-300 px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <label htmlFor="password" className="text-lg text-gray-800">
           Пароль:
@@ -33,7 +33,7 @@ export default function LoginPage() {
           name="password"
           type="password"
           required
-          className="w-64 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-64 rounded-md border border-gray-300 px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex flex-col space-y-4">
           <button
@@ -54,6 +54,12 @@ export default function LoginPage() {
             className="flex items-center justify-center rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
           >
             Войти через Google
+          </button>
+          <button
+            formAction={forgotPassword}
+            className="rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
+          >
+            Забыли пароль?
           </button>
         </div>
       </form>
