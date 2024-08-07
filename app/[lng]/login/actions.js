@@ -5,6 +5,21 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/app/supabase/server'
 
+export async function loginWithGoogle(response) {
+  const supabaseServer = createClient()
+
+  const { error } = await supabaseServer.auth.signInWithIdToken({
+    provider: 'google',
+    token: response.credential,
+  })
+  if (error) {
+    redirect('/error')
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/private')
+}
+
 export async function login(formData) {
   const supabaseServer = createClient()
 
