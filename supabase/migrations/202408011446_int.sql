@@ -14,9 +14,12 @@ ALTER TABLE "public"."users" OWNER TO "postgres";
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 
--- 4. Добавление внешнего ключа, который связывает таблицу "users" с таблицей "auth.users"
+-- 4. Добавление внешнего ключа, который связывает таблицу "users" с таблицей "auth.users" с каскадным удалением
 ALTER TABLE ONLY "public"."users"
-    ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id");
+    ADD CONSTRAINT "users_id_fkey"
+    FOREIGN KEY ("id")
+    REFERENCES "auth"."users"("id")
+    ON DELETE CASCADE;
 
 -- 5. Включение политики Row Level Security для таблицы "users"
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
