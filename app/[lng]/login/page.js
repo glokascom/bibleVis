@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -10,7 +10,8 @@ import { generatePassword } from './utils'
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState(null)
-  const [generatedPassword, setGeneratedPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const passwordInputRef = useRef(null)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -36,7 +37,13 @@ export default function LoginPage() {
 
   const handleGeneratePassword = () => {
     const password = generatePassword()
-    setGeneratedPassword(password)
+    if (passwordInputRef.current) {
+      passwordInputRef.current.value = password
+    }
+  }
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
   }
 
   return (
@@ -62,36 +69,24 @@ export default function LoginPage() {
         <input
           id="password"
           name="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
+          ref={passwordInputRef}
           required
           className="w-64 rounded-md border border-gray-300 px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button
-          type="button"
-          onClick={handleGeneratePassword}
-          className="mt-2 rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
-        >
-          Сгенерировать пароль
-        </button>
-        {generatedPassword && (
-          <div className="mt-2 rounded-md border border-gray-300 bg-gray-100 p-2 text-gray-700">
-            <p>Сгенерированный пароль:</p>
-            <input
-              type="text"
-              readOnly
-              value={generatedPassword}
-              className="w-64 rounded-md border border-gray-300 bg-white px-4 py-2 text-black"
-            />
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(generatedPassword)}
-              className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            >
-              Скопировать пароль
-            </button>
-          </div>
-        )}
-        {error && <p className="text-red-500">{error}</p>}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={toggleShowPassword}
+            className="h-4 w-4 text-blue-500 focus:ring-blue-500"
+          />
+          <label htmlFor="showPassword" className="text-gray-800">
+            Показать пароль
+          </label>
+        </div>
+
         <div className="flex flex-col space-y-4">
           <button
             name="login"
@@ -121,6 +116,14 @@ export default function LoginPage() {
           >
             Забыли пароль?
           </button>
+          <button
+            type="button"
+            onClick={handleGeneratePassword}
+            className="mt-2 rounded-md bg-gray-700 px-4 py-2 text-white hover:bg-gray-600"
+          >
+            Сгенерировать пароль
+          </button>
+          {error && <p className="text-red-500">{error}</p>}
         </div>
       </form>
     </div>
