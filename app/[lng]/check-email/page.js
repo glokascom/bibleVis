@@ -1,5 +1,3 @@
-'use client'
-
 export default function CheckEmailPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
