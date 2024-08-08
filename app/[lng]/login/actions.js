@@ -50,6 +50,5 @@ export async function signup(formData) {
     redirect(`/error?message=${encodeURIComponent(error.message)}`)
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/private')
+  redirect('/check-email')
 }
