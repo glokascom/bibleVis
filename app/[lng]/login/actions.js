@@ -7,14 +7,13 @@ import { createClient } from '@/app/supabase/server'
 
 export async function forgotPassword(formData) {
   const supabaseServer = createClient()
-
   const email = formData.get('email')
 
   const { error } = await supabaseServer.auth.resetPasswordForEmail(email)
 
   if (error) {
     console.error('Error sending password reset email:', error)
-    redirect('/error')
+    redirect(`/error?message=${encodeURIComponent(error.message)}`)
   } else {
     console.log('Password reset email sent successfully')
     redirect('/password-reset-sent')
@@ -23,7 +22,6 @@ export async function forgotPassword(formData) {
 
 export async function login(formData) {
   const supabaseServer = createClient()
-
   const data = {
     email: formData.get('email'),
     password: formData.get('password'),
@@ -32,7 +30,7 @@ export async function login(formData) {
   const { error } = await supabaseServer.auth.signInWithPassword(data)
 
   if (error) {
-    redirect('/error')
+    redirect(`/error?message=${encodeURIComponent(error.message)}`)
   }
 
   revalidatePath('/', 'layout')
@@ -41,7 +39,6 @@ export async function login(formData) {
 
 export async function signup(formData) {
   const supabaseServer = createClient()
-
   const data = {
     email: formData.get('email'),
     password: formData.get('password'),
@@ -49,8 +46,8 @@ export async function signup(formData) {
 
   const { error } = await supabaseServer.auth.signUp(data)
   if (error) {
-    console.error(error, 39)
-    redirect('/error')
+    console.error(error)
+    redirect(`/error?message=${encodeURIComponent(error.message)}`)
   }
 
   revalidatePath('/', 'layout')
