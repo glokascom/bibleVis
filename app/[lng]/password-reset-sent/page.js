@@ -1,4 +1,3 @@
-'use client'
 export default function PasswordResetSentPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
@@ -11,12 +10,12 @@ export default function PasswordResetSentPage() {
         <p className="text-sm text-gray-600">
           Проверьте вашу почту и следуйте инструкциям в письме.
         </p>
-        <button
-          onClick={() => (window.location.href = '/login')}
-          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+        <a
+          href="/login"
+          className="mt-4 inline-block rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Вернуться на страницу входа
-        </button>
+        </a>
       </div>
     </div>
   )
