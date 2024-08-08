@@ -10,7 +10,7 @@ test('should navigate to the about page and back to the home page with localizat
   await page.goto(baseURL)
 
   // Проверка заголовка на главной странице
-  await expect(page.locator('h1')).toHaveText('Hello')
+  await expect(page.locator('h1')).toHaveText('Welcome to Home Page')
 
   // Клик по ссылке "About"
   await page.click('text=About')

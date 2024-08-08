@@ -25,9 +25,7 @@ export async function login(formData) {
     email: formData.get('email'),
     password: formData.get('password'),
   }
-
   const { error } = await supabaseServer.auth.signInWithPassword(data)
-
   if (error) {
     redirect(`/error?message=${encodeURIComponent(error.message)}`)
   }
