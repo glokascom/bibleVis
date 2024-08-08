@@ -15,7 +15,6 @@ export async function forgotPassword(formData) {
     console.error('Error sending password reset email:', error)
     redirect(`/error?message=${encodeURIComponent(error.message)}`)
   } else {
-    console.log('Password reset email sent successfully')
     redirect('/password-reset-sent')
   }
 }
