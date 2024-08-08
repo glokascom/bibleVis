@@ -13,7 +13,7 @@ export default function UserGreeting({ email }) {
     if (response.ok) {
       router.push('/login')
     } else {
-      console.error('Ошибка при выходе из системы')
+      console.error('Error logging out')
     }
   }
 
