@@ -22,10 +22,11 @@ export default function ErrorPage() {
       <div className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg">
         <h2 className="text-2xl font-bold text-gray-800">An error has occurred</h2>
         <p className="text-red-500">{errorMessage || 'An unknown error has occurred.'}</p>
-        <Link href="/login">
-          <a className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-            Back to authorization
-          </a>
+        <Link
+          href="/login"
+          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+        >
+          Back to authorization
         </Link>
       </div>
     </div>
