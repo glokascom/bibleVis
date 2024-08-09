@@ -27,7 +27,7 @@ export default function LoginPage() {
         await forgotPassword(formData)
       }
     } catch (err) {
-      setError(err.message || 'Произошла ошибка.')
+      setError(err.message || 'An error has occurred.')
     }
   }
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg"
       >
-        <h2 className="text-2xl font-bold text-gray-800">Войти или зарегистрироваться</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Log in or register</h2>
         <label htmlFor="email" className="text-lg text-gray-800">
           Email:
         </label>
@@ -64,7 +64,7 @@ export default function LoginPage() {
           className="w-64 rounded-md border border-gray-300 px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <label htmlFor="password" className="text-lg text-gray-800">
-          Пароль:
+          Password:
         </label>
         <input
           id="password"
@@ -83,7 +83,7 @@ export default function LoginPage() {
             className="h-4 w-4 text-blue-500 focus:ring-blue-500"
           />
           <label htmlFor="showPassword" className="text-gray-800">
-            Показать пароль
+            Show password
           </label>
         </div>
 
@@ -93,35 +93,35 @@ export default function LoginPage() {
             type="submit"
             className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           >
-            Войти
+            Login
           </button>
           <button
             name="signup"
             type="submit"
             className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
           >
-            Регистрация
+            Registration
           </button>
           <button
             type="button"
             onClick={handleGoogleLogin}
             className="flex items-center justify-center rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
           >
-            Войти через Google
+            Log in via Google
           </button>
           <button
             name="forgotPassword"
             type="submit"
             className="rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
-            Забыли пароль?
+            Forgot your password?
           </button>
           <button
             type="button"
             onClick={handleGeneratePassword}
             className="mt-2 rounded-md bg-gray-700 px-4 py-2 text-white hover:bg-gray-600"
           >
-            Сгенерировать пароль
+            Generate a password
           </button>
           {error && <p className="text-red-500">{error}</p>}
         </div>

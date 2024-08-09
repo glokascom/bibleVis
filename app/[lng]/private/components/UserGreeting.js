@@ -20,13 +20,13 @@ export default function UserGreeting({ email }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="rounded-lg bg-white p-8 text-center shadow-lg">
-        <h1 className="text-2xl font-bold text-gray-800">Привет, {email}!</h1>
-        <p className="mt-4 text-gray-600">Добро пожаловать на сайт BibleVis.</p>
+        <h1 className="text-2xl font-bold text-gray-800">Hi, {email}!</h1>
+        <p className="mt-4 text-gray-600">Welcome to the BibleVis website.</p>
         <button
           onClick={handleSignOut}
           className="mt-6 rounded-lg bg-red-500 px-4 py-2 text-white transition duration-300 hover:bg-red-600"
         >
-          Выйти
+          Log out
         </button>
       </div>
     </div>
