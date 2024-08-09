@@ -11,9 +11,9 @@ export function createClient() {
     {
       cookies: {
         get(name) {
-          return cookieStore.get(name)?.value
+          return cookieStore.get(name)?.value || ''
         },
-        set(name, value, options) {
+        set(name, value, options = { path: '/', sameSite: 'lax', httpOnly: true }) {
           try {
             cookieStore.set({ name, value, ...options })
           } catch (error) {
@@ -22,9 +22,9 @@ export function createClient() {
             // user sessions.
           }
         },
-        remove(name, options) {
+        remove(name, options = { path: '/', sameSite: 'lax', httpOnly: true }) {
           try {
-            cookieStore.set({ name, value: '', ...options })
+            cookieStore.set({ name, value: '', ...options, maxAge: -1 })
           } catch (error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
