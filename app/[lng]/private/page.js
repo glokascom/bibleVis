@@ -1,4 +1,4 @@
-import { getUser } from './actions/PrivateRoute'
+import { getUser } from './actions/getUser'
 import UserGreeting from './components/UserGreeting'
 
 export default async function PrivatePage() {
