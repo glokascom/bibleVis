@@ -1,25 +1,22 @@
 -- USERS
 -- 1. Создание таблицы "users", если она не существует
+-- 2. Добавление первичного ключа для таблицы "users"
+-- 3. Добавление внешнего ключа, который связывает таблицу "users" с таблицей "auth.users" с каскадным удалением
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
-    "id" "uuid" NOT NULL,
-    "email" "text" NOT NULL,
-    "is_admin" boolean DEFAULT false NOT NULL,
-    "is_blocked" boolean DEFAULT false NOT NULL
+    "id" UUID NOT NULL,
+    "email" TEXT NOT NULL,
+    "is_admin" BOOLEAN DEFAULT false NOT NULL,
+    "is_blocked" BOOLEAN DEFAULT false NOT NULL,
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_auth_users" FOREIGN KEY ("id")
+        REFERENCES "auth"."users" ("id")
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
--- 2. Назначение владельца таблицы "users"
+-- 4. Назначение владельца таблицы "users"
 ALTER TABLE "public"."users" OWNER TO "postgres";
-
--- 3. Добавление первичного ключа для таблицы "users"
-ALTER TABLE ONLY "public"."users"
-    ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
-
--- 4. Добавление внешнего ключа, который связывает таблицу "users" с таблицей "auth.users" с каскадным удалением
-ALTER TABLE ONLY "public"."users"
-    ADD CONSTRAINT "users_id_fkey"
-    FOREIGN KEY ("id")
-    REFERENCES "auth"."users"("id")
-    ON DELETE CASCADE;
 
 -- 5. Включение политики Row Level Security для таблицы "users"
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
