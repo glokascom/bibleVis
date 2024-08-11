@@ -1,9 +1,17 @@
+import { FC } from 'react'
+
 import Link from 'next/link'
 
 import ButtonsBlock from '@/app/components/ButtonsBlock'
 import { useTranslation } from '@/app/i18n'
 
-export default async function Page({ params: { lng } }) {
+type Props = {
+  params: {
+    lng: string,
+  },
+}
+
+const Page: FC<Props> = async ({ params: { lng } }) => {
   const { t } = await useTranslation(lng)
 
   return (
@@ -12,16 +20,23 @@ export default async function Page({ params: { lng } }) {
         <h1 className="text-xl font-bold">{t('title')}</h1>
       </div>
       <Link href="/about">
-        <div className="cursor-pointer rounded-lg bg-green-500 p-4 text-white hover:bg-green-600">
+        <a className="cursor-pointer rounded-lg bg-green-500 p-4 text-white hover:bg-green-600">
           <span className="text-lg font-semibold">About</span>
-        </div>
+        </a>
       </Link>
       <ButtonsBlock t={t} />
       <Link href="/doc">
-        <div className="cursor-pointer rounded-lg bg-purple-500 p-4 text-white hover:bg-purple-600">
+        <a className="cursor-pointer rounded-lg bg-purple-500 p-4 text-white hover:bg-purple-600">
           <span className="text-lg font-semibold">API Documentation</span>
-        </div>
+        </a>
+      </Link>
+      <Link href="/config">
+        <a className="cursor-pointer rounded-lg bg-red-500 p-4 text-white hover:bg-red-600">
+          <span className="text-lg font-semibold">Config</span>
+        </a>
       </Link>
     </div>
   )
 }
+
+export default Page

@@ -45,7 +45,7 @@
  *                   example: "An unexpected error occurred."
  */
 
-export async function GET(request) {
+export async function GET(request: Request): Promise<Response> {
   try {
     const { searchParams } = new URL(request.url)
     const name = searchParams.get('name')
@@ -60,7 +60,7 @@ export async function GET(request) {
     return new Response(JSON.stringify({ message: `Привет, ${name}!` }), {
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: 'An unexpected error occurred.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
