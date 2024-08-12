@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function PasswordResetSentPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
@@ -10,12 +12,12 @@ export default function PasswordResetSentPage() {
         <p className="text-sm text-gray-600">
           Check your email and follow the instructions in the email.
         </p>
-        <a
+        <Link
           href="/login"
           className="mt-4 inline-block rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Go back to the login page
-        </a>
+        </Link>
       </div>
     </div>
   )
