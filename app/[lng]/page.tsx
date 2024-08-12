@@ -7,8 +7,8 @@ import { useTranslation } from '@/app/i18n'
 
 type Props = {
   params: {
-    lng: string,
-  },
+    lng: string
+  }
 }
 
 const Page: FC<Props> = async ({ params: { lng } }) => {

@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react'
+import { TFunction } from 'i18next'
 import { describe, expect, it, vi } from 'vitest'
 
 import ButtonsBlock from '@/app/components/ButtonsBlock'
 
 describe('ButtonsBlock', () => {
-  // Мок функция для перевода
-  const mockT = vi.fn((key) => key)
+  const mockT = vi.fn((key: string) => key) as unknown as TFunction<
+    'translation',
+    undefined
+  >
 
   it('should render all buttons with correct text', () => {
     render(<ButtonsBlock t={mockT} />)
@@ -43,7 +46,7 @@ describe('ButtonsBlock', () => {
 
     buttons.forEach((button) => {
       const buttonElement = button.closest('button')
-      const styles = window.getComputedStyle(buttonElement)
+      const styles = window.getComputedStyle(buttonElement!)
       expect(styles).toHaveProperty('background-color')
     })
   })
