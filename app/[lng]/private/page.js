@@ -1,8 +1,30 @@
+import { redirect } from 'next/navigation'
+
 import { getUser } from './actions/getUser'
 import UserGreeting from './components/UserGreeting'
 
 export default async function PrivatePage() {
-  const user = await getUser()
+  let user
+  let errorMessage = ''
 
-  return <UserGreeting email={user.email} />
+  try {
+    user = await getUser()
+  } catch (error) {
+    console.error(error)
+    errorMessage = error.message
+
+    redirect('/login')
+
+    return null
+  }
+
+  return (
+    <div>
+      {errorMessage ? (
+        <p>An error has occurred: {errorMessage}</p>
+      ) : (
+        <UserGreeting email={user.email} />
+      )}
+    </div>
+  )
 }
