@@ -1,5 +1,6 @@
 'use client'
 
+//Todo: delete page
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
