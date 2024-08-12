@@ -2,17 +2,21 @@ import { NextResponse } from 'next/server'
 
 import { createClient } from '@/app/supabase/server'
 
-export async function GET(request) {
-  const url = new URL(request.url)
-  const searchParams = url.searchParams
-
-  const email = searchParams.get('email')
-  const password = searchParams.get('password')
+export async function POST(request) {
+  const { email, password } = await request.json()
 
   if (!email || !password) {
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent('Missing email or password.')}`
-    )
+    const missingParams = []
+    if (!email) missingParams.push('email')
+    if (!password) missingParams.push('password')
+
+    const errorMessage = `Missing parameter(s): ${missingParams.join(', ')}`
+    console.error(errorMessage)
+
+    return new NextResponse(JSON.stringify({ error: errorMessage }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const supabaseServer = createClient()
@@ -20,10 +24,15 @@ export async function GET(request) {
 
   if (error) {
     console.error('Login error:', error)
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent(error.message || 'An unknown error occurred.')}`
+
+    return new NextResponse(
+      JSON.stringify({ error: error.message || 'An unknown error occurred.' }),
+      { status: 401, headers: { 'Content-Type': 'application/json' } }
     )
   }
 
-  return NextResponse.redirect(`${url.origin}/private`)
+  return new NextResponse(JSON.stringify({ message: 'Login successful' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  })
 }

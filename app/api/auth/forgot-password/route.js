@@ -2,27 +2,36 @@ import { NextResponse } from 'next/server'
 
 import { createClient } from '@/app/supabase/server'
 
-export async function GET(request) {
-  const url = new URL(request.url)
-  const searchParams = url.searchParams
-  const email = searchParams.get('email')
+export async function POST(request) {
+  try {
+    const { email } = await request.json()
 
-  if (!email) {
-    console.error('Email parameter is missing.')
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent('Email parameter is missing.')}`
-    )
+    if (!email) {
+      return new NextResponse(JSON.stringify({ error: 'Missing parameter: email' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const supabaseServer = createClient()
+    const { error } = await supabaseServer.auth.resetPasswordForEmail(email)
+
+    if (error) {
+      return new NextResponse(
+        JSON.stringify({ error: error.message || 'An unknown error occurred.' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+
+    return new NextResponse(JSON.stringify({ message: 'Reset password successful' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return new NextResponse(JSON.stringify({ error: 'An unknown error occurred.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
-
-  const supabaseServer = createClient()
-  const { error } = await supabaseServer.auth.resetPasswordForEmail(email)
-
-  if (error) {
-    console.error('Error sending password reset email:', error)
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent(error.message || 'An unknown error occurred.')}`
-    )
-  }
-
-  return NextResponse.redirect(`${url.origin}/password-reset-sent`)
 }

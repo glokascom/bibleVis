@@ -2,11 +2,8 @@ import { NextResponse } from 'next/server'
 
 import { createClient } from '@/app/supabase/server'
 
-export async function GET(request) {
-  const url = new URL(request.url)
-  const searchParams = url.searchParams
-  const email = searchParams.get('email')
-  const password = searchParams.get('password')
+export async function POST(request) {
+  const { email, password } = await request.json()
 
   if (!email || !password) {
     const missingParams = []
@@ -15,25 +12,27 @@ export async function GET(request) {
 
     const errorMessage = `Missing parameter(s): ${missingParams.join(', ')}`
     console.error(errorMessage)
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent(errorMessage)}`
-    )
+
+    return new NextResponse(JSON.stringify({ error: errorMessage }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const supabaseServer = createClient()
+  const { error } = await supabaseServer.auth.signUp({ email, password })
 
-  try {
-    const { error } = await supabaseServer.auth.signUp({ email, password })
+  if (error) {
+    console.error('Singup error:', error)
 
-    if (error) {
-      throw error
-    }
-
-    return NextResponse.redirect(`${url.origin}/check-email`)
-  } catch (error) {
-    console.error('Error during signup:', error)
-    return NextResponse.redirect(
-      `${url.origin}/error?message=${encodeURIComponent(error.message || 'An unknown error occurred.')}`
+    return new NextResponse(
+      JSON.stringify({ error: error.message || 'An unknown error occurred.' }),
+      { status: 401, headers: { 'Content-Type': 'application/json' } }
     )
   }
+
+  return new NextResponse(JSON.stringify({ message: 'Singup successful' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  })
 }
