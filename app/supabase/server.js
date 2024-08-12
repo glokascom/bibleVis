@@ -16,7 +16,7 @@ export function createClient() {
         set(name, value, options = { path: '/', sameSite: 'lax', httpOnly: true }) {
           try {
             cookieStore.set({ name, value, ...options })
-          } catch (error) {
+          } catch {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
@@ -25,7 +25,7 @@ export function createClient() {
         remove(name, options = { path: '/', sameSite: 'lax', httpOnly: true }) {
           try {
             cookieStore.set({ name, value: '', ...options, maxAge: -1 })
-          } catch (error) {
+          } catch {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
