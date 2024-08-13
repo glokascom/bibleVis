@@ -12,7 +12,8 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    include: ['./__tests__/**/*.test.{js,jsx}'],
+    include: ['./__tests__/**/*.test.{js,jsx,ts,tsx}'],
+    exclude: ['./.next/**/*.*', './node_modules/**/*.*, ./dist/**/*.*'],
     globals: true, // Это автоматически добавляет expect в глобальное пространство
     setupFiles: ['./setupTests.js'],
   },

@@ -1,6 +1,7 @@
 import { Button } from '@nextui-org/react'
+import { TFunction } from 'i18next'
 
-const ButtonsBlock = ({ t }) => {
+const ButtonsBlock = ({ t }: { t: TFunction }) => {
   return (
     <div className="p-10">
       <div className="p-10">
