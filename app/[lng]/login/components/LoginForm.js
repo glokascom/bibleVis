@@ -3,12 +3,12 @@
 import { useRef, useState } from 'react'
 
 import { forgotPassword, login, signup } from '../actions'
-import AuthButtons from '../components/AuthButtons'
 import Checkbox from '../components/Checkbox'
 import ErrorMessage from '../components/ErrorMessage'
 import InputField from '../components/InputField'
 import PasswordGenerator from '../components/PasswordGenerator'
 import SocialAuthButton from '../components/SocialAuthButton'
+import AuthButton from './AuthButton'
 
 export default function LoginForm() {
   const [error, setError] = useState(null)
@@ -71,13 +71,13 @@ export default function LoginForm() {
           label="Show password"
         />
         <div className="flex flex-col space-y-4">
-          <AuthButtons
+          <AuthButton
             name="login"
             type="submit"
             label="Login"
             className="bg-blue-500 hover:bg-blue-600"
           />
-          <AuthButtons
+          <AuthButton
             name="signup"
             type="submit"
             label="Registration"
@@ -89,7 +89,7 @@ export default function LoginForm() {
           >
             Log in via Google
           </SocialAuthButton>
-          <AuthButtons
+          <AuthButton
             name="forgotPassword"
             type="submit"
             label="Forgot your password?"
