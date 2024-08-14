@@ -3,9 +3,9 @@
 import { useState } from 'react'
 
 import { forgotPassword } from '../../../actions/actionsSupabase'
-import AuthButton from '../(.)login/components/AuthButton'
-import ErrorMessage from '../(.)login/components/ErrorMessage'
-import InputField from '../(.)login/components/InputField'
+import AuthButton from './AuthButton'
+import ErrorMessage from './ErrorMessage'
+import InputField from './InputField'
 
 export default function ForgotForm() {
   const [error, setError] = useState(null)

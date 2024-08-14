@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 
 import Link from 'next/link'
 
-import { login, signup } from '../../../../actions/actionsSupabase'
+import { login, signup } from '../../../actions/actionsSupabase'
 import AuthButton from './AuthButton'
 import Checkbox from './Checkbox'
 import ErrorMessage from './ErrorMessage'

@@ -1,5 +1,5 @@
 'use client'
 
 export default function NewPassword() {
-  return <div>New Password Page </div>
+  return <div className="text-red-500">New Password Page </div>
 }
