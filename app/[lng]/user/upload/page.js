@@ -1,3 +1,3 @@
 export default function Upload() {
-  return <div>User Upload Page</div>
+  return <div className="text-red-500">User Upload Page</div>
 }

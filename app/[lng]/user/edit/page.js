@@ -1,3 +1,3 @@
 export default function EditUser() {
-  return <div>Edit User Page</div>
+  return <div className="text-red-500">Edit User Page</div>
 }
