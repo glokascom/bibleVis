@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-import { getUser } from './actions/getUser'
+import { getUser } from '../../actions/getUser'
 import UserGreeting from './components/UserGreeting'
 
 export default async function PrivatePage() {

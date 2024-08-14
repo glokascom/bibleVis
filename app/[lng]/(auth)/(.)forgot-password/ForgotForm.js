@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { forgotPassword } from '../(.)login/actions'
+import { forgotPassword } from '../../../actions/actionsSupabase'
 import AuthButton from '../(.)login/components/AuthButton'
 import ErrorMessage from '../(.)login/components/ErrorMessage'
 import InputField from '../(.)login/components/InputField'
