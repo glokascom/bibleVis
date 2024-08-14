@@ -1,16 +1,14 @@
-import { FC } from 'react'
-
 import Link from 'next/link'
 
 import { useTranslation } from '@/app/i18n'
 
-type Props = {
+interface PageProps {
   params: {
     lng: string
   }
 }
 
-const Page: FC<Props> = async ({ params: { lng } }) => {
+const Page: React.FC<PageProps> = async ({ params: { lng } }) => {
   const { t } = await useTranslation(lng)
 
   return (
