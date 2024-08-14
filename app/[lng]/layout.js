@@ -5,6 +5,8 @@ import { dir } from 'i18next'
 import { languages } from '@/app/i18n/settings'
 import { Providers } from '@/app/providers'
 
+import Layout from '../components/Layout'
+
 import '@/styles/globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -18,7 +20,9 @@ export default function RootLayout({ children, params: { lng } }) {
     <html lang={lng} dir={dir(lng)}>
       <head />
       <body>
-        <Providers className={inter.className}>{children}</Providers>
+        <Layout>
+          <Providers className={inter.className}>{children}</Providers>
+        </Layout>
       </body>
     </html>
   )
