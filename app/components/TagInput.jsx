@@ -72,6 +72,7 @@ export default function TagInput({
           </div>
         ))}
         <input
+          data-testid="tag-input"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
