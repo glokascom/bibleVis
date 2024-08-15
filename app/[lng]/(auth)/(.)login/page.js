@@ -26,11 +26,7 @@ export default function LoginPage() {
   return (
     <>
       <h1 className="text-3xl text-red-900">Modal</h1>
-      <TagInput
-        initialTags={initialTags}
-        suggestionCount={5}
-        onTagsChange={handleTagsChange}
-      />
+      <TagInput initialTags={initialTags} onTagsChange={handleTagsChange} />
       <LoginForm />
     </>
   )

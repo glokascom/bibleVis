@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 
 export default function TagInput({
-  suggestionCount = 5,
   initialTags = [],
+  suggestionCount,
   allowAddOnEnter = true,
   onTagsChange = () => {},
 }) {
