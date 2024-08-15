@@ -2,21 +2,7 @@
 
 import React, { useState } from 'react'
 
-const initialTags = [
-  'Adobe Photoshop',
-  'CorelDRAW',
-  'Canva',
-  'Adobe Lightroom',
-  'Figma',
-  'Adobe Illustrator',
-  'Sketch',
-  'DALL-E',
-  'Midjourney',
-  'Stable Diffusion',
-  'Leonardo.AI',
-]
-
-export default function TagInput() {
+export default function TagInput({ suggestionCount = 5, initialTags = [] }) {
   const [inputValue, setInputValue] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [suggestions, setSuggestions] = useState([])
@@ -27,10 +13,13 @@ export default function TagInput() {
     setInputValue(value)
     if (value) {
       setSuggestions(
-        allTags.filter(
-          (tag) =>
-            tag.toLowerCase().includes(value.toLowerCase()) && !selectedTags.includes(tag)
-        )
+        allTags
+          .filter(
+            (tag) =>
+              tag.toLowerCase().includes(value.toLowerCase()) &&
+              !selectedTags.includes(tag)
+          )
+          .slice(0, suggestionCount)
       )
     } else {
       setSuggestions([])
@@ -80,7 +69,6 @@ export default function TagInput() {
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="up to 250 letters total, separated by commas"
           className="flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
         />
       </div>
