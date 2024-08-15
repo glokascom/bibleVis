@@ -6,6 +6,7 @@ export default function TagInput({
   initialTags = [],
   suggestionCount,
   allowAddOnEnter = true,
+  limitLetters = 20,
   onTagsChange = () => {},
 }) {
   const [inputValue, setInputValue] = useState('')
@@ -28,7 +29,7 @@ export default function TagInput({
               tag.toLowerCase().includes(value.toLowerCase()) &&
               !selectedTags.includes(tag)
           )
-          .slice(0, suggestionCount)
+          .slice(0, suggestionCount === undefined ? allTags.length : suggestionCount) // Показывать все, если suggestionCount не задан
       )
     } else {
       setSuggestions([])
@@ -36,6 +37,9 @@ export default function TagInput({
   }
 
   const addTag = (tag) => {
+    if (tag.length > limitLetters) {
+      return
+    }
     if (!selectedTags.includes(tag)) {
       setSelectedTags((prevTags) => [...prevTags, tag])
       setAllTags((prevTags) => (prevTags.includes(tag) ? prevTags : [...prevTags, tag]))
