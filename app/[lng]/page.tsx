@@ -2,22 +2,6 @@ import Link from 'next/link'
 
 import { useTranslation } from '@/app/i18n'
 
-import TagInput from '../components/TagInput'
-
-const initialTags = [
-  'Adobe Photoshop',
-  'CorelDRAW',
-  'Canva',
-  'Adobe Lightroom',
-  'Figma',
-  'Adobe Illustrator',
-  'Sketch',
-  'DALL-E',
-  'Midjourney',
-  'Stable Diffusion',
-  'Leonardo.AI',
-]
-
 interface PageProps {
   params: {
     lng: string
@@ -41,7 +25,6 @@ const Page: React.FC<PageProps> = async ({ params: { lng } }) => {
       >
         <span className="text-lg font-semibold">{t('login')}</span>
       </Link>
-      <TagInput suggestionCount={5} initialTags={initialTags} />
     </div>
   )
 }

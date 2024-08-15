@@ -1,16 +1,21 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function TagInput({
   suggestionCount = 5,
   initialTags = [],
   allowAddOnEnter = true,
+  onTagsChange = () => {},
 }) {
   const [inputValue, setInputValue] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [allTags, setAllTags] = useState(initialTags)
+
+  useEffect(() => {
+    onTagsChange(allTags)
+  }, [allTags, onTagsChange])
 
   const handleInputChange = (e) => {
     const value = e.target.value
@@ -32,10 +37,8 @@ export default function TagInput({
 
   const addTag = (tag) => {
     if (!selectedTags.includes(tag)) {
-      setSelectedTags([...selectedTags, tag])
-      if (!allTags.includes(tag)) {
-        setAllTags([...allTags, tag])
-      }
+      setSelectedTags((prevTags) => [...prevTags, tag])
+      setAllTags((prevTags) => (prevTags.includes(tag) ? prevTags : [...prevTags, tag]))
     }
     setInputValue('')
     setSuggestions([])
@@ -44,11 +47,11 @@ export default function TagInput({
   const removeTag = (tag) => {
     setSelectedTags((prevTags) => {
       const newTags = prevTags.filter((t) => t !== tag)
-      setAllTags((prevAllTags) => {
-        return prevAllTags.includes(tag) && !newTags.includes(tag)
+      setAllTags((prevAllTags) =>
+        prevAllTags.includes(tag) && !newTags.includes(tag)
           ? prevAllTags.filter((t) => t !== tag)
           : prevAllTags
-      })
+      )
       return newTags
     })
   }
