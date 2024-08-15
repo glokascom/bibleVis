@@ -75,7 +75,7 @@ export default function TagInput({
         {selectedTags.map((tag, index) => (
           <div
             key={index}
-            className="flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
+            className="mb-10 ml-2 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
           >
             <span>{tag}</span>
             <button
@@ -92,7 +92,7 @@ export default function TagInput({
           placeholder="up to 250 letters total, separated by commas"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          className="flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
+          className="mb-10 ml-2 flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
         />
       </div>
       {suggestions.length > 0 && (
