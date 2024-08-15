@@ -15,21 +15,41 @@ const pages = [
   '/pages/license',
   '/pages/toc',
   '/pages/tou',
-  '/pages/submition1',
+  '/pages/submition',
   '/s',
 ]
 
+async function disableCache(page) {
+  await page.route('**/*', (route) => {
+    route.continue({
+      headers: {
+        ...route.request().headers(),
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    })
+  })
+}
+
+async function testPageLoad(browserPage, locale, pagePath) {
+  const testPage = pagePath
+    .replace('{title}', 'test-title')
+    .replace('{uuid}', '123e4567-e89b-12d3-a456-426614174000')
+
+  await disableCache(browserPage)
+
+  const response = await browserPage.goto(`http://localhost:3000/${locale}${testPage}`)
+
+  expect(response.status()).toBe(200)
+  await expect(browserPage).toHaveURL(`http://localhost:3000/${locale}${testPage}`)
+}
+
 locales.forEach((locale) => {
-  pages.forEach((page) => {
-    test(`should load ${locale}${page} page`, async ({ page: browserPage }) => {
-      const testPage = page
-        .replace('{title}', 'test-title')
-        .replace('{uuid}', '123e4567-e89b-12d3-a456-426614174000')
-
-      await browserPage.goto(`http://localhost:3000/${locale}${testPage}`)
-
-      await expect(browserPage).toHaveURL(`http://localhost:3000/${locale}${testPage}`)
-      await expect(browserPage.locator('body')).toBeVisible()
+  test.describe(`Locale: ${locale}`, () => {
+    pages.forEach((pagePath) => {
+      test(`should load ${locale}${pagePath} page`, async ({ page: browserPage }) => {
+        await testPageLoad(browserPage, locale, pagePath)
+      })
     })
   })
 })
