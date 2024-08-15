@@ -1,4 +1,4 @@
-export function generatePassword(length = 12) {
+export default function generatePassword(length = 12) {
   const charset =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+[]{}|;:,.<>?'
   let password = ''
