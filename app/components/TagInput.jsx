@@ -42,7 +42,15 @@ export default function TagInput({
   }
 
   const removeTag = (tag) => {
-    setSelectedTags(selectedTags.filter((t) => t !== tag))
+    setSelectedTags((prevTags) => {
+      const newTags = prevTags.filter((t) => t !== tag)
+      setAllTags((prevAllTags) => {
+        return prevAllTags.includes(tag) && !newTags.includes(tag)
+          ? prevAllTags.filter((t) => t !== tag)
+          : prevAllTags
+      })
+      return newTags
+    })
   }
 
   const handleKeyDown = (e) => {
