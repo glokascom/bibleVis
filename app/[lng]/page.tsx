@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 import { useTranslation } from '@/app/i18n'
 
+import TagInput from '../components/TagInput'
+
 interface PageProps {
   params: {
     lng: string
@@ -25,6 +27,7 @@ const Page: React.FC<PageProps> = async ({ params: { lng } }) => {
       >
         <span className="text-lg font-semibold">{t('login')} </span>
       </Link>
+      <TagInput />
     </div>
   )
 }
