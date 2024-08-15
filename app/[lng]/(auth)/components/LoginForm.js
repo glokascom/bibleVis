@@ -2,13 +2,15 @@
 
 import { useRef, useState } from 'react'
 
-import { forgotPassword, login, signup } from '../actions'
-import Checkbox from '../components/Checkbox'
-import ErrorMessage from '../components/ErrorMessage'
-import InputField from '../components/InputField'
-import PasswordGenerator from '../components/PasswordGenerator'
-import SocialAuthButton from '../components/SocialAuthButton'
+import Link from 'next/link'
+
+import { login, signup } from '../../../actions/actionsSupabase'
 import AuthButton from './AuthButton'
+import Checkbox from './Checkbox'
+import ErrorMessage from './ErrorMessage'
+import InputField from './InputField'
+import PasswordGenerator from './PasswordGenerator'
+import SocialAuthButton from './SocialAuthButton'
 
 export default function LoginForm() {
   const [error, setError] = useState(null)
@@ -27,8 +29,6 @@ export default function LoginForm() {
         await login(formData)
       } else if (action === 'signup') {
         await signup(formData)
-      } else if (action === 'forgotPassword') {
-        await forgotPassword(formData)
       }
     } catch (err) {
       setError(err.message || 'An error has occurred.')
@@ -47,7 +47,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-800">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg"
@@ -89,12 +89,12 @@ export default function LoginForm() {
           >
             Log in via Google
           </SocialAuthButton>
-          <AuthButton
-            name="forgotPassword"
-            type="submit"
-            label="Forgot your password?"
-            className="bg-gray-500 hover:bg-gray-600"
-          />
+          <Link
+            href="/forgot-password"
+            className="hover: hover:tex cursor-pointer rounded-lg p-4 text-gray-600 hover:text-gray-800"
+          >
+            <span className="text-lg font-semibold">Забыли пароль?</span>
+          </Link>
           <PasswordGenerator onGenerate={handleGeneratePassword} />
           <ErrorMessage message={error} />
         </div>

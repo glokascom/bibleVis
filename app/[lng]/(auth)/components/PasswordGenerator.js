@@ -1,4 +1,4 @@
-import { generatePassword } from '../utils'
+import generatePassword from '../../../utils/generatePassword'
 
 const PasswordGenerator = ({ onGenerate }) => {
   const handleGeneratePassword = () => {
