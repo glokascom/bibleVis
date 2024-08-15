@@ -70,7 +70,7 @@ export default function TagInput({
   }
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-full max-w-md bg-white">
       <div className="gap flex h-28 flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
         {selectedTags.map((tag, index) => (
           <div
@@ -80,7 +80,7 @@ export default function TagInput({
             <span>{tag}</span>
             <button
               onClick={() => removeTag(tag)}
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-xl text-white hover:bg-gray-700"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-xl text-white hover:bg-gray-700"
             >
               &times;
             </button>
