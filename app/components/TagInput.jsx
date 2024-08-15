@@ -71,7 +71,7 @@ export default function TagInput({
 
   return (
     <div className="relative w-full max-w-md">
-      <div className="gap flex flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
+      <div className="gap flex h-28 flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
         {selectedTags.map((tag, index) => (
           <div
             key={index}
@@ -97,12 +97,12 @@ export default function TagInput({
       </div>
       {suggestions.length > 0 && (
         <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-300 bg-white p-2 text-black shadow-lg">
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap gap-2.5">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
                 onClick={() => addTag(suggestion)}
-                className="py flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-5 py-2.5 text-black hover:bg-gray-300"
+                className="flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-5 py-2.5 text-black hover:bg-gray-300"
               >
                 <span>{suggestion}</span>
               </div>
