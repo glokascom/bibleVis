@@ -2,7 +2,11 @@
 
 import React, { useState } from 'react'
 
-export default function TagInput({ suggestionCount = 5, initialTags = [] }) {
+export default function TagInput({
+  suggestionCount = 5,
+  initialTags = [],
+  allowAddOnEnter = true,
+}) {
   const [inputValue, setInputValue] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [suggestions, setSuggestions] = useState([])
@@ -43,7 +47,9 @@ export default function TagInput({ suggestionCount = 5, initialTags = [] }) {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && inputValue.trim()) {
-      addTag(inputValue.trim())
+      if (allowAddOnEnter) {
+        addTag(inputValue.trim())
+      }
       e.preventDefault()
     }
   }
