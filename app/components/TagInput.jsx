@@ -29,7 +29,7 @@ export default function TagInput({
               tag.toLowerCase().includes(value.toLowerCase()) &&
               !selectedTags.includes(tag)
           )
-          .slice(0, suggestionCount === undefined ? allTags.length : suggestionCount) // Показывать все, если suggestionCount не задан
+          .slice(0, suggestionCount === undefined ? allTags.length : suggestionCount)
       )
     } else {
       setSuggestions([])
@@ -71,16 +71,16 @@ export default function TagInput({
 
   return (
     <div className="relative w-full max-w-md">
-      <div className="flex flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
+      <div className="gap flex flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
         {selectedTags.map((tag, index) => (
           <div
             key={index}
-            className="mb-1 mr-1 flex items-center space-x-1 rounded-lg bg-gray-200 px-2 py-1 text-black"
+            className="flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
           >
             <span>{tag}</span>
             <button
               onClick={() => removeTag(tag)}
-              className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-white hover:bg-gray-700"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-xl text-white hover:bg-gray-700"
             >
               &times;
             </button>
@@ -89,6 +89,7 @@ export default function TagInput({
         <input
           data-testid="tag-input"
           value={inputValue}
+          placeholder="up to 250 letters total, separated by commas"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className="flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
@@ -96,12 +97,12 @@ export default function TagInput({
       </div>
       {suggestions.length > 0 && (
         <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-300 bg-white p-2 text-black shadow-lg">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-wrap">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
                 onClick={() => addTag(suggestion)}
-                className="flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
+                className="py flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-5 py-2.5 text-black hover:bg-gray-300"
               >
                 <span>{suggestion}</span>
               </div>
