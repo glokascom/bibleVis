@@ -60,12 +60,12 @@ export default function TagInput({
         {selectedTags.map((tag, index) => (
           <div
             key={index}
-            className="mb-1 mr-1 flex items-center space-x-1 rounded-lg bg-gray-700 px-2 py-1 text-white"
+            className="mb-1 mr-1 flex items-center space-x-1 rounded-lg bg-gray-200 px-2 py-1 text-black"
           >
             <span>{tag}</span>
             <button
               onClick={() => removeTag(tag)}
-              className="ml-1 text-white hover:text-gray-300"
+              className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-white hover:bg-gray-700"
             >
               &times;
             </button>
@@ -86,7 +86,7 @@ export default function TagInput({
               <div
                 key={index}
                 onClick={() => addTag(suggestion)}
-                className="flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-2 py-1 text-gray-700 hover:bg-gray-300"
+                className="flex cursor-pointer items-center justify-center rounded-lg bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
               >
                 <span>{suggestion}</span>
               </div>
