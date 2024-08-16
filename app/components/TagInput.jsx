@@ -101,7 +101,11 @@ export default function TagInput({
         <input
           data-testid="tag-input"
           value={inputValue}
-          placeholder="up to 250 letters total, separated by commas"
+          placeholder={
+            selectedTags.length === 0
+              ? 'up to 250 letters total, separated by commas'
+              : ''
+          }
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className="mb-2 ml-2 flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
