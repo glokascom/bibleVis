@@ -79,10 +79,10 @@ export default function TagInput({
   }
 
   return (
-    <div className="relative w-full max-w-md bg-white">
+    <div className="relative w-full max-w-md rounded-lg border-black bg-white">
       <div
         ref={tagsContainerRef}
-        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
+        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-black px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
       >
         {selectedTags.map((tag, index) => (
           <div
@@ -108,7 +108,7 @@ export default function TagInput({
         />
       </div>
       {suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-300 bg-white p-2 text-black shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-black bg-white p-2 text-black shadow-lg">
           <div className="flex flex-wrap gap-2.5">
             {suggestions.map((suggestion, index) => (
               <div
