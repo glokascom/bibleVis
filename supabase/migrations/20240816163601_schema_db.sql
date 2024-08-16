@@ -39,7 +39,7 @@ ALTER TABLE "public"."images" ENABLE ROW LEVEL SECURITY;
 -- Создание политики RLS для изображений
 CREATE POLICY "user_images_policy"
 ON "public"."images"
-USING ("user_id" = current_user);
+USING ("user_id" = auth.uid());
 
 -- Создание таблицы тегов
 CREATE TABLE IF NOT EXISTS "public"."tags" (
@@ -87,7 +87,7 @@ ALTER TABLE "public"."likes" ENABLE ROW LEVEL SECURITY;
 -- Создание политики RLS для лайков
 CREATE POLICY "user_likes_policy"
 ON "public"."likes"
-USING ("user_id" = current_user);
+USING ("user_id" = auth.uid());
 
 -- Создание таблицы подписок
 CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
@@ -106,4 +106,4 @@ ALTER TABLE "public"."subscriptions" ENABLE ROW LEVEL SECURITY;
 -- Создание политики RLS для подписок
 CREATE POLICY "user_subscriptions_policy"
 ON "public"."subscriptions"
-USING ("follower_id" = current_user);
+USING ("follower_id" = auth.uid());
