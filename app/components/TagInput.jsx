@@ -7,6 +7,7 @@ export default function TagInput({
   suggestionCount,
   allowAddOnEnter = true,
   limitLetters = 20,
+  limitLettersAllTags = 250,
   onTagsChange = () => {},
 }) {
   const [inputValue, setInputValue] = useState('')
@@ -44,9 +45,12 @@ export default function TagInput({
   }
 
   const addTag = (tag) => {
-    if (tag.length > limitLetters) {
+    const totalChars = selectedTags.join('').length + tag.length
+
+    if (tag.length > limitLetters || totalChars > limitLettersAllTags) {
       return
     }
+
     if (!selectedTags.includes(tag)) {
       setSelectedTags((prevTags) => [...prevTags, tag])
       setAllTags((prevTags) => (prevTags.includes(tag) ? prevTags : [...prevTags, tag]))
@@ -103,7 +107,7 @@ export default function TagInput({
           value={inputValue}
           placeholder={
             selectedTags.length === 0
-              ? 'up to 250 letters total, separated by commas'
+              ? `up to ${limitLettersAllTags} letters total, separated by commas`
               : ''
           }
           onChange={handleInputChange}
