@@ -92,7 +92,7 @@ export default function TagInput({
             <span>{tag}</span>
             <button
               onClick={() => removeTag(tag)}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-xl text-white hover:bg-gray-700"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-black pb-0.5 text-xs leading-none text-white hover:bg-gray-800"
             >
               &times;
             </button>
