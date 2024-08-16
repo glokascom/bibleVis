@@ -86,7 +86,7 @@ export default function TagInput({
     <div className="relative w-full max-w-md rounded-lg border-black bg-white">
       <div
         ref={tagsContainerRef}
-        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-black px-2 py-1 pb-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
+        className="flex h-28 flex-wrap items-start overflow-y-auto rounded-lg border border-black px-2 py-1 pb-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
       >
         {selectedTags.map((tag, index) => (
           <div
@@ -96,7 +96,7 @@ export default function TagInput({
             <span>{tag}</span>
             <button
               onClick={() => removeTag(tag)}
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-black pb-1 text-lg font-black leading-none text-white hover:bg-gray-800"
+              className="flex h-6 w-6 items-start justify-center rounded-full bg-black pb-1 text-lg font-black leading-none text-white hover:bg-gray-800"
             >
               &times;
             </button>
@@ -112,7 +112,7 @@ export default function TagInput({
           }
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          className="mb-2 ml-2 flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
+          className="mb-2 ml-2 flex-grow rounded-lg border-none pt-4 align-middle text-black focus:outline-none focus:ring-0"
         />
       </div>
       {suggestions.length > 0 && (
