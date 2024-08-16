@@ -82,12 +82,12 @@ export default function TagInput({
     <div className="relative w-full max-w-md rounded-lg border-black bg-white">
       <div
         ref={tagsContainerRef}
-        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-black px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
+        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-black px-2 py-1 pb-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
       >
         {selectedTags.map((tag, index) => (
           <div
             key={index}
-            className="mb-2 ml-2 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
+            className="mb-1 ml-2 mt-1 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
           >
             <span>{tag}</span>
             <button
