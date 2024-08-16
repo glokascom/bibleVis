@@ -16,6 +16,17 @@ const initialTags = [
   'Midjourney',
   'Stable Diffusion',
   'Leonardo.AI',
+  'Adobe Photoshop1',
+  'CorelDRAW2',
+  'Canva1',
+  'Adobe Lightroom2',
+  'Figma3',
+  'Adobe Illustrator4',
+  'Sketch5',
+  'DALL-E6',
+  'Midjourney5',
+  'Stable Diffusion6',
+  'Leonardo.AI6',
 ]
 
 export default function LoginPage() {
