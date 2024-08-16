@@ -1,3 +1,9 @@
+-- Создание таблицы ролей
+CREATE TABLE IF NOT EXISTS "public"."roles" (
+    "id" SERIAL PRIMARY KEY,
+    "role_name" VARCHAR(50) NOT NULL UNIQUE
+);
+
 -- Добавление столбцов в существующую таблицу users
 ALTER TABLE "public"."users"
     ADD COLUMN IF NOT EXISTS "username" VARCHAR(50) UNIQUE,
@@ -8,11 +14,6 @@ ALTER TABLE "public"."users"
     ADD COLUMN IF NOT EXISTS "cover_file_path" VARCHAR(255),
     ADD CONSTRAINT "fk_users_roles" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id");
 
--- Создание таблицы ролей
-CREATE TABLE IF NOT EXISTS "public"."roles" (
-    "id" SERIAL PRIMARY KEY,
-    "role_name" VARCHAR(50) NOT NULL UNIQUE
-);
 
 -- Создание таблицы изображений
 CREATE TABLE IF NOT EXISTS "public"."images" (
