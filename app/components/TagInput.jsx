@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function TagInput({
   initialTags = [],
@@ -13,10 +13,17 @@ export default function TagInput({
   const [selectedTags, setSelectedTags] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [allTags, setAllTags] = useState(initialTags)
+  const tagsContainerRef = useRef(null)
 
   useEffect(() => {
     onTagsChange(allTags)
   }, [allTags, onTagsChange])
+
+  const scrollToBottom = () => {
+    if (tagsContainerRef.current) {
+      tagsContainerRef.current.scrollTop = tagsContainerRef.current.scrollHeight
+    }
+  }
 
   const handleInputChange = (e) => {
     const value = e.target.value
@@ -46,6 +53,7 @@ export default function TagInput({
     }
     setInputValue('')
     setSuggestions([])
+    setTimeout(scrollToBottom, 0)
   }
 
   const removeTag = (tag) => {
@@ -58,6 +66,7 @@ export default function TagInput({
       )
       return newTags
     })
+    setTimeout(scrollToBottom, 0)
   }
 
   const handleKeyDown = (e) => {
@@ -71,11 +80,14 @@ export default function TagInput({
 
   return (
     <div className="relative w-full max-w-md bg-white">
-      <div className="gap flex h-28 flex-wrap items-center rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500">
+      <div
+        ref={tagsContainerRef}
+        className="flex h-28 flex-wrap items-center overflow-y-auto rounded-lg border border-gray-300 px-2 py-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
+      >
         {selectedTags.map((tag, index) => (
           <div
             key={index}
-            className="mb-10 ml-2 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
+            className="mb-2 ml-2 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
           >
             <span>{tag}</span>
             <button
@@ -92,7 +104,7 @@ export default function TagInput({
           placeholder="up to 250 letters total, separated by commas"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          className="mb-10 ml-2 flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
+          className="mb-2 ml-2 flex-grow rounded-lg border-none text-black focus:outline-none focus:ring-0"
         />
       </div>
       {suggestions.length > 0 && (
