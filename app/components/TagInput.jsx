@@ -15,6 +15,7 @@ export default function TagInput({
   const [suggestions, setSuggestions] = useState([])
   const [allTags, setAllTags] = useState(initialTags)
   const tagsContainerRef = useRef(null)
+  const inputRef = useRef(null)
 
   useEffect(() => {
     onTagsChange(allTags)
@@ -57,7 +58,10 @@ export default function TagInput({
     }
     setInputValue('')
     setSuggestions([])
-    setTimeout(scrollToBottom, 0)
+    setTimeout(() => {
+      scrollToBottom()
+      inputRef.current?.focus()
+    }, 0)
   }
 
   const removeTag = (tag) => {
@@ -70,7 +74,10 @@ export default function TagInput({
       )
       return newTags
     })
-    setTimeout(scrollToBottom, 0)
+    setTimeout(() => {
+      scrollToBottom()
+      inputRef.current?.focus()
+    }, 0)
   }
 
   const handleKeyDown = (e) => {
@@ -82,10 +89,15 @@ export default function TagInput({
     }
   }
 
+  const handleContainerClick = () => {
+    inputRef.current?.focus()
+  }
+
   return (
     <div className="relative w-full max-w-md rounded-lg border-black bg-white">
       <div
         ref={tagsContainerRef}
+        onClick={handleContainerClick}
         className="flex h-28 flex-wrap items-start overflow-y-auto rounded-lg border border-black px-2 py-1 pb-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
       >
         {selectedTags.map((tag, index) => (
@@ -103,6 +115,7 @@ export default function TagInput({
           </div>
         ))}
         <input
+          ref={inputRef}
           data-testid="tag-input"
           value={inputValue}
           placeholder={
@@ -116,7 +129,7 @@ export default function TagInput({
         />
       </div>
       {suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-black bg-white p-2 text-black shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-56 overflow-y-auto rounded-lg border border-black bg-white p-2 text-black shadow-lg">
           <div className="flex flex-wrap gap-2.5">
             {suggestions.map((suggestion, index) => (
               <div
