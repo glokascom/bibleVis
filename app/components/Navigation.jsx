@@ -219,7 +219,7 @@ function Navigation({ lng }) {
                       viewBox="0 0 25 15"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 cursor-pointer p-3"
+                      className="h-12 w-9 cursor-pointer py-3 pl-3"
                     >
                       <rect
                         x="0.785156"
