@@ -32,9 +32,12 @@ CREATE TABLE IF NOT EXISTS "public"."images" (
     "small_file_path" VARCHAR(280) DEFAULT '' NOT NULL,
     "file_type" VARCHAR(50) DEFAULT 'image' NOT NULL,
     "file_size" INT DEFAULT 0 NOT NULL,
+    "total_views" INT DEFAULT 0 NOT NULL,
+    "total_downloads" INT DEFAULT 0 NOT NULL,
+    "total_likes" INT DEFAULT 0 NOT NULL,    
+    "orientation" VARCHAR(10) NOT NULL DEFAULT 'landscape' CHECK (orientation IN ('landscape', 'portrait')),  -- Strict list of allowed values
     "uploaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "orientation" VARCHAR(10) NOT NULL DEFAULT 'unknown' CHECK (orientation IN ('horizontal', 'vertical', 'unknown')),  -- Strict list of allowed values
     CONSTRAINT "fk_images_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE
 );
 
@@ -106,6 +109,9 @@ CREATE POLICY "user_likes_policy"
 ON "public"."likes"
 USING ("user_id" = auth.uid());
 
+-- Create an index on the user_id column in the likes table
+CREATE INDEX idx_likes_user_id ON "public"."likes" ("user_id");
+
 -- Create the subscriptions table
 CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
     "id" SERIAL PRIMARY KEY,
@@ -124,27 +130,3 @@ ALTER TABLE "public"."subscriptions" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "user_subscriptions_policy"
 ON "public"."subscriptions"
 USING ("follower_id" = auth.uid());
-
--- Create the image views table
-CREATE TABLE IF NOT EXISTS "public"."image_views" (
-    "id" SERIAL PRIMARY KEY,
-    "image_id" INT NOT NULL,
-    "viewed_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "viewer_id" UUID, -- can be NULL if viewed by an unauthorized user
-    CONSTRAINT "fk_image_views_images" FOREIGN KEY ("image_id") REFERENCES "public"."images"("id") ON DELETE CASCADE
-);
-
--- Enable RLS for the image views table
-ALTER TABLE "public"."image_views" ENABLE ROW LEVEL SECURITY;   
-
--- Create the image downloads table
-CREATE TABLE IF NOT EXISTS "public"."image_downloads" (
-    "id" SERIAL PRIMARY KEY,
-    "image_id" INT NOT NULL,
-    "downloaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "downloader_id" UUID, -- can be NULL if downloaded by an unauthorized user
-    CONSTRAINT "fk_image_downloads_images" FOREIGN KEY ("image_id") REFERENCES "public"."images"("id") ON DELETE CASCADE
-);
-
--- Enable RLS for the image downloads table
-ALTER TABLE "public"."image_downloads" ENABLE ROW LEVEL SECURITY;
