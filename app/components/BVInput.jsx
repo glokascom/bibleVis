@@ -3,17 +3,6 @@ import { extendVariants } from '@nextui-org/system'
 
 export const BVInput = extendVariants(Input, {
   slots: {
-    label: [
-      'absolute',
-      'z-10',
-      'pointer-events-none',
-      'origin-top-left',
-      'rtl:origin-top-right',
-      'subpixel-antialiased',
-      'block',
-      'text-small',
-      'text-foreground-500',
-    ],
     mainWrapper: 'h-full',
     inputWrapper:
       'relative w-full inline-flex tap-highlight-transparent flex-row items-center',
@@ -36,8 +25,8 @@ export const BVInput = extendVariants(Input, {
         inputWrapper: [
           'bg-secondary-50 border border-secondary-50 px-5 py-4 gap-3',
           'data-[hover=true]:bg-secondary-50',
-          'data-[active=true]:bg-secondary-50 data-[active=true]:border-secondary-950',
-          'group-data-[focus=true]:border-secondary-950 shadow-none',
+          'data-[active=true]:bg-secondary-50 data-[active=true]:border-secondary',
+          'group-data-[focus=true]:border-secondary shadow-none',
         ],
         input: ['font-[600]'],
       },
@@ -46,8 +35,8 @@ export const BVInput = extendVariants(Input, {
         inputWrapper: [
           'shadow-none border-1 bg-white border border-secondary-200 px-5 py-4 gap-3',
           'data-[hover=true]:bg-white',
-          'data-[active=true]:bg-white data-[active=true]:border-secondary-950',
-          'group-data-[focus=true]:border-secondary-950 shadow-none',
+          'data-[active=true]:bg-white data-[active=true]:border-secondary',
+          'group-data-[focus=true]:border-secondary shadow-none',
         ],
         input: ['font-[500]'],
       },
