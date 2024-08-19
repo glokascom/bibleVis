@@ -97,45 +97,69 @@ export default function TagInput({
     inputRef.current?.focus()
   }
 
+  useEffect(() => {
+    if (inputRef.current) {
+      console.log('object')
+      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedTags])
+
   return (
-    <div className="relative w-full max-w-md rounded-lg border-black bg-white">
+    <div className="relative w-full max-w-md cursor-text rounded-lg border-black bg-white">
       <div
         ref={tagsContainerRef}
         onClick={handleContainerClick}
-        className="flex h-28 max-h-56 flex-wrap items-start overflow-y-auto rounded-lg border border-black px-2 py-1 pb-1 text-black focus-within:ring-2 focus-within:ring-blue-500"
+        className="rounded-lg border border-black p-5 text-black focus-within:ring-2 focus-within:ring-blue-500"
       >
-        {selectedTags.map((tag, index) => (
-          <div
-            key={index}
-            className="mb-1 ml-2 mt-1 flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
-          >
-            <span>{tag}</span>
-            <button
-              onClick={() => removeTag(tag)}
-              className="flex h-6 w-6 items-start justify-center rounded-full bg-black text-lg font-black leading-none text-white hover:bg-gray-800"
+        <div className="flex h-28 flex-wrap items-start gap-2.5 overflow-y-auto pr-2.5">
+          {selectedTags.map((tag, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2.5 rounded-lg bg-gray-200 px-5 py-2.5 text-black"
             >
-              &times;
-            </button>
-          </div>
-        ))}
-        <input
-          ref={inputRef}
-          data-testid="tag-input"
-          value={inputValue}
-          placeholder={
-            selectedTags.length === 0
-              ? `up to ${limitLettersAllTags} letters total, separated by commas`
-              : ''
-          }
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          className="mb-2 ml-2 flex-grow rounded-lg border-none pt-4 align-middle text-black focus:outline-none focus:ring-0"
-          style={{ width: `${inputValue.length + 1}ch` }}
-        />
+              <span>{tag}</span>
+              <button
+                onClick={() => removeTag(tag)}
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-black leading-none text-white hover:bg-gray-800"
+              >
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 2L5 5M8 8L5 5M5 5L8 2L2 8"
+                    stroke="white"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          ))}
+
+          <input
+            ref={inputRef}
+            data-testid="tag-input"
+            value={inputValue}
+            placeholder={
+              selectedTags.length === 0
+                ? `up to ${limitLettersAllTags} letters total, separated by commas`
+                : ''
+            }
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            className="flex-grow rounded-lg border-none py-2.5 align-middle text-black focus:outline-none focus:ring-0"
+            style={{ width: `${inputValue.length + 1}ch` }}
+          />
+        </div>
       </div>
       {suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-56 overflow-y-auto rounded-lg border border-black bg-white p-2 text-black shadow-lg">
-          <div className="flex flex-wrap gap-2.5">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-lg border border-black bg-white p-5 text-black shadow-lg">
+          <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
