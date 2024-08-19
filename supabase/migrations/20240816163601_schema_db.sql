@@ -37,17 +37,9 @@ CREATE TABLE IF NOT EXISTS "public"."images" (
     "total_likes" INT DEFAULT 0 NOT NULL,    
     "orientation" VARCHAR(10) NOT NULL DEFAULT 'landscape' CHECK (orientation IN ('landscape', 'portrait')),  -- Strict list of allowed values
     "uploaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "deleted_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP DEFAULT NULL,
     CONSTRAINT "fk_images_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE
 );
-
--- Enable RLS for the images table
-ALTER TABLE "public"."images" ENABLE ROW LEVEL SECURITY;
-
--- Create RLS policy for images
-CREATE POLICY "user_images_policy"
-ON "public"."images"
-USING ("user_id" = auth.uid());
 
 -- Create the tags table
 CREATE TABLE IF NOT EXISTS "public"."tags" (
@@ -55,17 +47,11 @@ CREATE TABLE IF NOT EXISTS "public"."tags" (
     "name" VARCHAR(50) NOT NULL UNIQUE
 );
 
--- Enable RLS for the tags table
-ALTER TABLE "public"."tags" ENABLE ROW LEVEL SECURITY;  
-
 -- Create the softwares table
 CREATE TABLE IF NOT EXISTS "public"."softwares" (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(50) NOT NULL UNIQUE
 );
-
--- Enable RLS for the softwares table
-ALTER TABLE "public"."softwares" ENABLE ROW LEVEL SECURITY; 
 
 -- Create the image_tags join table (many-to-many relationship)
 CREATE TABLE IF NOT EXISTS "public"."image_tags" (
@@ -76,9 +62,6 @@ CREATE TABLE IF NOT EXISTS "public"."image_tags" (
     CONSTRAINT "fk_image_tags_tags" FOREIGN KEY ("tag_id") REFERENCES "public"."tags"("id") ON DELETE CASCADE
 );
 
--- Enable RLS for the image_tags table
-ALTER TABLE "public"."image_tags" ENABLE ROW LEVEL SECURITY;
-
 -- Create the image_softwares join table (many-to-many relationship)
 CREATE TABLE IF NOT EXISTS "public"."image_softwares" (
     "image_id" INT NOT NULL,
@@ -87,9 +70,6 @@ CREATE TABLE IF NOT EXISTS "public"."image_softwares" (
     CONSTRAINT "fk_image_softwares_images" FOREIGN KEY ("image_id") REFERENCES "public"."images"("id") ON DELETE CASCADE,
     CONSTRAINT "fk_image_softwares_softwares" FOREIGN KEY ("software_id") REFERENCES "public"."softwares"("id") ON DELETE CASCADE
 );
-
--- Enable RLS for the image_softwares table
-ALTER TABLE "public"."image_softwares" ENABLE ROW LEVEL SECURITY;
 
 -- Create the likes table
 CREATE TABLE IF NOT EXISTS "public"."likes" (
@@ -100,17 +80,6 @@ CREATE TABLE IF NOT EXISTS "public"."likes" (
     CONSTRAINT "fk_likes_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE,
     CONSTRAINT "fk_likes_images" FOREIGN KEY ("image_id") REFERENCES "public"."images"("id") ON DELETE CASCADE
 );
-
--- Enable RLS for the likes table
-ALTER TABLE "public"."likes" ENABLE ROW LEVEL SECURITY;
-
--- Create RLS policy for likes
-CREATE POLICY "user_likes_policy"
-ON "public"."likes"
-USING ("user_id" = auth.uid());
-
--- Create an index on the user_id column in the likes table
-CREATE INDEX idx_likes_user_id ON "public"."likes" ("user_id");
 
 -- Create the subscriptions table
 CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
@@ -123,10 +92,34 @@ CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
     UNIQUE ("follower_id", "following_id")
 );
 
+-- Enable RLS for the users table
+ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the images table
+ALTER TABLE "public"."images" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the tags table
+ALTER TABLE "public"."tags" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the softwares table
+ALTER TABLE "public"."softwares" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the image_tags table
+ALTER TABLE "public"."image_tags" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the image_softwares table
+ALTER TABLE "public"."image_softwares" ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS for the likes table
+ALTER TABLE "public"."likes" ENABLE ROW LEVEL SECURITY;
+
 -- Enable RLS for the subscriptions table
 ALTER TABLE "public"."subscriptions" ENABLE ROW LEVEL SECURITY;
 
--- Create RLS policy for subscriptions
-CREATE POLICY "user_subscriptions_policy"
-ON "public"."subscriptions"
-USING ("follower_id" = auth.uid());
+-- Create indexes for likes table
+CREATE INDEX idx_likes_user_id ON "public"."likes" ("user_id");
+CREATE INDEX idx_likes_image_id ON "public"."likes" ("image_id");
+
+-- Create indexes for images table
+CREATE INDEX idx_images_updated_at ON "public"."images" ("uploaded_at");
+CREATE INDEX idx_images_user_id ON "public"."images" ("user_id");
