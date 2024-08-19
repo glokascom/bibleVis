@@ -200,7 +200,7 @@ function Navigation({ lng }) {
           ) : (
             <>
               <NavbarItem>
-                <BVButton as={Link} href="/login" className="hidden md:block">
+                <BVButton as={Link} href="/en/login" className="hidden md:block">
                   Log in
                 </BVButton>
               </NavbarItem>
@@ -259,8 +259,8 @@ function Navigation({ lng }) {
                     <DropdownItem key="license" href="/pages/license" showDivider>
                       License
                     </DropdownItem>
-                    <DropdownItem key="login" href="/login" className="text-primary">
-                      Log in
+                    <DropdownItem key="login" className="text-primary">
+                      <Link href="/en/login">Log in</Link>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
