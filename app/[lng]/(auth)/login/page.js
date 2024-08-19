@@ -36,8 +36,10 @@ export default function LoginPage() {
 
   return (
     <>
-      <TagInput initialTags={initialTags} onTagsChange={handleTagsChange} />
-      <LoginForm />
+      <div className="my-5">
+        <TagInput initialTags={initialTags} onTagsChange={handleTagsChange} />
+        <LoginForm />
+      </div>
     </>
   )
 }
