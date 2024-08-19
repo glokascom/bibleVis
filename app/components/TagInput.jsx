@@ -6,7 +6,7 @@ export default function TagInput({
   initialTags = [],
   suggestionCount,
   allowAddOnEnter = true,
-  limitLetters = 20,
+  limitLetters = 0,
   limitLettersAllTags = 250,
   onTagsChange = () => {},
 }) {
@@ -18,8 +18,8 @@ export default function TagInput({
   const inputRef = useRef(null)
 
   useEffect(() => {
-    onTagsChange(allTags)
-  }, [allTags, onTagsChange])
+    onTagsChange({ allTags, selectedTags })
+  }, [allTags, onTagsChange, selectedTags])
 
   const scrollToBottom = () => {
     if (tagsContainerRef.current) {
@@ -48,7 +48,10 @@ export default function TagInput({
   const addTag = (tag) => {
     const totalChars = selectedTags.join('').length + tag.length
 
-    if (tag.length > limitLetters || totalChars > limitLettersAllTags) {
+    if (
+      (limitLetters > 0 && tag.length > limitLetters) ||
+      totalChars > limitLettersAllTags
+    ) {
       return
     }
 
@@ -65,19 +68,22 @@ export default function TagInput({
   }
 
   const removeTag = (tag) => {
-    setSelectedTags((prevTags) => {
-      const newTags = prevTags.filter((t) => t !== tag)
-      setAllTags((prevAllTags) =>
-        prevAllTags.includes(tag) && !newTags.includes(tag)
-          ? prevAllTags.filter((t) => t !== tag)
-          : prevAllTags
-      )
-      return newTags
+    const newSelectedTags = selectedTags.filter((t) => t !== tag)
+    setSelectedTags(newSelectedTags)
+
+    setAllTags(() => {
+      const uniqueTags = [...new Set([...initialTags, ...newSelectedTags])]
+      return uniqueTags
     })
-    setTimeout(() => {
-      scrollToBottom()
-      inputRef.current?.focus()
-    }, 0)
+
+    setSuggestions(() =>
+      allTags.filter(
+        (suggestion) => !newSelectedTags.includes(suggestion) || suggestion === tag
+      )
+    )
+
+    scrollToBottom()
+    inputRef.current?.focus()
   }
 
   const handleKeyDown = (e) => {
@@ -95,7 +101,22 @@ export default function TagInput({
 
   const handleContainerClick = () => {
     inputRef.current?.focus()
+    if (!allowAddOnEnter && !inputValue) {
+      setSuggestions(allTags.filter((tag) => !selectedTags.includes(tag)))
+    }
   }
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (tagsContainerRef.current && !tagsContainerRef.current.contains(event.target)) {
+        setSuggestions([])
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [])
 
   useEffect(() => {
     if (inputRef.current && inputRef.current.scrollIntoView) {
@@ -110,7 +131,7 @@ export default function TagInput({
         onClick={handleContainerClick}
         className="rounded-medium border border-gray-100 bg-secondary-50 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
       >
-        <div className="flex h-28 flex-wrap items-start gap-2.5 overflow-y-auto pr-2.5">
+        <div className="flex h-28 flex-wrap content-start items-start gap-2.5 overflow-y-auto pr-2.5">
           {selectedTags.map((tag, index) => (
             <div
               key={index}
@@ -152,7 +173,7 @@ export default function TagInput({
             }
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className="placeholder-text-secondary-200 flex-grow rounded-medium border-none bg-secondary-50 py-2.5 align-middle text-small font-[500] focus:outline-none focus:ring-0"
+            className="placeholder-text-secondary-200 flex-grow rounded-medium border-none bg-secondary-50 py-3 text-small font-[500] focus:outline-none focus:ring-0"
             style={{ width: `${inputValue.length + 1}ch` }}
           />
         </div>
