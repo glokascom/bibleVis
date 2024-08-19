@@ -4,5 +4,7 @@
     "primary": "Primary",
     "secondary": "Secondary",
     "success": "Success",
-    "warning": "Warning"
+    "warning": "Warning",
+    "license": "License",
+    "login": "Log In/Register"
 }
