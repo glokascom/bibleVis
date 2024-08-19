@@ -11,6 +11,7 @@ import { Tab, Tabs } from '@nextui-org/tabs'
 import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
+import { BVLink } from './BVLink'
 
 function AuthForm() {
   const [isVisible, setIsVisible] = useState(false)
@@ -59,7 +60,7 @@ function AuthForm() {
                   tab: 'pb-7 font-medium text-lg h-auto',
                   tabContent: 'text-secondary-200',
                   panel:
-                    'shadow-none  scroll-gutter flex-auto overflow-auto pb-10 pl-5 pr-3.5',
+                    'shadow-none scroll-gutter flex-auto overflow-auto pb-10 pl-5 pr-3.5',
                   base: 'mx-5',
                 }}
               >
@@ -147,15 +148,15 @@ function AuthForm() {
                     type={isVisible ? 'text' : 'password'}
                     isRequired
                   />
-                  <p className="my-4 text-small text-secondary-200">
+                  <p className="my-8 text-small text-secondary-200">
                     This site is protected by reCAPTCHA and the Google{' '}
                     <a target="_blank" href="#" className="text-primary hover:underline">
                       Privacy Policy
-                    </a>
-                    and
+                    </a>{' '}
+                    and{' '}
                     <a target="_blank" href="#" className="text-primary hover:underline">
                       Terms of Service
-                    </a>
+                    </a>{' '}
                     apply.
                   </p>
                   <BVButton fullWidth onClick={handleSignup}>
@@ -234,20 +235,28 @@ function AuthForm() {
                     type={isVisible ? 'text' : 'password'}
                     isRequired
                   />
-                  <p className="my-4 text-small text-secondary-200">
+                  <p className="my-8 text-small text-secondary-200">
                     This site is protected by reCAPTCHA and the Google{' '}
                     <a target="_blank" href="#" className="text-primary hover:underline">
                       Privacy Policy
-                    </a>
-                    and
+                    </a>{' '}
+                    and{' '}
                     <a target="_blank" href="#" className="text-primary hover:underline">
                       Terms of Service
-                    </a>
+                    </a>{' '}
                     apply.
                   </p>
                   <BVButton fullWidth onClick={handleLogin}>
                     Join
                   </BVButton>
+                  <BVLink
+                    color="primary"
+                    size="md"
+                    className="mt-8 flex justify-center font-[500]"
+                    href="/forgot-password"
+                  >
+                    Forgot password?
+                  </BVLink>
                 </Tab>
               </Tabs>
             </div>
