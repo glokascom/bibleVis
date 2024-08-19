@@ -108,13 +108,13 @@ export default function TagInput({
       <div
         ref={tagsContainerRef}
         onClick={handleContainerClick}
-        className="rounded-medium border border-gray-100 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
+        className="rounded-medium border border-gray-100 bg-secondary-50 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
       >
         <div className="flex h-28 flex-wrap items-start gap-2.5 overflow-y-auto pr-2.5">
           {selectedTags.map((tag, index) => (
             <div
               key={index}
-              className="flex items-center gap-2.5 rounded-medium bg-gray-200 px-5 py-2.5 text-small font-[500]"
+              className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500]"
             >
               <span>{tag}</span>
               <button
@@ -152,19 +152,19 @@ export default function TagInput({
             }
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className="flex-grow rounded-medium border-none py-2.5 align-middle text-small font-[500] focus:outline-none focus:ring-0"
+            className="flex-grow rounded-medium border-none bg-secondary-50 py-2.5 align-middle text-small font-[500] focus:outline-none focus:ring-0"
             style={{ width: `${inputValue.length + 1}ch` }}
           />
         </div>
       </div>
       {suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-medium border border-secondary bg-white p-5 text-small font-[500] shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-medium border border-secondary bg-secondary-50 p-5 text-small font-[500] shadow-lg">
           <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
                 onClick={() => addTag(suggestion)}
-                className="flex cursor-pointer items-center justify-center rounded-medium bg-gray-200 px-5 py-2.5 text-small font-[500] hover:bg-gray-300"
+                className="flex cursor-pointer items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500] hover:bg-secondary-200"
               >
                 <span>{suggestion}</span>
               </div>
