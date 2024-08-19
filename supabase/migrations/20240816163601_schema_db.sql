@@ -2,26 +2,34 @@ CREATE OR REPLACE FUNCTION gen_random_slug() RETURNS VARCHAR AS $$
 DECLARE
     slug VARCHAR := '';
 BEGIN
-    -- Generate random text of 10 characters from letters and numbers
-    slug := substring(translate(encode(gen_random_bytes(6), 'base64'), '/+', 'ab'), 1, 10);
+    -- Generate a unique slug
+    LOOP
+        -- Generate random text of 10 characters from letters and numbers
+        slug := substring(translate(encode(gen_random_bytes(6), 'base64'), '/+', 'ab'), 1, 10);        
+        -- Check if the slug is unique
+        EXIT WHEN NOT EXISTS (SELECT 1 FROM "public"."images" WHERE "url_slug" = slug);
+    END LOOP;
     RETURN slug;
 END;
 $$ LANGUAGE plpgsql;
 
 
--- Add columns to the existing users table
 ALTER TABLE "public"."users"
+    DROP COLUMN IF EXISTS "is_blocked",
+    
+    ADD COLUMN IF NOT EXISTS "blocked_at" TIMESTAMP DEFAULT NULL,    
     ADD COLUMN IF NOT EXISTS "is_creator" BOOLEAN DEFAULT false,
     ADD COLUMN IF NOT EXISTS "is_admin" BOOLEAN DEFAULT false,
     ADD COLUMN IF NOT EXISTS "username" VARCHAR(50) UNIQUE,
     ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ADD COLUMN IF NOT EXISTS "avatar_file_path" VARCHAR(255) DEFAULT NULL,
     ADD COLUMN IF NOT EXISTS "cover_file_path" VARCHAR(255) DEFAULT NULL;
+    ADD COLUMN IF NOT EXISTS "total_folowers" INT DEFAULT 0,
 
 -- Create the images table
 CREATE TABLE IF NOT EXISTS "public"."images" (
     "id" SERIAL PRIMARY KEY,
-    "url_slug" VARCHAR(50) UNIQUE NOT NULL DEFAULT gen_random_slug(),
+    "url_slug" VARCHAR(10) UNIQUE NOT NULL DEFAULT gen_random_slug(),
     "user_id" UUID NOT NULL,
     "title" VARCHAR(140) DEFAULT '' NOT NULL,
     "description" VARCHAR(280) DEFAULT '' NOT NULL,
