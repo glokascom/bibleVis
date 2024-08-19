@@ -152,7 +152,7 @@ export default function TagInput({
             }
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className="flex-grow rounded-medium border-none bg-secondary-50 py-2.5 align-middle text-small font-[500] focus:outline-none focus:ring-0"
+            className="placeholder-text-secondary-200 flex-grow rounded-medium border-none bg-secondary-50 py-2.5 align-middle text-small font-[500] focus:outline-none focus:ring-0"
             style={{ width: `${inputValue.length + 1}ch` }}
           />
         </div>
