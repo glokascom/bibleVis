@@ -98,8 +98,7 @@ export default function TagInput({
   }
 
   useEffect(() => {
-    if (inputRef.current) {
-      console.log('object')
+    if (inputRef.current && inputRef.current.scrollIntoView) {
       inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selectedTags])
