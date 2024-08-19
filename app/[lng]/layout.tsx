@@ -7,6 +7,8 @@ import { Providers } from '@/app/providers'
 
 import '@/styles/globals.css'
 
+import React from 'react'
+
 import Navigation from '../components/Navigation'
 
 const baseFont = Plus_Jakarta_Sans({
@@ -18,13 +20,20 @@ export async function generateStaticParams(): Promise<{ lng: string }[]> {
   return languages.map((lng) => ({ lng }))
 }
 
+export const metadata = {
+  title: 'BibleVis',
+  description: 'Some description here',
+}
+
 export default function RootLayout(props: {
-  children: React.ReactNode
   params: { lng: string }
+  children: React.ReactNode
+  modal: React.ReactNode
 }): JSX.Element {
   const {
-    children,
     params: { lng },
+    children,
+    modal,
   } = props
   return (
     <html lang={lng} dir={dir(lng)} className="light">
@@ -38,6 +47,8 @@ export default function RootLayout(props: {
               {children}
             </main>
           </div>
+          {modal}
+          <div id="modal-root"></div>
         </Providers>
       </body>
     </html>

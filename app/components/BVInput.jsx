@@ -3,17 +3,6 @@ import { extendVariants } from '@nextui-org/system'
 
 export const BVInput = extendVariants(Input, {
   slots: {
-    label: [
-      'absolute',
-      'z-10',
-      'pointer-events-none',
-      'origin-top-left',
-      'rtl:origin-top-right',
-      'subpixel-antialiased',
-      'block',
-      'text-small',
-      'text-foreground-500',
-    ],
     mainWrapper: 'h-full',
     inputWrapper:
       'relative w-full inline-flex tap-highlight-transparent flex-row items-center',
@@ -36,10 +25,20 @@ export const BVInput = extendVariants(Input, {
         inputWrapper: [
           'bg-secondary-50 border border-secondary-50 px-5 py-4 gap-3',
           'data-[hover=true]:bg-secondary-50',
-          'data-[active=true]:bg-secondary-50 data-[active=true]:border-secondary-950',
-          'group-data-[focus=true]:border-secondary-950 shadow-none',
+          'data-[active=true]:bg-secondary-50 data-[active=true]:border-secondary',
+          'group-data-[focus=true]:border-secondary shadow-none',
         ],
-        input: [' font-[600]'],
+        input: ['font-[600]'],
+      },
+      bordered: {
+        base: 'mt-2.5 mb-3',
+        inputWrapper: [
+          'shadow-none border-1 bg-white border border-secondary-200 px-5 py-4 gap-3',
+          'data-[hover=true]:bg-white',
+          'data-[active=true]:bg-white data-[active=true]:border-secondary',
+          'group-data-[focus=true]:border-secondary shadow-none',
+        ],
+        input: ['font-[500]'],
       },
     },
     color: {
@@ -120,70 +119,10 @@ export const BVInput = extendVariants(Input, {
   },
   compoundVariants: [
     {
-      labelPlacement: ['inside', 'outside'],
+      variant: 'bordered',
+      size: 'sm',
       class: {
-        label: ['group-data-[filled-within=true]:pointer-events-auto'],
-      },
-    },
-    // labelPlacement=[outside] & isMultiline
-    {
-      labelPlacement: 'outside',
-      isMultiline: false,
-      class: {
-        base: 'group relative justify-end',
-        label: [
-          'pb-0',
-          'z-20',
-          'top-1/2',
-          '-translate-y-1/2',
-          'group-data-[filled-within=true]:left-0',
-        ],
-      },
-    },
-    // outside & size
-    {
-      labelPlacement: 'outside',
-      size: 'md',
-      isMultiline: false,
-      class: {
-        label: [
-          'left-3',
-          'rtl:left-auto',
-          'rtl:right-3',
-          'text-small',
-          'group-data-[filled-within=true]:-translate-y-[calc(100%_+_theme(fontSize.small)/2_+_20px)]',
-        ],
-        base: 'data-[has-label=true]:mt-[calc(theme(fontSize.small)_+_10px)]',
-      },
-    },
-    {
-      labelPlacement: 'outside-left',
-      size: 'md',
-      class: {
-        label: 'group-data-[has-helper=true]:pt-3',
-      },
-    },
-    // labelPlacement=[outside, outside-left] & isMultiline
-    {
-      labelPlacement: ['outside', 'outside-left'],
-      isMultiline: true,
-      class: {
-        inputWrapper: 'py-2',
-      },
-    },
-    // isMultiline & labelPlacement="outside"
-    {
-      labelPlacement: 'outside',
-      isMultiline: true,
-      class: {
-        label: 'pb-1.5',
-      },
-    },
-    // text truncate labelPlacement=[inside,outside]
-    {
-      labelPlacement: ['inside', 'outside'],
-      class: {
-        label: ['pe-2', 'max-w-full', 'text-ellipsis', 'overflow-hidden'],
+        input: ['px-4 py-3.5'],
       },
     },
   ],
