@@ -27,10 +27,10 @@ export async function forgotPassword(formData) {
   }
 }
 
-export async function login(formData) {
+export async function login(email, password) {
   const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email,
+    password,
   }
 
   try {
@@ -42,23 +42,17 @@ export async function login(formData) {
       body: JSON.stringify(data),
     })
 
-    if (response.ok) {
-      window.location.href = '/private'
-    } else {
-      const errorUrl = `/error?message=${encodeURIComponent(result.error || 'An unknown error occurred.')}`
-      window.location.href = errorUrl
-    }
+    return response
   } catch (error) {
-    console.error('Request error:', error)
-    const errorUrl = `/error?message=${encodeURIComponent(error.message || 'An unknown error occurred.')}`
-    window.location.href = errorUrl
+    return error
   }
 }
 
-export async function signup(formData) {
+export async function signup(email, password, username) {
   const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email,
+    password,
+    username,
   }
 
   try {
@@ -70,15 +64,8 @@ export async function signup(formData) {
       body: JSON.stringify(data),
     })
 
-    if (response.ok) {
-      window.location.href = '/check-email'
-    } else {
-      const errorUrl = `/error?message=${encodeURIComponent(result.error || 'An unknown error occurred.')}`
-      window.location.href = errorUrl
-    }
+    return response
   } catch (error) {
-    console.error('Request error:', error)
-    const errorUrl = `/error?message=${encodeURIComponent(error.message || 'An unknown error occurred.')}`
-    window.location.href = errorUrl
+    return error
   }
 }
