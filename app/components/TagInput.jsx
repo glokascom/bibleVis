@@ -141,7 +141,7 @@ export default function TagInput({
               <button
                 aria-label={`delete ${tag}`}
                 onClick={() => removeTag(tag)}
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary leading-none text-white hover:bg-gray-800"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary leading-none text-white hover:opacity-hover"
               >
                 <svg
                   width="10"
@@ -154,8 +154,8 @@ export default function TagInput({
                     d="M2 2L5 5M8 8L5 5M5 5L8 2L2 8"
                     stroke="white"
                     stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </button>
@@ -179,7 +179,7 @@ export default function TagInput({
         </div>
       </div>
       {suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-medium border border-secondary bg-secondary-50 p-5 text-small font-[500] shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-medium border border-secondary bg-secondary-50 p-5 text-small font-[500] shadow-small">
           <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
             {suggestions.map((suggestion, index) => (
               <div

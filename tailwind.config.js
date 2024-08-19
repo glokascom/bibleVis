@@ -25,6 +25,7 @@ module.exports = {
           medium: '1rem',
           large: '1.125rem',
         },
+        boxShadow: { small: '0px 4px 24px rgba(0, 0, 0, 0.05)' },
       },
       themes: {
         light: {
