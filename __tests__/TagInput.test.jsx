@@ -50,7 +50,7 @@ describe('TagInput', () => {
     expect(screen.queryByText('NewTag')).not.toBeInTheDocument()
   })
 
-  test.skip('must delete the tag when clicking on the delete button', async () => {
+  test('must delete the tag when clicking on the delete button', async () => {
     render(<TagInput initialTags={initialTags} allowAddOnEnter={true} />)
 
     const inputElement = screen.getByTestId('tag-input')
@@ -60,7 +60,7 @@ describe('TagInput', () => {
 
     expect(screen.getByText('React')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByText('×'))
+    fireEvent.click(screen.getByLabelText('delete React'))
 
     await waitFor(() => {
       expect(screen.queryByText('React')).not.toBeInTheDocument()

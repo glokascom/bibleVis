@@ -118,6 +118,7 @@ export default function TagInput({
             >
               <span>{tag}</span>
               <button
+                aria-label={`delete ${tag}`}
                 onClick={() => removeTag(tag)}
                 className="flex h-6 w-6 items-center justify-center rounded-full bg-black leading-none text-white hover:bg-gray-800"
               >
