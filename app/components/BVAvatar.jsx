@@ -11,7 +11,10 @@ export const BVAvatar = extendVariants(Avatar, {
         base: 'w-12 h-12 text-tiny',
       },
       lg: {
-        base: 'w-15 h-15 text-small',
+        base: 'w-14 h-14 text-small',
+      },
+      xl: {
+        base: 'w-20 h-20 text-small',
       },
     },
   },
