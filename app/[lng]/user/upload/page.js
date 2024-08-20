@@ -1,3 +1,5 @@
+'use client'
+
 import TagInput from '@/app/components/TagInput'
 
 export default function Upload() {

@@ -75,11 +75,9 @@ export default function TagInput({
       const uniqueTags = [...new Set([...initialTags, ...newSelectedTags])]
       return uniqueTags
     })
-
-    setSuggestions(() =>
-      allTags.filter(
-        (suggestion) => !newSelectedTags.includes(suggestion) || suggestion === tag
-      )
+    // Обновляем suggestions, чтобы исключить удаленный тег
+    setSuggestions((prevSuggestions) =>
+      prevSuggestions.filter((suggestion) => suggestion !== tag)
     )
 
     scrollToBottom()
@@ -153,7 +151,7 @@ export default function TagInput({
                   <path
                     d="M2 2L5 5M8 8L5 5M5 5L8 2L2 8"
                     stroke="white"
-                    stroke-width="3"
+                    strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
