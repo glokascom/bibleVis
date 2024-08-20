@@ -8,6 +8,7 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontSize: { xlarge: '1.5rem' },
   },
   darkMode: 'class',
   plugins: [
