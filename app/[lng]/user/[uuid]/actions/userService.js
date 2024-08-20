@@ -89,3 +89,45 @@ export async function updateUsername(userId, newUsername) {
 
   return data
 }
+
+export async function updateAvatarFilePath(userId, newAvatarFilePath) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { error } = await getUser()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    throw new Error('User is not authenticated.')
+  }
+
+  const { data, error: updateError } = await supabaseService
+    .from('users')
+    .update({ avatar_file_path: newAvatarFilePath })
+    .eq('id', userId)
+
+  if (updateError) {
+    throw new Error('Error updating avatar file path: ' + updateError.message)
+  }
+
+  return data
+}
+
+export async function updateCoverFilePath(userId, newCoverFilePath) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { error } = await getUser()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    throw new Error('User is not authenticated.')
+  }
+
+  const { data, error: updateError } = await supabaseService
+    .from('users')
+    .update({ cover_file_path: newCoverFilePath })
+    .eq('id', userId)
+
+  if (updateError) {
+    throw new Error('Error updating cover file path: ' + updateError.message)
+  }
+
+  return data
+}
