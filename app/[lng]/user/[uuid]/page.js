@@ -4,10 +4,10 @@ import {
   getEmailFilePathById,
   getUsernameById,
 } from './actions/userService'
+import UserUpload from './components/UserUpload'
 
-export default async function UserDetail({ params }) {
+export default async function Page({ params }) {
   const { uuid } = params
-
   let username = null
   let email = null
   let error = null
@@ -42,6 +42,7 @@ export default async function UserDetail({ params }) {
       <p>
         <strong>CoverPath:</strong> {coverPath}
       </p>
+      <UserUpload uuid={uuid} />
     </div>
   )
 }
