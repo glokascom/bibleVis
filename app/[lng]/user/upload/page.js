@@ -25,7 +25,7 @@ export default function Upload() {
     <>
       <div className="text-red-500">User Upload Page</div>
       {error && (
-        <div className="mb-7 flex flex-row items-center justify-center rounded-lg bg-gradient-to-r from-[#EA4F5780] to-[#FF000080] px-5 py-6 text-[#F7F7F7] md:mb-5 md:gap-10 md:p-6">
+        <div className="mb-7 flex flex-row items-center justify-center rounded-lg bg-gradient-to-r from-red-450 to-red-550 px-5 py-6 text-gray-150 md:mb-5 md:gap-10 md:p-6">
           <div className="flex md:gap-4">
             <Image
               as={NextImage}
@@ -41,21 +41,21 @@ export default function Upload() {
             </div>
           </div>
           {errorImage !== null && (
-            <div className="relative h-[92px] w-[142px] grow overflow-hidden rounded-lg md:h-[115px] md:w-[179px] md:grow-0">
+            <div className="relative h-24 w-36 grow overflow-hidden rounded-lg md:h-28 md:w-44 md:grow-0">
               <div className="absolute inset-0 z-0">
                 <Image
                   as={NextImage}
                   src={errorImage}
                   alt="Background blur"
-                  width={179}
-                  height={115}
+                  width={176}
+                  height={112}
                   className="object-cover blur"
                 />
               </div>
               <div className="relative z-10">
                 <Image
-                  width={179}
-                  height={115}
+                  width={176}
+                  height={112}
                   as={NextImage}
                   src={errorImage}
                   alt="Error image"
@@ -66,7 +66,7 @@ export default function Upload() {
           )}
         </div>
       )}
-      <div className="h-[238px] md:h-[578px]">
+      <div className="h-60 md:h-[578px]">
         <ImageUploadDragDrop onImageChange={handleImageChange} />
       </div>
     </>
