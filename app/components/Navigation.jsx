@@ -259,8 +259,8 @@ function Navigation({ lng }) {
                     <DropdownItem key="license" href="/pages/license" showDivider>
                       License
                     </DropdownItem>
-                    <DropdownItem key="login" href="/login" className="text-primary">
-                      Log in
+                    <DropdownItem key="login" className="text-primary">
+                      <Link href="/login">Log in</Link>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
