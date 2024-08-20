@@ -9,7 +9,7 @@ export default function UsernamePage() {
   const username = decodeURIComponent(params['@username']).replace('@', '')
 
   return (
-    <div className="w-full">
+    <div className="mx-auto max-w-5xl">
       <h1 className="text-2xl font-bold text-gray-800">Profile Page for {username}</h1>
       <ProfileCard />
     </div>

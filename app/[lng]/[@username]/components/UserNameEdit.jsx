@@ -1,17 +1,28 @@
-import React from 'react'
+import { useState } from 'react'
 
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
 
 function UserNameEdit() {
+  const [username, setUsername] = useState('')
+
   return (
-    <div className="flex flex-col gap-7">
+    <form className="flex flex-col sm:gap-4">
       <div>
-        <div className="mb-1">Username</div>
-        <BVInput />
+        <label htmlFor="username" className="mb-2 text-medium font-medium">
+          *Username
+        </label>
+        <BVInput
+          variant="bordered"
+          size="sm"
+          isRequired
+          errorMessage={'Username already exists'}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </div>
       <BVButton>Save</BVButton>
-    </div>
+    </form>
   )
 }
 
