@@ -41,7 +41,7 @@ function Navigation({ lng }) {
       maxWidth="full"
       height="80px"
       classNames={{
-        wrapper: 'mx-auto w-full max-w-[1796px] px-6 md:px-12',
+        wrapper: 'mx-auto w-full max-w-[1806px] px-6 md:px-12',
       }}
     >
       <NavbarContent as="div">
