@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 import { Tab, Tabs } from '@nextui-org/tabs'
 
@@ -11,17 +11,14 @@ import PasswordRestore from './PasswordRestore'
 import Profile from './Profile'
 
 function ProfileCard() {
-  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const param = pathname.split('/').pop()
   return (
-    <div>
+    <>
       <div className="hidden flex-col sm:flex">
         <HeaderProfile
-          name={searchParams.get('tab') || 'profile'}
-          link={
-            searchParams.get('tab') === 'profile'
-              ? { name: 'View profile', url: '#' }
-              : null
-          }
+          name={param === 'edit' ? 'profile' : param}
+          link={param === 'profile' ? { name: 'View profile', url: '#' } : null}
         />
         <div className="flex flex-col">
           <Tabs
@@ -37,15 +34,15 @@ function ProfileCard() {
                 'absolute z-0 w-[1px] h-[80%] left-0 top-[10%] shadow-[1px_0_0px_0_rgba(0,0,0,0.05)] bg-foreground rounded-none',
               tabContent: 'hover:bg-secondary-100',
             }}
-            selectedKey={searchParams.get('tab') || 'profile'}
+            selectedKey={param === 'edit' ? 'profile' : param}
           >
-            <Tab key="profile" title="Profile" href="?tab=profile">
+            <Tab key="profile" title="Profile" href="/user/edit/profile">
               <Profile />
             </Tab>
-            <Tab key="email" title="Email" href="?tab=email">
+            <Tab key="email" title="Email" href="/user/edit/email">
               <Email />
             </Tab>
-            <Tab key="password" title="Password" href="?tab=password">
+            <Tab key="password" title="Password" href="/user/edit/password">
               <PasswordRestore />
             </Tab>
           </Tabs>
@@ -76,7 +73,7 @@ function ProfileCard() {
           </Tab>
         </Tabs>
       </div>
-    </div>
+    </>
   )
 }
 

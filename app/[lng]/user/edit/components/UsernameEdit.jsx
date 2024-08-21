@@ -1,9 +1,11 @@
+'use client'
+
 import { useState } from 'react'
 
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
 
-function UserNameEdit() {
+function UsernameEdit() {
   const [username, setUsername] = useState('')
 
   return (
@@ -26,4 +28,4 @@ function UserNameEdit() {
   )
 }
 
-export default UserNameEdit
+export default UsernameEdit
