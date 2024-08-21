@@ -1,5 +1,7 @@
 import { supabaseService } from '@/app/supabase/service'
 
+import { createClient } from '../supabase/server'
+
 const BUCKET_NAME = 'profile'
 
 async function uploadFile(userId, file, type) {
@@ -22,6 +24,21 @@ async function uploadFile(userId, file, type) {
 }
 
 async function deleteFile(userId, type, filename) {
+  try {
+    const supabase = createClient()
+
+    const { data, error } = await supabase.auth.getUser()
+    const currentUserId = data.user.id
+
+    if (userId !== currentUserId) {
+      throw new Error('Unauthorized action')
+    }
+
+    if (error) throw new Error(error.message)
+  } catch (err) {
+    throw new Error(err.message || 'User is not authenticated.')
+  }
+
   const filePath = `${userId}/${type}/${filename}`
 
   const { error } = await supabaseService.storage.from(BUCKET_NAME).remove([filePath])
@@ -46,6 +63,7 @@ async function updateAvatar(userId, newAvatarFile) {
   const oldAvatarPath = data[0]?.avatar_file_path
   if (oldAvatarPath) {
     const oldFilename = oldAvatarPath.split('/').pop()
+
     await deleteFile(userId, avatarType, oldFilename)
   }
 

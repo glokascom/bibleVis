@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { updateAvatar, updateCover } from '@/app/[lng]/user/[uuid]/actions/bucketService'
+import { updateAvatar, updateCover } from '@/app/actions/bucketService'
 
 export async function POST(req) {
   const formData = await req.formData()
