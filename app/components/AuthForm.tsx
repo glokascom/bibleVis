@@ -9,15 +9,10 @@ import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
 
 import { login, signup } from '../actions/actionsSupabase'
-import { ApiResponse } from '../types/api'
+import { ApiResponse, errorField } from '../types/api'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
-
-type errorField = {
-  field?: string
-  message: string
-}
 
 function AuthForm() {
   const [isVisible, setIsVisible] = useState(false)
