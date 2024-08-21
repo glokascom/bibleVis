@@ -21,7 +21,7 @@ export default async function Page({ params }) {
     return <div>Loading...</div>
   }
 
-  const { username, avatar_file_path, cover_file_path, email } = userInfo
+  const { username, avatar_file_exists, cover_file_exists, email } = userInfo
 
   return (
     <div>
@@ -33,10 +33,10 @@ export default async function Page({ params }) {
         <strong>Email:</strong> {email}
       </p>
       <p>
-        <strong>AvatarPath:</strong> {avatar_file_path}
+        <strong>Avatar Exists:</strong> {avatar_file_exists ? 'Yes' : 'No'}
       </p>
       <p>
-        <strong>CoverPath:</strong> {cover_file_path}
+        <strong>Cover Exists:</strong> {cover_file_exists ? 'Yes' : 'No'}
       </p>
       <UserUpload uuid={uuid} />
     </div>
