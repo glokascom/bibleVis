@@ -1,20 +1,25 @@
+import sharp from 'sharp'
+
 import { supabaseService } from '@/app/supabase/service'
 
 import { createClient } from '../supabase/server'
 
 const BUCKET_NAME = 'profile'
+const MAX_AVATAR_SIZE_MB = 2 // Максимальный размер аватара в мегабайтах
+const MAX_AVATAR_SIZE_BYTES = MAX_AVATAR_SIZE_MB * 1024 * 1024 // Конвертация мегабайт в байты
 
-async function uploadFile(userId, file, type) {
-  if (!userId || !file || !type) {
+async function uploadFile(userId, fileBuffer, filePath) {
+  if (!userId || !fileBuffer || !filePath) {
     throw new Error('Missing required parameters')
   }
 
-  const folderPath = `${userId}/${type}`
-  const filePath = `${folderPath}/${file.name}`
-
+  // Загрузка файла в бакет
   const { data, error } = await supabaseService.storage
     .from(BUCKET_NAME)
-    .upload(filePath, file)
+    .upload(filePath, fileBuffer, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    })
 
   if (error) {
     throw new Error('Failed to upload file: ' + error.message)
@@ -49,67 +54,111 @@ async function deleteFile(userId, type, filename) {
 
   return true
 }
+
+async function processAndUploadImage(userId, fileBuffer, type, sizes) {
+  if (!Buffer.isBuffer(fileBuffer)) {
+    throw new Error('Invalid input file format.')
+  }
+
+  const results = []
+
+  for (const { width, height, suffix } of sizes) {
+    try {
+      // Resize the image and convert it to a buffer
+      const buffer = await sharp(fileBuffer).resize(width, height).toBuffer()
+
+      // Form the upload path
+      const filePath = `${userId}/${type}/${suffix}.jpg`
+      const uploadedPath = await uploadFile(userId, buffer, filePath)
+
+      results.push({ suffix, path: uploadedPath })
+    } catch (error) {
+      console.error(`Error processing image ${suffix}:`, error)
+      throw error // Rethrow the error to abort the function on failure
+    }
+  }
+
+  return results
+}
+
+async function fileToBuffer(file) {
+  if (!file) {
+    throw new Error('File is missing')
+  }
+  return Buffer.from(await file.arrayBuffer())
+}
+
 async function updateAvatar(userId, newAvatarFile) {
   const avatarType = 'avatars'
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('avatar_file_path')
-    .eq('id', userId)
 
-  if (error) {
-    throw new Error('User not found: ' + error.message)
+  // Convert image to buffer
+  let fileBuffer
+  try {
+    fileBuffer = await fileToBuffer(newAvatarFile)
+
+    // Check avatar file size
+    if (fileBuffer.length > MAX_AVATAR_SIZE_BYTES) {
+      throw new Error(`Avatar size exceeds ${MAX_AVATAR_SIZE_MB} MB`)
+    }
+  } catch (bufferError) {
+    console.error('Error converting file to buffer:', bufferError.message)
+    throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  const oldAvatarPath = data[0]?.avatar_file_path
-  if (oldAvatarPath) {
-    const oldFilename = oldAvatarPath.split('/').pop()
-
-    await deleteFile(userId, avatarType, oldFilename)
+  try {
+    await processAndUploadImage(userId, fileBuffer, avatarType, [
+      { width: 100, height: 100, suffix: 'normal' },
+      { width: 35, height: 35, suffix: 'small' },
+    ])
+  } catch (processError) {
+    console.error('Error processing and uploading new avatar:', processError.message)
+    throw new Error('Failed to process and upload new avatar: ' + processError.message)
   }
 
-  const newAvatarPath = await uploadFile(userId, newAvatarFile, avatarType)
-
+  // Update avatar existence flag in the database
   const { error: updateError } = await supabaseService
     .from('users')
-    .update({ avatar_file_path: newAvatarPath })
+    .update({ avatar_file_exists: true })
     .eq('id', userId)
 
   if (updateError) {
-    throw new Error('Failed to update avatar URL: ' + updateError.message)
+    console.error('Error updating avatar existence flag:', updateError.message)
+    throw new Error('Failed to update avatar existence flag: ' + updateError.message)
   }
-
-  return newAvatarPath
 }
 
 async function updateCover(userId, newCoverFile) {
   const coverType = 'covers'
 
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('cover_file_path')
-    .eq('id', userId)
-  if (error) {
-    throw new Error('User not found: ' + error.message)
+  // Convert image to buffer
+  let fileBuffer
+  try {
+    fileBuffer = await fileToBuffer(newCoverFile)
+  } catch (bufferError) {
+    console.error('Error converting file to buffer:', bufferError.message)
+    throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  const oldCoverPath = data[0]?.cover_file_path
-  if (oldCoverPath) {
-    const oldFilename = oldCoverPath.split('/').pop()
-    await deleteFile(userId, coverType, oldFilename)
+  try {
+    await processAndUploadImage(userId, fileBuffer, coverType, [
+      { width: 1280, height: 400, suffix: 'original' },
+      { width: 320, height: 100, suffix: 'mobile' },
+    ])
+  } catch (processError) {
+    console.error('Error processing and uploading new cover:', processError.message)
+    throw new Error('Failed to process and upload new cover: ' + processError.message)
   }
 
-  const newCoverPath = await uploadFile(userId, newCoverFile, coverType)
-
+  // Update cover existence flag in the database
   const { error: updateError } = await supabaseService
     .from('users')
-    .update({ cover_file_path: newCoverPath })
+    .update({ cover_file_exists: true })
     .eq('id', userId)
 
   if (updateError) {
-    throw new Error('Failed to update cover URL: ' + updateError.message)
+    console.error('Error updating cover existence flag:', updateError.message)
+    throw new Error('Failed to update cover existence flag: ' + updateError.message)
   }
-
-  return newCoverPath
 }
 
 export { updateAvatar, updateCover, deleteFile }

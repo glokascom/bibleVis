@@ -8,19 +8,19 @@ export async function POST(req) {
   if (!uuid) {
     return NextResponse.json({ error: 'UUID is missing' }, { status: 400 })
   }
+
   try {
-    let avatarPath, coverPath
-
     if (formData.get('avatar')) {
-      avatarPath = await updateAvatar(uuid, formData.get('avatar'))
+      await updateAvatar(uuid, formData.get('avatar'))
     }
-
     if (formData.get('cover')) {
-      coverPath = await updateCover(uuid, formData.get('cover'))
+      await updateCover(uuid, formData.get('cover'))
     }
 
-    return NextResponse.json({ avatarPath, coverPath })
+    return NextResponse.json({ message: 'Success' }, { status: 200 })
   } catch (error) {
+    console.error(error)
+
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

@@ -4,7 +4,7 @@ import { supabaseService } from '@/app/supabase/service'
 export async function getUserInfoById(userId) {
   const { data, error } = await supabaseService
     .from('users')
-    .select('username, avatar_file_path, cover_file_path, email')
+    .select('username, avatar_file_exists, cover_file_exists, email')
     .eq('id', userId)
 
   if (error) {
