@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { createClient } from '@/app/supabase/server'
 import { ApiError, ApiResponse } from '@/app/types/api'
 
 import { jsonResponse } from '../../response'
 
-export async function POST(request: NextResponse): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const { email, password } = await request.json()
   const errors: { field?: string; message: string }[] = []
 
