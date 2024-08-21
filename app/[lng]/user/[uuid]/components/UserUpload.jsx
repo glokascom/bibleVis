@@ -27,11 +27,13 @@ export default function UserUpload({ uuid }) {
     setCoverError(null)
 
     const formData = new FormData()
+    formData.append('uuid', uuid)
+
     if (avatarFile) formData.append('avatar', avatarFile)
     if (coverFile) formData.append('cover', coverFile)
 
     try {
-      const response = await fetch(`/api/upload?uuid=${uuid}`, {
+      const response = await fetch(`/api/upload`, {
         method: 'POST',
         body: formData,
       })

@@ -3,15 +3,11 @@ import { NextResponse } from 'next/server'
 import { updateAvatar, updateCover } from '@/app/[lng]/user/[uuid]/actions/bucketService'
 
 export async function POST(req) {
-  const { searchParams } = new URL(req.url)
-  const uuid = searchParams.get('uuid')
-
+  const formData = await req.formData()
+  const uuid = formData.get('uuid')
   if (!uuid) {
     return NextResponse.json({ error: 'UUID is missing' }, { status: 400 })
   }
-
-  const formData = await req.formData()
-
   try {
     let avatarPath, coverPath
 
