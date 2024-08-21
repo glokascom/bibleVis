@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { ApiResponse } from '../types/api'
+import { ApiResponse } from '@/app/types/api'
 
 export function jsonResponse<T>(
   response: ApiResponse<T>,

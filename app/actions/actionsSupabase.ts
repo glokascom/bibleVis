@@ -1,6 +1,6 @@
 'use client'
 
-import { ApiError, ApiResponse } from '../types/api'
+import { ApiError, ApiResponse } from '@/app/types/api'
 
 export async function forgotPassword(formData: FormData) {
   const data = {

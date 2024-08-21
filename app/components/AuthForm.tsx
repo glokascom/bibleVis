@@ -8,14 +8,16 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
 
+import { ApiResponse, errorField } from '@/app/types/api'
+
 import { login, signup } from '../actions/actionsSupabase'
-import { ApiResponse, errorField } from '../types/api'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 
 function AuthForm() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isSignupVisible, setIsSignupVisible] = useState(false)
+  const [isLoginVisible, setIsLoginVisible] = useState(false)
   const [loginErrors, setLoginErrors] = useState<{
     message: string
     fields: errorField[]
@@ -39,7 +41,10 @@ function AuthForm() {
 
   const { push } = useRouter()
 
-  const toggleVisibility = () => setIsVisible(!isVisible)
+  const toggleSignupVisibility = () => {
+    setIsSignupVisible((prev) => !prev)
+  }
+  const toggleLoginVisibility = () => setIsLoginVisible((prev) => !prev)
 
   const handleSignup = async () => {
     const errors: { field?: string; message: string }[] = []
@@ -248,9 +253,9 @@ function AuthForm() {
                       <button
                         className="focus:outline-none"
                         type="button"
-                        onClick={toggleVisibility}
+                        onClick={toggleSignupVisibility}
                       >
-                        {isVisible ? (
+                        {isSignupVisible ? (
                           <Image
                             src={'/eye-open.svg'}
                             alt="eye open"
@@ -269,7 +274,7 @@ function AuthForm() {
                         )}
                       </button>
                     }
-                    type={isVisible ? 'text' : 'password'}
+                    type={isSignupVisible ? 'text' : 'password'}
                     isRequired
                     isInvalid={signupErrors?.fields.some(
                       (error) => error.field === 'password'
@@ -289,6 +294,9 @@ function AuthForm() {
                     </a>{' '}
                     apply.
                   </p>
+                  {signupErrors?.message && (
+                    <p className="my-4 text-small text-danger">{signupErrors.message}</p>
+                  )}
                   <BVButton fullWidth onClick={handleSignup}>
                     Join
                   </BVButton>
@@ -344,9 +352,9 @@ function AuthForm() {
                       <button
                         className="focus:outline-none"
                         type="button"
-                        onClick={toggleVisibility}
+                        onClick={toggleLoginVisibility}
                       >
-                        {isVisible ? (
+                        {isLoginVisible ? (
                           <Image
                             src={'/eye-open.svg'}
                             alt="eye open"
@@ -365,7 +373,7 @@ function AuthForm() {
                         )}
                       </button>
                     }
-                    type={isVisible ? 'text' : 'password'}
+                    type={isLoginVisible ? 'text' : 'password'}
                     isRequired
                     isInvalid={loginErrors?.fields.some(
                       (error) => error.field === 'password'
@@ -385,6 +393,9 @@ function AuthForm() {
                     </a>{' '}
                     apply.
                   </p>
+                  {loginErrors?.message && (
+                    <p className="my-4 text-small text-danger">{loginErrors.message}</p>
+                  )}
                   <BVButton fullWidth onClick={handleLogin}>
                     Join
                   </BVButton>
