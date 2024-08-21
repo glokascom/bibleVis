@@ -1,9 +1,9 @@
--- Use Postgres to create a bucket.
+-- Удалить существующий бакет, если он есть
+DELETE FROM storage.buckets WHERE id = 'profile';
 
-insert into storage.buckets
-  (id, name)
-values
-  ('profile', 'profile');
+-- Создать новый бакет
+INSERT INTO storage.buckets (id, name)
+VALUES ('profile', 'profile');
 
 
 -- Add unique constraint to email
