@@ -1,24 +1,14 @@
-import {
-  getAvatarFilePathById,
-  getCoverFilePathById,
-  getEmailFilePathById,
-  getUsernameById,
-} from './actions/userService'
+import { getUserInfoById } from './actions/userService'
 import UserUpload from './components/UserUpload'
 
 export default async function Page({ params }) {
   const { uuid } = params
-  let username = null
-  let email = null
+
+  let userInfo = null
   let error = null
-  let avatarPath = null
-  let coverPath = null
 
   try {
-    username = await getUsernameById(uuid)
-    email = await getEmailFilePathById(uuid)
-    avatarPath = getAvatarFilePathById(uuid)
-    coverPath = getCoverFilePathById(uuid)
+    userInfo = await getUserInfoById(uuid)
   } catch (e) {
     error = 'Error fetching user details: ' + e.message
   }
@@ -26,6 +16,12 @@ export default async function Page({ params }) {
   if (error) {
     return <div className="text-red-500">{error}</div>
   }
+
+  if (!userInfo) {
+    return <div>Loading...</div>
+  }
+
+  const { username, avatar_file_path, cover_file_path, email } = userInfo
 
   return (
     <div>
@@ -37,10 +33,10 @@ export default async function Page({ params }) {
         <strong>Email:</strong> {email}
       </p>
       <p>
-        <strong>AvatarPath:</strong> {avatarPath}
+        <strong>AvatarPath:</strong> {avatar_file_path}
       </p>
       <p>
-        <strong>CoverPath:</strong> {coverPath}
+        <strong>CoverPath:</strong> {cover_file_path}
       </p>
       <UserUpload uuid={uuid} />
     </div>

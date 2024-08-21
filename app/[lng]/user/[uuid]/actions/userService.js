@@ -1,54 +1,16 @@
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-export async function getUsernameById(userId) {
+export async function getUserInfoById(userId) {
   const { data, error } = await supabaseService
     .from('users')
-    .select('username')
+    .select('username, avatar_file_path, cover_file_path, email')
     .eq('id', userId)
 
   if (error) {
     throw new Error('Error fetching username: ' + error.message)
   }
-  return data[0]?.username || null
-}
-
-export async function getAvatarFilePathById(userId) {
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('avatar_file_path')
-    .eq('id', userId)
-
-  if (error) {
-    throw new Error('Error fetching avatar file path: ' + error.message)
-  }
-
-  return data[0]?.avatar_file_path || null
-}
-
-export async function getCoverFilePathById(userId) {
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('cover_file_path')
-    .eq('id', userId)
-
-  if (error) {
-    throw new Error('Error fetching cover file path: ' + error.message)
-  }
-
-  return data[0]?.cover_file_path || null
-}
-
-export async function getEmailFilePathById(userId) {
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('email ')
-    .eq('id', userId)
-  if (error) {
-    throw new Error('Error fetching email: ' + error.message)
-  }
-
-  return data[0]?.email || null
+  return data[0] || null
 }
 
 export async function updateUsername(userId, newUsername) {
@@ -97,11 +59,10 @@ export async function updateAvatarFilePath(userId, newAvatarFilePath) {
 
 export async function updateCoverFilePath(userId, newCoverFilePath) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { error } = await getUser()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
-    throw new Error('User is not authenticated.')
+    if (error) throw new Error(error.message)
+  } catch (err) {
+    throw new Error(err.message || 'User is not authenticated.')
   }
 
   const { data, error: updateError } = await supabaseService
