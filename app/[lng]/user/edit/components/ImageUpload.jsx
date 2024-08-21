@@ -7,6 +7,10 @@ import Image from 'next/image'
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
+function generateUniqueId(prefix = 'id') {
+  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`
+}
+
 function ImageUpload({
   id,
   label,
@@ -17,6 +21,7 @@ function ImageUpload({
   previewSize = { width: 100, height: 100 },
   isAvatar = false,
 }) {
+  const inputId = id || generateUniqueId('upload')
   const [error, setError] = useState(null)
   const [preview, setPreview] = useState(defaultSrc || null)
 
@@ -50,17 +55,18 @@ function ImageUpload({
         return
       }
 
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        if (!reader.result) {
-          setError('Something went wrong')
-          return
-        }
-        setPreview(reader.result)
-      }
-      URL.revokeObjectURL(objectUrl)
+      setPreview(objectUrl)
+    }
 
-      reader.readAsDataURL(file)
+    img.onerror = () => {
+      setError('Failed to load image.')
+      URL.revokeObjectURL(objectUrl)
+    }
+
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
     }
   }
 
@@ -82,13 +88,14 @@ function ImageUpload({
             alt="preview"
             width={previewSize.width}
             height={previewSize.height}
+            className="rounded-medium object-contain"
           />
         )}
-        <label htmlFor={id}>
+        <label htmlFor={inputId}>
           <BVButton as="span">{buttonLabel}</BVButton>
         </label>
         <input
-          id={id}
+          id={inputId}
           type="file"
           onChange={handleFileChange}
           accept="image/*"
