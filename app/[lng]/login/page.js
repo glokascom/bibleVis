@@ -1,5 +1,5 @@
-import LoginForm from './components/LoginForm'
+import AuthForm from '@/app/components/AuthForm'
 
-export default async function LoginPage() {
-  return <LoginForm />
+export default function LoginPage() {
+  return <AuthForm />
 }

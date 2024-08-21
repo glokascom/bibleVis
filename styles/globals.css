@@ -2,32 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid hsl(var(--nextui-secondary-200)); /* Цвет и стиль линии */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* Стиль всей полосы прокрутки */
+::-webkit-scrollbar {
+  width: 6px; /* Ширина скроллбара */
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* Стиль ползунка */
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--nextui-secondary-200)); /* Цвет ползунка */
+  border-radius: 3px; /* Скругление углов */
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Стиль фона скроллбара */
+::-webkit-scrollbar-track {
+  background-color: hsl(var(--nextui-secondary-100)); /* Цвет фона */
+  border-radius: 3px; /* Скругление углов */
+}
+
+/* Стиль при наведении мыши на ползунок */
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--nextui-secondary-400)); /* Цвет ползунка при наведении */
+}
+
+.scroll-gutter {
+  scrollbar-gutter: stable;
 }

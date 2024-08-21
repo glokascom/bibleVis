@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 
-import { getUser } from './actions/getUser'
+import { getUser } from '../../actions/getUser'
 import UserGreeting from './components/UserGreeting'
+
+export const dynamic = 'force-dynamic'
 
 export default async function PrivatePage() {
   let user
@@ -9,6 +11,10 @@ export default async function PrivatePage() {
 
   try {
     user = await getUser()
+    if (!user) {
+      redirect('/login')
+      return null
+    }
   } catch (error) {
     console.error(error)
     errorMessage = error.message
