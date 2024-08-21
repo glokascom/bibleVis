@@ -50,9 +50,9 @@ export default function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-800">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg"
+        className="flex flex-col items-center space-y-4 rounded-medium bg-white p-8 shadow-lg"
       >
-        <h2 className="text-2xl font-bold text-gray-800">Log in or register</h2>
+        <h2 className="text-xlarge font-bold text-gray-800">Log in or register</h2>
         <InputField id="email" name="email" type="email" required label="Email" />
         <InputField
           id="password"
@@ -91,7 +91,7 @@ export default function LoginForm() {
           </SocialAuthButton>
           <Link
             href="/forgot-password"
-            className="hover: hover:tex cursor-pointer rounded-lg p-4 text-gray-600 hover:text-gray-800"
+            className="hover: hover:tex cursor-pointer rounded-medium p-4 text-gray-600 hover:text-gray-800"
           >
             <span className="text-lg font-semibold">Забыли пароль?</span>
           </Link>

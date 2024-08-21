@@ -11,15 +11,18 @@ function ImageUploadDragDrop({ onImageChange }) {
   const [imageSrc, setImageSrc] = useState(null)
   const fileInputRef = useRef(null)
 
-  const handleDragEnter = (e) => {
+  function preventEventPropagation(e) {
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  const handleDragEnter = (e) => {
+    preventEventPropagation(e)
     setIsOverDropZone(true)
   }
 
   const handleDragLeave = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    preventEventPropagation(e)
     const rect = e.currentTarget.getBoundingClientRect()
     if (
       e.clientY < rect.top ||
@@ -32,14 +35,12 @@ function ImageUploadDragDrop({ onImageChange }) {
   }
 
   const handleDragOver = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    preventEventPropagation(e)
     setIsOverDropZone(true)
   }
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    preventEventPropagation(e)
     setIsOverDropZone(false)
 
     const files = e.dataTransfer.files
@@ -91,6 +92,10 @@ function ImageUploadDragDrop({ onImageChange }) {
       setImageSrc(null)
     }
     img.src = URL.createObjectURL(file)
+
+    return () => {
+      URL.revokeObjectURL(img.src)
+    }
   }
 
   const openFileDialog = () => {
@@ -99,13 +104,13 @@ function ImageUploadDragDrop({ onImageChange }) {
 
   return (
     <div
-      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-9'} h-full rounded-lg shadow-lg`}
+      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-9'} h-full rounded-medium shadow-lg`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex h-full flex-col items-center justify-center rounded-lg bg-gradient-to-r from-teal-750 to-teal-650 text-center">
+      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-secondary-750 to-primary-750 text-center">
         {!imageSrc && (
           <>
             {isOverDropZone ? (
@@ -119,11 +124,11 @@ function ImageUploadDragDrop({ onImageChange }) {
                   alt="white star"
                   radius="none"
                 />
-                <p className="mt-16 text-5xl font-medium text-white">Drop</p>
+                <p className="mt-16 text-mega font-medium text-white">Drop</p>
               </>
             ) : (
               <>
-                <p className="mb-5 text-2xl font-medium md:hidden">Add a file</p>
+                <p className="mb-5 text-xlarge font-medium md:hidden">Add a file</p>
 
                 <div className="hidden flex-col items-center justify-center font-medium md:flex">
                   <Image
@@ -135,8 +140,8 @@ function ImageUploadDragDrop({ onImageChange }) {
                     alt="Star"
                     radius="none"
                   />
-                  <p className="mt-5 text-5xl">Drag and Drop</p>
-                  <p className="my-7 text-2xl">or</p>
+                  <p className="mt-5 text-mega">Drag and Drop</p>
+                  <p className="my-7 text-xlarge">or</p>
                 </div>
 
                 <BVButton onClick={openFileDialog}>Browse file</BVButton>

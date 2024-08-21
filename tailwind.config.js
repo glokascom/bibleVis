@@ -7,20 +7,9 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {
-      colors: {
-        red: {
-          450: '#EA4F5780',
-          550: '#FF000080',
-        },
-        gray: {
-          150: '#F7F7F7',
-        },
-        teal: {
-          650: '#01AB6C4D',
-          750: '#73ABC24D',
-        },
-      },
+    fontSize: {
+      mega: '3rem',
+      xlarge: '1.5rem',
     },
   },
   darkMode: 'class',
@@ -54,6 +43,7 @@ module.exports = {
               '500': '#01ab6c',
               '600': '#009963',
               '700': '#006e4a',
+              '750': '#01AB6C4D',
               '800': '#00593c',
               '900': '#004731',
               '950': '#00291e',
@@ -69,6 +59,7 @@ module.exports = {
               '500': '#6c6d6e',
               '600': '#5c5d5e',
               '700': '#4e4f50',
+              '750': '#73ABC24D',
               '800': '#444446',
               '900': '#3c3c3d',
               '950': '#2d2d2e',

@@ -8,7 +8,7 @@ export default function UsernamePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800">Profile Page for {username}</h1>
+      <h1 className="text-xlarge font-bold text-gray-800">Profile Page for {username}</h1>
     </div>
   )
 }
