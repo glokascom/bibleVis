@@ -104,13 +104,13 @@ function ImageUploadDragDrop({ onImageChange }) {
 
   return (
     <div
-      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-9'} h-full rounded-medium shadow-lg`}
+      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-9'} h-full rounded-medium shadow-small`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-secondary-750 to-primary-750 text-center">
+      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-secondary-500/30 to-primary-500/30 text-center">
         {!imageSrc && (
           <>
             {isOverDropZone ? (
