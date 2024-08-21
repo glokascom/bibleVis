@@ -24,7 +24,10 @@ ALTER TABLE "public"."users"
     ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ADD COLUMN IF NOT EXISTS "avatar_file_path" VARCHAR(255) DEFAULT NULL,
     ADD COLUMN IF NOT EXISTS "cover_file_path" VARCHAR(255) DEFAULT NULL,
-    ADD COLUMN IF NOT EXISTS "total_folowers" INT DEFAULT 0;
+    ADD COLUMN IF NOT EXISTS "total_folowers" INT DEFAULT 0,
+    ADD CONSTRAINT users_email_key UNIQUE (email);    
+;
+
 
 -- Create the images table
 CREATE TABLE IF NOT EXISTS "public"."images" (
