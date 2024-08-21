@@ -53,29 +53,14 @@ export async function getEmailFilePathById(userId) {
 
 export async function updateUsername(userId, newUsername) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { error } = await getUser()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
-    throw new Error('User is not authenticated.')
+    if (error) throw new Error(error.message)
+  } catch (err) {
+    throw new Error(err.message || 'User is not authenticated.')
   }
 
   if (!newUsername) {
     throw new Error('New username cannot be empty.')
-  }
-
-  // Проверяем, существует ли уже новый username в базе данных
-  const { data: existingUsers, error: checkError } = await supabaseService
-    .from('users')
-    .select('id')
-    .eq('username', newUsername)
-
-  if (checkError) {
-    throw new Error('Error checking username existence: ' + checkError.message)
-  }
-
-  if (Array.isArray(existingUsers) && existingUsers.length > 0) {
-    throw new Error('Username is already taken.')
   }
 
   const { data, error: updateError } = await supabaseService
@@ -92,11 +77,10 @@ export async function updateUsername(userId, newUsername) {
 
 export async function updateAvatarFilePath(userId, newAvatarFilePath) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { error } = await getUser()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
-    throw new Error('User is not authenticated.')
+    if (error) throw new Error(error.message)
+  } catch (err) {
+    throw new Error(err.message || 'User is not authenticated.')
   }
 
   const { data, error: updateError } = await supabaseService

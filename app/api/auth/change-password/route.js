@@ -5,18 +5,21 @@ export async function POST(request) {
   const { email, oldPassword, newPassword } = await request.json()
 
   try {
-    await getUser()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { error } = await getUser()
+    if (error) throw new Error(error.message)
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'User is not authenticated.' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify(error.message || { error: 'User is not authenticated.' }),
+      {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   }
 
   if (!email || !oldPassword || !newPassword) {
     return new Response(
-      JSON.stringify({ error: 'Email, oldPassword, and newPassword are required.' }),
+      JSON.stringify({ error: 'Email, old password, and new password are required.' }),
       {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
