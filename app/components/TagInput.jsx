@@ -76,8 +76,10 @@ export default function TagInput({
       return uniqueTags
     })
 
-    // Обновляем suggestions сразу после удаления тега
-    setSuggestions(allTags.filter((suggestion) => !newSelectedTags.includes(suggestion)))
+    // Обновляем suggestions, чтобы исключить удаленный тег
+    setSuggestions((prevSuggestions) =>
+      prevSuggestions.filter((suggestion) => suggestion !== tag)
+    )
 
     scrollToBottom()
     inputRef.current?.focus()
