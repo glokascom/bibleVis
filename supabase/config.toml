@@ -142,7 +142,7 @@ enabled = true
 client_id ="env(GOOGLE_CLIENT_ID)"
 secret ="env(GOOGLE_SECRET)"
 # Overrides the default auth redirectUrl.
-redirect_uri = "http://127.0.0.1:3000/auth/v1/callback"
+redirect_uri = "http://127.0.0.1:55521/auth/v1/callback"
 # Overrides the default auth provider URL. Used to support self-hosted gitlab, single-tenant Azure,
 # or any other third-party OIDC providers.
 url = "https://www.googleapis.com/oauth2/v1/certs"

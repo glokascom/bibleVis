@@ -13,6 +13,7 @@ export async function GET(request) {
       redirectTo: `${origin}/api/auth/google/callback`,
       queryParams: {
         access_type: 'offline',
+        prompt: 'consent',
       },
     },
   })
