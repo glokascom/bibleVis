@@ -20,9 +20,9 @@ function Profile() {
             id="cover-upload"
             label="Cover image"
             buttonLabel="Upload new cover image"
-            requiredWidth={1282}
+            requiredWidth={1280}
             requiredHeight={400}
-            previewSize={{ width: 328, height: 109 }}
+            previewSize={{ width: 384, height: 120 }}
             defaultSrc="/cover.svg"
           />
         </div>
@@ -31,19 +31,19 @@ function Profile() {
         <UsernameEdit />
         <div className="flex flex-grow flex-col gap-5">
           <ImageUpload
-            id="avatar-upload"
+            id="avatar-mobile-upload"
             label="Avatar"
             buttonLabel="Upload new avatar"
             isAvatar={true}
             defaultSrc={null}
           />
           <ImageUpload
-            id="cover-upload"
+            id="cover-mobile-upload"
             label="Cover image"
             buttonLabel="Upload new cover image"
-            requiredWidth={851}
-            requiredHeight={735}
-            previewSize={{ width: 328, height: 109 }}
+            requiredWidth={1280}
+            requiredHeight={400}
+            previewSize={{ width: 384, height: 120 }}
             defaultSrc="/cover.svg"
           />
         </div>

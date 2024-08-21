@@ -36,17 +36,17 @@ function ImageUpload({
     }
 
     const img = new window.Image()
-    img.src = URL.createObjectURL(file)
+    const objectUrl = URL.createObjectURL(file)
+    img.src = objectUrl
 
     img.onload = () => {
-      console.log(img.width !== requiredWidth || img.height !== requiredHeight)
-
       if (
         requiredWidth &&
         requiredHeight &&
         (img.width !== requiredWidth || img.height !== requiredHeight)
       ) {
         setError(`Image must be ${requiredWidth}x${requiredHeight} pixels.`)
+        URL.revokeObjectURL(objectUrl)
         return
       }
 
@@ -58,6 +58,7 @@ function ImageUpload({
         }
         setPreview(reader.result)
       }
+      URL.revokeObjectURL(objectUrl)
 
       reader.readAsDataURL(file)
     }
@@ -72,7 +73,7 @@ function ImageUpload({
   return (
     <div>
       <div className="mb-2.5 font-bold">{label}</div>
-      <div className="flex flex-col items-center gap-5 rounded-small bg-secondary-100 px-4 py-7">
+      <div className="flex flex-col items-center gap-5 rounded-small bg-secondary-50 px-4 py-7">
         {isAvatar ? (
           <BVAvatar size="xxl" src={preview} />
         ) : (

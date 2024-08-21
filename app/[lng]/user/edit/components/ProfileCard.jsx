@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 
 import { Tab, Tabs } from '@nextui-org/tabs'
 
@@ -11,17 +11,18 @@ import PasswordRestore from './PasswordRestore'
 import Profile from './Profile'
 
 function ProfileCard() {
-  const pathname = usePathname()
-  const param = pathname.split('/').pop()
+  const [tabKey, setTabKey] = useState('profile')
   return (
     <>
       <div className="hidden flex-col sm:flex">
         <HeaderProfile
-          name={param === 'edit' ? 'profile' : param}
-          link={param === 'profile' ? { name: 'View profile', url: '#' } : null}
+          username="azedval"
+          title={tabKey}
+          link={tabKey === 'profile' ? { name: 'View profile', url: '#' } : null}
         />
         <div className="flex flex-col">
           <Tabs
+            onSelectionChange={(key) => setTabKey(key)}
             aria-label="Options"
             isVertical={true}
             variant="underlined"
@@ -29,20 +30,19 @@ function ProfileCard() {
               panel: 'w-2/3 p-0',
               base: 'w-1/3 mt-7',
               tabList: 'w-full pr-2.5 border-l-1 border-secondary-200 pl-0 font-bold',
-              tab: 'justify-start grow hover:bg-secondary-100 hover:opacity-100 text-medium data-[hover-unselected=true]:opacity-enabled',
+              tab: 'justify-start grow hover:bg-secondary-50 hover:opacity-100 text-medium data-[hover-unselected=true]:opacity-enabled',
               cursor:
                 'absolute z-0 w-[1px] h-[80%] left-0 top-[10%] shadow-[1px_0_0px_0_rgba(0,0,0,0.05)] bg-foreground rounded-none',
-              tabContent: 'hover:bg-secondary-100',
+              tabContent: 'hover:bg-secondary-50',
             }}
-            selectedKey={param === 'edit' ? 'profile' : param}
           >
-            <Tab key="profile" title="Profile" href="/user/edit/profile">
+            <Tab key="profile" title="Profile">
               <Profile />
             </Tab>
-            <Tab key="email" title="Email" href="/user/edit/email">
+            <Tab key="email" title="Email">
               <Email />
             </Tab>
-            <Tab key="password" title="Password" href="/user/edit/password">
+            <Tab key="password" title="Password">
               <PasswordRestore />
             </Tab>
           </Tabs>

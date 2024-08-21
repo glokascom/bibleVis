@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import Image from 'next/image'
+
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
 
@@ -9,6 +11,8 @@ function Password() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [isVisible, setIsVisible] = useState(false)
+  const toggleVisibility = () => setIsVisible(!isVisible)
 
   return (
     <form className="flex max-w-96 flex-col gap-4">
@@ -21,7 +25,33 @@ function Password() {
           size="sm"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
-          type={'password'}
+          endContent={
+            <button
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+              aria-label="toggle password visibility"
+            >
+              {isVisible ? (
+                <Image
+                  src={'/eye-open.svg'}
+                  alt="eye open"
+                  width={18}
+                  height={18}
+                  className="mr-4 h-[38px] w-[38px] p-2"
+                />
+              ) : (
+                <Image
+                  src={'/eye-close.svg'}
+                  alt="eye close"
+                  width={16}
+                  height={16}
+                  className="mr-4 h-9 w-9 p-2"
+                />
+              )}
+            </button>
+          }
+          type={isVisible ? 'text' : 'password'}
           isRequired
         />
       </div>
