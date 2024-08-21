@@ -20,8 +20,8 @@ function Profile() {
             id="cover-upload"
             label="Cover image"
             buttonLabel="Upload new cover image"
-            requiredWidth={851}
-            requiredHeight={735}
+            requiredWidth={1282}
+            requiredHeight={400}
             previewSize={{ width: 328, height: 109 }}
             defaultSrc="/cover.svg"
           />
