@@ -25,7 +25,7 @@ const Page: React.FC<PageProps> = async ({ params: { lng } }) => {
         href="/login"
         className="cursor-pointer rounded-lg bg-yellow-500 p-4 text-white hover:bg-yellow-600"
       >
-        <span className="text-lg font-semibold">{t('login')} </span>
+        <span className="text-lg font-semibold">{t('login')}</span>
       </Link>
       <HeroBlock />
     </div>
