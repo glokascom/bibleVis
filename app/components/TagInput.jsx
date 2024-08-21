@@ -30,6 +30,10 @@ export default function TagInput({
   const handleInputChange = (e) => {
     const value = e.target.value
     setInputValue(value)
+    updateSuggestions(value, selectedTags)
+  }
+
+  const updateSuggestions = (value, selectedTags) => {
     if (value) {
       setSuggestions(
         allTags
@@ -41,7 +45,7 @@ export default function TagInput({
           .slice(0, suggestionCount === undefined ? allTags.length : suggestionCount)
       )
     } else {
-      setSuggestions([])
+      setSuggestions(allTags.filter((tag) => !selectedTags.includes(tag)))
     }
   }
 
@@ -76,10 +80,8 @@ export default function TagInput({
       return uniqueTags
     })
 
-    // Обновляем suggestions, чтобы исключить удаленный тег
-    setSuggestions((prevSuggestions) =>
-      prevSuggestions.filter((suggestion) => suggestion !== tag)
-    )
+    // Обновляем suggestions после удаления тега
+    updateSuggestions(inputValue, newSelectedTags)
 
     scrollToBottom()
     inputRef.current?.focus()
@@ -100,9 +102,7 @@ export default function TagInput({
 
   const handleContainerClick = () => {
     inputRef.current?.focus()
-    if (!allowAddOnEnter && !inputValue) {
-      setSuggestions(allTags.filter((tag) => !selectedTags.includes(tag)))
-    }
+    updateSuggestions(inputValue, selectedTags)
   }
   useEffect(() => {
     const handleClickOutside = (event) => {
