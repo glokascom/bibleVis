@@ -142,7 +142,7 @@ async function updateCover(userId, newCoverFile) {
   try {
     await processAndUploadImage(userId, fileBuffer, coverType, [
       { width: 1280, height: 400, suffix: 'original' },
-      { width: 320, height: 100, suffix: 'mobile' },
+      { width: 384, height: 120, suffix: 'mobile' },
     ])
   } catch (processError) {
     console.error('Error processing and uploading new cover:', processError.message)
