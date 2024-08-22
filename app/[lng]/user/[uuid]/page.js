@@ -1,20 +1,44 @@
-import { getUser } from '@/app/actions/getUser'
+import UserUpload from '../../[@username]/components/UserUpload'
+import { getUserInfoById } from './actions/userService'
 
-import Cover from './components/Cover'
-import UserInfo from './components/UserInfo'
+export default async function Page({ params }) {
+  const { uuid } = params
 
-export default async function UserDetail({ params }) {
-  const auth = await getUser()
-  const isCurrentUser = params.uuid === auth.id
+  let userInfo = null
+  let error = null
+
+  try {
+    userInfo = await getUserInfoById(uuid)
+  } catch (e) {
+    error = 'Error fetching user details: ' + e.message
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
+
+  if (!userInfo) {
+    return <div>Loading...</div>
+  }
+
+  const { username, avatar_file_exists, cover_file_exists, email } = userInfo
 
   return (
-    <div className="mt-2.5 flex flex-col items-center gap-7 md:mt-9 md:flex-row md:gap-1">
-      <div className="max-w-7xl">
-        <Cover isCurrentUser={isCurrentUser} />
-      </div>
-      <div className="w-full md:w-auto md:grow lg:h-full">
-        <UserInfo isCurrentUser={isCurrentUser} />
-      </div>
+    <div>
+      <h1>User Details</h1>
+      <p>
+        <strong>Username:</strong> {username}
+      </p>
+      <p>
+        <strong>Email:</strong> {email}
+      </p>
+      <p>
+        <strong>Avatar Exists:</strong> {avatar_file_exists ? 'Yes' : 'No'}
+      </p>
+      <p>
+        <strong>Cover Exists:</strong> {cover_file_exists ? 'Yes' : 'No'}
+      </p>
+      <UserUpload uuid={uuid} />
     </div>
   )
 }
