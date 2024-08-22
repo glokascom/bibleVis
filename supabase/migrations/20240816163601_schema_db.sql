@@ -26,6 +26,7 @@ ALTER TABLE "public"."users"
     ADD COLUMN IF NOT EXISTS "cover_file_path" VARCHAR(255) DEFAULT NULL,
     ADD COLUMN IF NOT EXISTS "total_folowers" INT DEFAULT 0;
 
+
 -- Create the images table
 CREATE TABLE IF NOT EXISTS "public"."images" (
     "id" SERIAL PRIMARY KEY,
