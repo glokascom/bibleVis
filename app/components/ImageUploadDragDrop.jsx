@@ -110,7 +110,7 @@ function ImageUploadDragDrop({ onImageChange }) {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-secondary-500/30 to-primary-500/30 text-center">
+      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 text-center">
         {!imageSrc && (
           <>
             {isOverDropZone ? (
