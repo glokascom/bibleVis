@@ -1,3 +1,9 @@
+import ProfileCard from './components/ProfileCard'
+
 export default function EditUser() {
-  return <div className="text-red-500">Edit User Page</div>
+  return (
+    <div className="mx-auto mt-5 w-full max-w-5xl">
+      <ProfileCard />
+    </div>
+  )
 }

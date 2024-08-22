@@ -8,14 +8,30 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
 
+import { ApiResponse, errorField } from '@/app/types/api'
+
 import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 
 function AuthForm() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [error, setError] = useState(false)
+  const [isSignupVisible, setIsSignupVisible] = useState(false)
+  const [isLoginVisible, setIsLoginVisible] = useState(false)
+  const [loginErrors, setLoginErrors] = useState<{
+    message: string
+    fields: errorField[]
+  }>({
+    message: '',
+    fields: [],
+  })
+  const [signupErrors, setSignupErrors] = useState<{
+    message: string
+    fields: errorField[]
+  }>({
+    message: '',
+    fields: [],
+  })
   const [emailLogin, setEmailLogin] = useState('')
   const [passwordLogin, setPasswordLogin] = useState('')
 
@@ -25,24 +41,130 @@ function AuthForm() {
 
   const { push } = useRouter()
 
-  const toggleVisibility = () => setIsVisible(!isVisible)
+  const toggleSignupVisibility = () => {
+    setIsSignupVisible((prev) => !prev)
+  }
+  const toggleLoginVisibility = () => setIsLoginVisible((prev) => !prev)
 
-  const handleSignup = () => {
-    signup(emailSignup, passwordSignup, usernameSignup)
-      .then(() => push('/'))
-      .catch(() => setError(true))
+  const handleSignup = async () => {
+    const errors: { field?: string; message: string }[] = []
+    if (!emailSignup) {
+      errors.push({ field: 'email', message: 'Email is required' })
+    }
+
+    if (!passwordSignup) {
+      errors.push({ field: 'password', message: 'Password is required' })
+    }
+
+    if (!usernameSignup) {
+      errors.push({ field: 'username', message: 'Username is required' })
+    }
+
+    if (errors.length > 0) {
+      setSignupErrors({
+        message: 'Validation errors occurred',
+        fields: errors,
+      })
+      return
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailSignup)) {
+      errors.push({ field: 'email', message: 'Unsupported email format' })
+    }
+
+    // Валидация username
+    if (!/^[a-zA-Z0-9_]+$/.test(usernameSignup)) {
+      errors.push({
+        field: 'username',
+        message:
+          'Only letters A-Z, a-z, numbers or underscore please (no spaces or special characters).',
+      })
+    }
+
+    if (usernameSignup.length < 5 || usernameSignup.length > 20) {
+      errors.push({
+        field: 'username',
+        message: 'Username must be between 5 and 20 characters long.',
+      })
+    }
+
+    // Валидация пароля
+    if (passwordSignup.length < 6) {
+      errors.push({
+        field: 'password',
+        message: 'The password must be at least 6 characters',
+      })
+    }
+
+    let validGroups = 0
+    if (/\d/.test(passwordSignup)) validGroups++
+    if (/[a-z]/.test(passwordSignup)) validGroups++
+    if (/[A-Z]/.test(passwordSignup)) validGroups++
+    if (/[^\w]/.test(passwordSignup)) validGroups++
+
+    if (validGroups < 2) {
+      errors.push({
+        field: 'password',
+        message:
+          'The password must contain at least 2 groups: digits, lowercase letters, uppercase letters, special characters',
+      })
+    }
+
+    if (errors.length > 0) {
+      setSignupErrors({
+        message: 'Validation errors occurred',
+        fields: errors,
+      })
+      return
+    }
+    const response: ApiResponse<unknown> = await signup(
+      emailSignup,
+      passwordSignup,
+      usernameSignup
+    )
+
+    if (response.status === 'error') {
+      setSignupErrors({
+        message: response.message,
+        fields: response?.errors || [],
+      })
+    } else {
+      push('/')
+    }
   }
 
-  const handleLogin = () => {
-    login(emailLogin, passwordLogin)
-      .then(() => push('/'))
-      .catch(() => setError(true))
+  const handleLogin = async () => {
+    const errors: { field?: string; message: string }[] = []
+    if (!emailLogin) {
+      errors.push({ field: 'email', message: 'Email is required' })
+    }
+
+    if (!passwordLogin) {
+      errors.push({ field: 'password', message: 'Password is required' })
+    }
+    if (errors.length > 0) {
+      setLoginErrors({
+        message: 'Validation errors occurred',
+        fields: errors,
+      })
+      return
+    }
+    const response: ApiResponse<unknown> = await login(emailLogin, passwordLogin)
+
+    if (response.status === 'error') {
+      setLoginErrors({
+        message: response.message,
+        fields: response?.errors || [],
+      })
+    } else {
+      push('/')
+    }
   }
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 top-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-md">
         <div className="z-50 flex h-[90vh] w-[90vw] flex-row overflow-hidden rounded-medium">
-          <div className="flex h-full w-full shrink-0 flex-col items-center bg-background px-5 pb-0 pt-5 md:w-[480px]">
+          <div className="flex h-full w-full shrink-0 flex-col items-center bg-background px-5 pb-0 pt-5 md:w-[400px] lg:w-[480px]">
             <Image
               className="mb-10"
               src="/biblevis-logo.svg"
@@ -93,10 +215,14 @@ function AuthForm() {
                     variant="bordered"
                     size="sm"
                     isRequired
-                    errorMessage={'Username already exists'}
                     value={usernameSignup}
                     onChange={(e) => setUsernameSignup(e.target.value)}
-                    isInvalid={error}
+                    isInvalid={signupErrors?.fields.some(
+                      (error) => error.field === 'username'
+                    )}
+                    errorMessage={signupErrors?.fields
+                      .filter((error) => error.field === 'username')
+                      .map((error) => <p key={error.message}>{error.message}</p>)}
                   />
                   <label htmlFor="email" className="mb-2 text-medium font-medium">
                     *Email
@@ -106,10 +232,14 @@ function AuthForm() {
                     variant="bordered"
                     size="sm"
                     isRequired
-                    errorMessage={'Unsupported email format'}
                     value={emailSignup}
                     onChange={(e) => setEmailSignup(e.target.value)}
-                    isInvalid={error}
+                    isInvalid={signupErrors?.fields.some(
+                      (error) => error.field === 'email'
+                    )}
+                    errorMessage={signupErrors?.fields
+                      .filter((error) => error.field === 'email')
+                      .map((error) => <p key={error.message}>{error.message}</p>)}
                   />
                   <label htmlFor="password" className="mb-2 text-medium font-medium">
                     *Password
@@ -123,10 +253,9 @@ function AuthForm() {
                       <button
                         className="focus:outline-none"
                         type="button"
-                        onClick={toggleVisibility}
-                        aria-label="toggle password visibility"
+                        onClick={toggleSignupVisibility}
                       >
-                        {isVisible ? (
+                        {isSignupVisible ? (
                           <Image
                             src={'/eye-open.svg'}
                             alt="eye open"
@@ -145,8 +274,14 @@ function AuthForm() {
                         )}
                       </button>
                     }
-                    type={isVisible ? 'text' : 'password'}
+                    type={isSignupVisible ? 'text' : 'password'}
                     isRequired
+                    isInvalid={signupErrors?.fields.some(
+                      (error) => error.field === 'password'
+                    )}
+                    errorMessage={signupErrors?.fields
+                      .filter((error) => error.field === 'password')
+                      .map((error) => <p key={error.message}>{error.message}</p>)}
                   />
                   <p className="my-8 text-small text-secondary-200">
                     This site is protected by reCAPTCHA and the Google{' '}
@@ -159,6 +294,9 @@ function AuthForm() {
                     </a>{' '}
                     apply.
                   </p>
+                  {signupErrors?.message && (
+                    <p className="my-4 text-small text-danger">{signupErrors.message}</p>
+                  )}
                   <BVButton fullWidth onClick={handleSignup}>
                     Join
                   </BVButton>
@@ -195,8 +333,12 @@ function AuthForm() {
                     value={emailLogin}
                     onChange={(e) => setEmailLogin(e.target.value)}
                     isRequired
-                    errorMessage={'Unsupported email format'}
-                    isInvalid={error}
+                    isInvalid={loginErrors?.fields.some(
+                      (error) => error.field === 'email'
+                    )}
+                    errorMessage={loginErrors?.fields
+                      .filter((error) => error.field === 'email')
+                      .map((error) => <p key={error.message}>{error.message}</p>)}
                   />
                   <label htmlFor="password" className="mb-2 text-medium font-medium">
                     *Password
@@ -210,10 +352,9 @@ function AuthForm() {
                       <button
                         className="focus:outline-none"
                         type="button"
-                        onClick={toggleVisibility}
-                        aria-label="toggle password visibility"
+                        onClick={toggleLoginVisibility}
                       >
-                        {isVisible ? (
+                        {isLoginVisible ? (
                           <Image
                             src={'/eye-open.svg'}
                             alt="eye open"
@@ -232,8 +373,14 @@ function AuthForm() {
                         )}
                       </button>
                     }
-                    type={isVisible ? 'text' : 'password'}
+                    type={isLoginVisible ? 'text' : 'password'}
                     isRequired
+                    isInvalid={loginErrors?.fields.some(
+                      (error) => error.field === 'password'
+                    )}
+                    errorMessage={loginErrors?.fields
+                      .filter((error) => error.field === 'password')
+                      .map((error) => <p key={error.message}>{error.message}</p>)}
                   />
                   <p className="my-8 text-small text-secondary-200">
                     This site is protected by reCAPTCHA and the Google{' '}
@@ -246,6 +393,9 @@ function AuthForm() {
                     </a>{' '}
                     apply.
                   </p>
+                  {loginErrors?.message && (
+                    <p className="my-4 text-small text-danger">{loginErrors.message}</p>
+                  )}
                   <BVButton fullWidth onClick={handleLogin}>
                     Join
                   </BVButton>
