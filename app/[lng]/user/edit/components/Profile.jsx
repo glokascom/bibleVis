@@ -34,6 +34,9 @@ function Profile({ userInfo }) {
             label="Cover image"
             buttonLabel="Upload new cover image"
             userId={userInfo.id}
+            requiredWidth={1280}
+            requiredHeight={400}
+            previewSize={{ width: 384, height: 120 }}
             defaultSrc={coverUrl}
           />
         </div>

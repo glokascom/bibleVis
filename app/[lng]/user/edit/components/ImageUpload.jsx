@@ -15,6 +15,8 @@ function ImageUpload({
   buttonLabel,
   userId,
   isAvatar = false,
+  requiredWidth,
+  requiredHeight,
   previewSize = { width: 100, height: 100 },
   defaultSrc = null,
 }) {
@@ -47,9 +49,27 @@ function ImageUpload({
       return
     }
 
+    const img = new window.Image()
     const objectUrl = URL.createObjectURL(file)
-    setPreview(objectUrl)
+    img.src = objectUrl
 
+    img.onload = () => {
+      if (
+        requiredWidth &&
+        requiredHeight &&
+        (img.width !== requiredWidth || img.height !== requiredHeight)
+      ) {
+        setError(`Image must be ${requiredWidth}x${requiredHeight} pixels.`)
+        URL.revokeObjectURL(objectUrl)
+        return
+      }
+
+      setPreview(objectUrl)
+    }
+    img.onerror = () => {
+      setError('Failed to load image.')
+      URL.revokeObjectURL(objectUrl)
+    }
     try {
       const formData = new FormData()
       formData.append('uuid', userId)
@@ -98,6 +118,11 @@ function ImageUpload({
           accept="image/*"
           className="hidden"
         />
+        {requiredWidth && requiredHeight && (
+          <div className="text-small">
+            {requiredWidth} x {requiredHeight} px
+          </div>
+        )}
         {error && <div className="text-red-500">{error}</div>}
       </div>
     </div>
