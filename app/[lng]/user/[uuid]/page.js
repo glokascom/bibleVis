@@ -2,8 +2,15 @@
 
 import { useParams } from 'next/navigation'
 
+import UserInfo from './components/UserInfo'
+
 export default function UserDetail() {
   const { uuid } = useParams()
 
-  return <div className="text-red-500">User Page for UUID: {uuid}</div>
+  return (
+    <div>
+      User Page for UUID: {uuid}
+      <UserInfo />
+    </div>
+  )
 }
