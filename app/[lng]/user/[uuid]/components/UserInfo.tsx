@@ -7,6 +7,8 @@ interface User {
   username: string
   total_followers: number
 }
+const is_current_user = false
+const is_followed = false
 
 const UserInfo: React.FC = () => {
   const user: User = { username: 'AlenaAenami', total_followers: 0 }
@@ -17,16 +19,27 @@ const UserInfo: React.FC = () => {
       <div className="text-semixlarge mt-5 font-bold">{user.username}</div>
       <div className="mt-5 text-small text-secondary-500">Followers</div>
       <div className="mt-1 text-medium">{user.total_followers}</div>
-      <BVButton
-        fullWidth
-        href="/user/edit"
-        as={Link}
-        color="primary"
-        size="md"
-        className="mt-5"
-      >
-        Edit Profile
-      </BVButton>
+      {is_current_user ? (
+        <BVButton
+          fullWidth
+          href="/user/edit"
+          as={Link}
+          color={'primary'}
+          size="md"
+          className="mt-5"
+        >
+          Edit Profile
+        </BVButton>
+      ) : (
+        <BVButton
+          fullWidth
+          color={is_followed ? 'secondary' : 'primary'}
+          size="md"
+          className="mt-5"
+        >
+          {is_followed ? 'Unfollow' : 'Follow'}
+        </BVButton>
+      )}
     </div>
   )
 }
