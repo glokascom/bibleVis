@@ -14,7 +14,7 @@ function Profile({ userInfo }) {
         original: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`,
         mobile: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/mobile.jpg`,
       }
-    : null
+    : `/cover.svg`
 
   return (
     <div>
