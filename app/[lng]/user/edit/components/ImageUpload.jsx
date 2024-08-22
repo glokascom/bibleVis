@@ -43,6 +43,13 @@ function ImageUpload({
     if (!file) return
 
     setError(null)
+
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
+    if (!validImageTypes.includes(file.type)) {
+      setError('Invalid file type. Please upload an image.')
+      return
+    }
+
     const maxFileSizeMB = 2
     if (file.size > maxFileSizeMB * 1024 * 1024) {
       setError(`Max file size is ${maxFileSizeMB}MB`)
@@ -53,7 +60,7 @@ function ImageUpload({
     const objectUrl = URL.createObjectURL(file)
     img.src = objectUrl
 
-    img.onload = () => {
+    img.onload = async () => {
       if (
         requiredWidth &&
         requiredHeight &&
@@ -65,30 +72,31 @@ function ImageUpload({
       }
 
       setPreview(objectUrl)
+
+      try {
+        const formData = new FormData()
+        formData.append('uuid', userId)
+        formData.append(isAvatar ? 'avatar' : 'cover', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const result = await response.json()
+          throw new Error(result.error || 'Failed to upload image.')
+        }
+
+        await response.json()
+      } catch (err) {
+        setError(err.message)
+        URL.revokeObjectURL(objectUrl)
+      }
     }
+
     img.onerror = () => {
       setError('Failed to load image.')
-      URL.revokeObjectURL(objectUrl)
-    }
-    try {
-      const formData = new FormData()
-      formData.append('uuid', userId)
-      formData.append(isAvatar ? 'avatar' : 'cover', file)
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        const result = await response.json()
-        throw new Error(result.error || 'Failed to upload image.')
-      }
-
-      await response.json()
-    } catch (err) {
-      setError(err.message)
-    } finally {
       URL.revokeObjectURL(objectUrl)
     }
   }
