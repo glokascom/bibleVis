@@ -27,7 +27,6 @@ function ImageUpload({
         const isMobile = window.innerWidth < 640
         setPreview(isMobile ? defaultSrc.mobile : defaultSrc.original)
       }
-      console.log(preview)
       updatePreviewSrc()
       window.addEventListener('resize', updatePreviewSrc)
 
@@ -66,7 +65,6 @@ function ImageUpload({
         throw new Error(result.error || 'Failed to upload image.')
       }
 
-      // Получаем URL после успешной загрузки и добавляем к нему уникальный параметр
       await response.json()
     } catch (err) {
       setError(err.message)
