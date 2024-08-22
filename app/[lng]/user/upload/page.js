@@ -34,7 +34,7 @@ export default function Upload() {
 
   return (
     <>
-      {error && (
+      {error ? (
         <div className="mb-7 flex flex-row items-center justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 px-5 py-6 text-secondary-50 md:mb-5 md:gap-10 md:p-6">
           <div className="flex items-center md:gap-4">
             <Image
@@ -77,8 +77,16 @@ export default function Upload() {
             </div>
           )}
         </div>
+      ) : (
+        <div className="mb-5 mt-20 text-center">
+          <p className="text-xxlarge">Upload your image</p>
+          <p className="my-5 text-medium">
+            Join our community of creators and showcase your talent by uploading your
+            media! Learn more about the BibleVis Content License.
+          </p>
+        </div>
       )}
-      <div className="h-60 md:h-[578px]">
+      <div>
         <ImageUploadDragDrop onImageChange={handleImageChange} />
       </div>
     </>

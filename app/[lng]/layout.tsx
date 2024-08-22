@@ -43,7 +43,7 @@ export default function RootLayout(props: {
           <div className="w-full">
             <Navigation lng={lng} />
             <div id="hero-block"></div>
-            <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
+            <main className="mx-auto w-full max-w-[1806px] px-5 md:px-12">
               {children}
             </main>
           </div>

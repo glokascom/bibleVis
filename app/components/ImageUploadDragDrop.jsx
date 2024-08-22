@@ -110,7 +110,7 @@ function ImageUploadDragDrop({ onImageChange }) {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 text-center">
+      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 py-14 text-center md:pb-32 md:pt-24">
         {!imageSrc && (
           <>
             {isOverDropZone ? (
@@ -128,7 +128,7 @@ function ImageUploadDragDrop({ onImageChange }) {
               </>
             ) : (
               <>
-                <p className="mb-5 text-xlarge font-medium md:hidden">Add a file</p>
+                <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
 
                 <div className="hidden flex-col items-center justify-center font-medium md:flex">
                   <Image
@@ -140,11 +140,13 @@ function ImageUploadDragDrop({ onImageChange }) {
                     alt="Star"
                     radius="none"
                   />
-                  <p className="mt-5 text-mega">Drag and Drop</p>
+                  <p className="mt-5 text-mega leading-9">Drag and Drop</p>
                   <p className="my-7 text-xlarge">or</p>
                 </div>
 
-                <BVButton onClick={openFileDialog}>Browse file</BVButton>
+                <BVButton size="lg" onClick={openFileDialog}>
+                  Browse file
+                </BVButton>
               </>
             )}
           </>
