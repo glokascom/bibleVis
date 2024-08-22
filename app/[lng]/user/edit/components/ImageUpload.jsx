@@ -21,15 +21,21 @@ function ImageUpload({
   defaultSrc = null,
 }) {
   const inputId = id || generateUniqueId('upload')
-  const [preview, setPreview] = useState(defaultSrc)
+  const [preview, setPreview] = useState(defaultSrc || null)
   const [error, setError] = useState(null)
   useEffect(() => {
     if (defaultSrc) {
       const updatePreviewSrc = () => {
-        const isMobile = window.innerWidth < 640
-        setPreview(isMobile ? defaultSrc.mobile : defaultSrc.original)
+        if (typeof defaultSrc === 'object') {
+          const isMobile = window.innerWidth < 640
+          setPreview(isMobile ? defaultSrc.mobile : defaultSrc.original)
+        } else {
+          setPreview(defaultSrc)
+        }
       }
+
       updatePreviewSrc()
+
       window.addEventListener('resize', updatePreviewSrc)
 
       return () => {
