@@ -21,33 +21,39 @@ const UserInfo: React.FC<UserInfoProps> = ({ isCurrentUser }) => {
   }
 
   return (
-    <div className="flex max-w-96 flex-col items-center rounded-medium border border-secondary-200 px-5 py-8">
-      <BVAvatar size="mega" />
-      <div className="mt-5 text-semixlarge font-bold">{user.username}</div>
-      <div className="mt-5 text-small text-secondary-500">Followers</div>
-      <div className="mt-1 text-medium">{user.total_followers}</div>
-      {isCurrentUser ? (
-        <BVButton
-          fullWidth
-          href="/user/edit"
-          as={Link}
-          color={'primary'}
-          size="md"
-          className="mt-5"
-        >
-          Edit Profile
-        </BVButton>
-      ) : (
-        <BVButton
-          fullWidth
-          color={is_followed ? 'secondary' : 'primary'}
-          size="md"
-          className="mt-5"
-          onClick={handleToggleFollow}
-        >
-          {is_followed ? 'Unfollow' : 'Follow'}
-        </BVButton>
-      )}
+    <div className="border-0 md:h-full md:rounded-medium md:border md:border-secondary-200 md:px-5 md:py-4">
+      <div className="relative flex w-full flex-col items-center md:gap-5">
+        <BVAvatar className="absolute bottom-0 left-0 h-14 w-14 md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 xl:h-36 xl:w-36" />
+        <div className="text-semixlarge font-bold">{user.username}</div>
+        <div className="flex flex-row-reverse items-center gap-1 xl:flex-col">
+          <div className="text-small text-secondary-500">Followers</div>
+          <div className="md:medium text-small">{user.total_followers}</div>
+        </div>
+      </div>
+      <div>
+        {isCurrentUser ? (
+          <BVButton
+            fullWidth
+            href="/user/edit"
+            as={Link}
+            color={'primary'}
+            size="md"
+            className="mt-5"
+          >
+            Edit Profile
+          </BVButton>
+        ) : (
+          <BVButton
+            fullWidth
+            color={is_followed ? 'secondary' : 'primary'}
+            size="md"
+            className="mt-5"
+            onClick={handleToggleFollow}
+          >
+            {is_followed ? 'Unfollow' : 'Follow'}
+          </BVButton>
+        )}
+      </div>
     </div>
   )
 }
