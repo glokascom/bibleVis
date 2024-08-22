@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { useRouter } from 'next/navigation'
 
 import { Tab, Tabs } from '@nextui-org/tabs'
 
@@ -10,13 +12,25 @@ import HeaderProfile from './HeaderProfile'
 import PasswordRestore from './PasswordRestore'
 import Profile from './Profile'
 
-function ProfileCard() {
+function ProfileCard({ userInfo }) {
   const [tabKey, setTabKey] = useState('profile')
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!userInfo) {
+      router.push(`/login?redirectTo=/user/edit`)
+    }
+  }, [userInfo, router])
+
+  if (!userInfo) {
+    return null
+  }
+
   return (
     <>
       <div className="hidden flex-col sm:flex">
         <HeaderProfile
-          username="azedval"
+          username={userInfo.username}
           title={tabKey}
           link={tabKey === 'profile' ? { name: 'View profile', url: '#' } : null}
         />
@@ -37,19 +51,19 @@ function ProfileCard() {
             }}
           >
             <Tab key="profile" title="Profile">
-              <Profile />
+              <Profile userInfo={userInfo} />
             </Tab>
             <Tab key="email" title="Email">
-              <Email />
+              <Email userInfo={userInfo} />
             </Tab>
             <Tab key="password" title="Password">
-              <PasswordRestore />
+              <PasswordRestore userInfo={userInfo} />
             </Tab>
           </Tabs>
         </div>
       </div>
       <div className="flex flex-col gap-7 sm:hidden">
-        <AvatarWithName userName="Vlad Syakov" />
+        <AvatarWithName userName={userInfo.username} />
         <Tabs
           aria-label="Options"
           variant="underlined"
@@ -63,10 +77,10 @@ function ProfileCard() {
           }}
         >
           <Tab key="profile" title="Profile" className="justify-start px-0">
-            <Profile />
+            <Profile userInfo={userInfo} />
           </Tab>
           <Tab key="email" title="Email">
-            <Email />
+            <Email userInfo={userInfo} />
           </Tab>
           <Tab key="password" title="Password" className="justify-end px-0">
             <PasswordRestore />
