@@ -1,16 +1,14 @@
-'use client'
-
-import { useParams } from 'next/navigation'
+import { getUser } from '@/app/actions/getUser'
 
 import UserInfo from './components/UserInfo'
 
-export default function UserDetail() {
-  const { uuid } = useParams()
+export default async function UserDetail({ params }) {
+  const auth = await getUser()
+  const isCurrentUser = params.uuid === auth.id
 
   return (
     <div>
-      User Page for UUID: {uuid}
-      <UserInfo />
+      <UserInfo isCurrentUser={isCurrentUser} />
     </div>
   )
 }
