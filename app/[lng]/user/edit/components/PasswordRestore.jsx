@@ -7,15 +7,55 @@ import Image from 'next/image'
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
 
-function Password() {
+function Password({ userInfo }) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isVisible, setIsVisible] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+
   const toggleVisibility = () => setIsVisible(!isVisible)
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('Passwords do not match.')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userInfo.email,
+          oldPassword: currentPassword,
+          newPassword: newPassword,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setErrorMessage(data.error || 'Something went wrong.')
+      } else {
+        setSuccessMessage(data.message || 'Password updated successfully.')
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      }
+    } catch (error) {
+      console.error('Request error:', error)
+      setErrorMessage('Failed to update password.')
+    }
+  }
+
   return (
-    <form className="flex max-w-96 flex-col gap-4">
+    <form className="flex max-w-96 flex-col gap-4" onSubmit={handleSubmit}>
       <div>
         <label htmlFor="password" className="mb-2 text-medium font-medium">
           Current Password
@@ -81,7 +121,9 @@ function Password() {
           isRequired
         />
       </div>
-      <BVButton>Save</BVButton>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
+      <BVButton type="submit">Save</BVButton>
     </form>
   )
 }
