@@ -4,15 +4,15 @@ import UsernameEdit from './UsernameEdit'
 function Profile({ userInfo }) {
   const avatarUrl = userInfo.avatar_file_exists
     ? {
-        original: `http://127.0.0.1:55521/storage/v1/object/public/profile/${userInfo.id}/avatars/normal.jpg`,
-        mobile: `http://127.0.0.1:55521/storage/v1/object/public/profile/${userInfo.id}/avatars/small.jpg`,
+        original: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/normal.jpg`,
+        mobile: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/small.jpg`,
       }
     : null
 
   const coverUrl = userInfo.cover_file_exists
     ? {
-        original: `http://127.0.0.1:55521/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`,
-        mobile: `http://127.0.0.1:55521/storage/v1/object/public/profile/${userInfo.id}/covers/mobile.jpg`,
+        original: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`,
+        mobile: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/mobile.jpg`,
       }
     : null
 
