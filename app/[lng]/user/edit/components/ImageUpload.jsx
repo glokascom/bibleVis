@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 
 import Image from 'next/image'
@@ -15,66 +13,67 @@ function ImageUpload({
   id,
   label,
   buttonLabel,
-  requiredWidth,
-  requiredHeight,
-  defaultSrc,
-  previewSize = { width: 100, height: 100 },
+  userId,
   isAvatar = false,
+  previewSize = { width: 100, height: 100 },
+  defaultSrc = null,
 }) {
   const inputId = id || generateUniqueId('upload')
+  const [preview, setPreview] = useState(defaultSrc)
   const [error, setError] = useState(null)
-  const [preview, setPreview] = useState(defaultSrc || null)
+  useEffect(() => {
+    if (defaultSrc) {
+      const updatePreviewSrc = () => {
+        const isMobile = window.innerWidth < 640
+        setPreview(isMobile ? defaultSrc.mobile : defaultSrc.original)
+      }
+      console.log(preview)
+      updatePreviewSrc()
+      window.addEventListener('resize', updatePreviewSrc)
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    setError(null)
-
-    if (!file.type.startsWith('image/')) {
-      setError('Choose an image file.')
-      return
+      return () => {
+        window.removeEventListener('resize', updatePreviewSrc)
+      }
     }
+  }, [defaultSrc])
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setError(null)
     const maxFileSizeMB = 2
     if (file.size > maxFileSizeMB * 1024 * 1024) {
-      setError('Max file size is ' + maxFileSizeMB + 'MB')
+      setError(`Max file size is ${maxFileSizeMB}MB`)
       return
     }
 
-    const img = new window.Image()
     const objectUrl = URL.createObjectURL(file)
-    img.src = objectUrl
+    setPreview(objectUrl)
 
-    img.onload = () => {
-      if (
-        requiredWidth &&
-        requiredHeight &&
-        (img.width !== requiredWidth || img.height !== requiredHeight)
-      ) {
-        setError(`Image must be ${requiredWidth}x${requiredHeight} pixels.`)
-        URL.revokeObjectURL(objectUrl)
-        return
+    try {
+      const formData = new FormData()
+      formData.append('uuid', userId)
+      formData.append(isAvatar ? 'avatar' : 'cover', file)
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const result = await response.json()
+        throw new Error(result.error || 'Failed to upload image.')
       }
 
-      setPreview(objectUrl)
-    }
-
-    img.onerror = () => {
-      setError('Failed to load image.')
+      // Получаем URL после успешной загрузки и добавляем к нему уникальный параметр
+      await response.json()
+    } catch (err) {
+      setError(err.message)
+    } finally {
       URL.revokeObjectURL(objectUrl)
     }
-
-    return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview)
-      }
-    }
   }
-
-  useEffect(() => {
-    if (error) {
-      alert(error)
-    }
-  }, [error])
 
   return (
     <div>
@@ -101,11 +100,7 @@ function ImageUpload({
           accept="image/*"
           className="hidden"
         />
-        {requiredWidth && requiredHeight && (
-          <div className="text-small">
-            {requiredWidth} x {requiredHeight} px
-          </div>
-        )}
+        {error && <div className="text-red-500">{error}</div>}
       </div>
     </div>
   )
