@@ -28,9 +28,9 @@ export default function ForgotForm() {
     <div className="flex min-h-screen items-center justify-center bg-gray-200 dark:bg-gray-800">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8 shadow-lg"
+        className="flex flex-col items-center space-y-4 rounded-medium bg-white p-8 shadow-lg"
       >
-        <h2 className="text-2xl font-bold text-gray-800">Reset password</h2>
+        <h2 className="text-xlarge font-bold text-gray-800">Reset password</h2>
         <InputField id="email" name="email" type="email" required label="Email" />
 
         <div className="flex flex-col space-y-4">

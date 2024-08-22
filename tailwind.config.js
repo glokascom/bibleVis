@@ -7,8 +7,10 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
-    fontSize: { xlarge: '1.5rem' },
+    fontSize: {
+      xlarge: '1.5rem',
+      mega: '3rem',
+    },
   },
   darkMode: 'class',
   plugins: [
