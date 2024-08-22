@@ -12,7 +12,7 @@ import HeaderProfile from './HeaderProfile'
 import PasswordRestore from './PasswordRestore'
 import Profile from './Profile'
 
-function ProfileCard({ userInfo }) {
+function ProfileCard({ userInfo, provider }) {
   const [tabKey, setTabKey] = useState('profile')
   const router = useRouter()
 
@@ -56,9 +56,11 @@ function ProfileCard({ userInfo }) {
             <Tab key="email" title="Email">
               <Email userInfo={userInfo} />
             </Tab>
-            <Tab key="password" title="Password">
-              <PasswordRestore userInfo={userInfo} />
-            </Tab>
+            {provider !== 'google' && (
+              <Tab key="password" title="Password">
+                <PasswordRestore userInfo={userInfo} />
+              </Tab>
+            )}
           </Tabs>
         </div>
       </div>
@@ -82,9 +84,11 @@ function ProfileCard({ userInfo }) {
           <Tab key="email" title="Email">
             <Email userInfo={userInfo} />
           </Tab>
-          <Tab key="password" title="Password" className="justify-end px-0">
-            <PasswordRestore />
-          </Tab>
+          {provider !== 'google' && (
+            <Tab key="password" title="Password" className="justify-end px-0">
+              <PasswordRestore userInfo={userInfo} />
+            </Tab>
+          )}
         </Tabs>
       </div>
     </>
