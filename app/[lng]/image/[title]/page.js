@@ -30,6 +30,7 @@ export default function ImagePage() {
         router.replace(`/image/${uuid}`)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid, searchText])
 
   console.log('Search Text:', searchText)
