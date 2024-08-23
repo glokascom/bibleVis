@@ -30,7 +30,7 @@ function ProfileCard({ userInfo, provider }) {
     <>
       <div className="hidden flex-col sm:flex">
         <HeaderProfile
-          username={userInfo.username}
+          userInfo={userInfo}
           title={tabKey}
           link={tabKey === 'profile' ? { name: 'View profile', url: '#' } : null}
         />
@@ -65,7 +65,7 @@ function ProfileCard({ userInfo, provider }) {
         </div>
       </div>
       <div className="flex flex-col gap-7 sm:hidden">
-        <AvatarWithName userName={userInfo.username} />
+        <AvatarWithName userInfo={userInfo} />
         <Tabs
           aria-label="Options"
           variant="underlined"

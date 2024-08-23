@@ -5,7 +5,7 @@ import { BVLink } from '@/app/components/BVLink'
 import AvatarWithName from './AvatarWithName'
 
 interface HeaderProfileProps {
-  username: string
+  userInfo: object
   title: string
   link?: {
     url?: string
@@ -13,11 +13,11 @@ interface HeaderProfileProps {
   }
 }
 
-function HeaderProfile({ username, title, link }: HeaderProfileProps) {
+function HeaderProfile({ userInfo, title, link }: HeaderProfileProps) {
   return (
     <div className="flex w-full items-start justify-between">
       <div className="w-1/3">
-        <AvatarWithName userName={username} />
+        <AvatarWithName userInfo={userInfo} />
       </div>
       <div className="flex w-2/3 justify-between border-b-1 border-secondary-200 pb-5 font-bold">
         <div className="text-xlarge capitalize">{title}</div>
