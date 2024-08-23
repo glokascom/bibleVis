@@ -1,14 +1,19 @@
-'use client'
+import Cover from './components/Cover'
+import UserInfo from './components/UserInfo'
 
-import { useParams } from 'next/navigation'
-
-export default function UsernamePage() {
-  const params = useParams()
+export default async function UserDetail({ params }) {
   const username = decodeURIComponent(params['@username']).replace('@', '')
+  const user = { username: 'AlenaAenami' }
+  const isCurrentUser = username === user.username
 
   return (
-    <div>
-      <h1 className="text-xlarge font-bold text-gray-800">Profile Page for {username}</h1>
+    <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 md:mt-9 md:flex-row md:gap-1">
+      <div className="max-w-7xl">
+        <Cover isCurrentUser={isCurrentUser} />
+      </div>
+      <div className="h-full w-full md:w-auto md:min-w-44 md:grow lg:min-w-96">
+        <UserInfo isCurrentUser={isCurrentUser} />
+      </div>
     </div>
   )
 }
