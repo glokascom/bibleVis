@@ -7,6 +7,7 @@ import NextImage from 'next/image'
 import { Image } from '@nextui-org/image'
 
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
+import TagInput from '@/app/components/TagInput'
 import { openFileDialog, validateAndLoadImage } from '@/app/utils/imageUpload'
 
 export default function Upload() {
@@ -91,7 +92,27 @@ export default function Upload() {
           </div>
         </div>
 
-        <div>Form</div>
+        <div className="flex flex-col gap-5 rounded-medium border p-5">
+          <TagInput
+            label="Title"
+            isTagInput={false}
+            limitLettersAllTags={140}
+            placeholder="Add title of the image"
+          />
+          <TagInput
+            label="Description"
+            isTagInput={false}
+            limitLettersAllTags={280}
+            placeholder="Add optional description of the image"
+          />
+          <TagInput
+            label="Prompt"
+            limitLettersAllTags={280}
+            placeholder="Add AI prompt that you used to create the image"
+          />
+          <TagInput label="Software Used" showCounter={false} />
+          <TagInput label="Image tags" />
+        </div>
       </div>
     )
   }
