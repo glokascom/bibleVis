@@ -124,6 +124,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   })
 
   if (signupError) {
+    console.log({ signupError })
     const errorResponse: ApiResponse<ApiError> = {
       status: 'error',
       message: signupError.message || 'An unknown error occurred.',

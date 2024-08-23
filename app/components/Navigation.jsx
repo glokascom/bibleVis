@@ -26,9 +26,8 @@ function formatSearchQuery(query) {
   return encodeURIComponent(query.replace(/\s+/g, '-'))
 }
 
-function Navigation({ lng }) {
+function Navigation({ lng, user }) {
   const { t } = useTranslation(lng)
-  const [user, setUser] = useState(null)
   const [search, setSearch] = useState('')
   const { push } = useRouter()
   const handleSearch = () => {
@@ -45,39 +44,33 @@ function Navigation({ lng }) {
       }}
     >
       <NavbarContent as="div">
-        <NavbarBrand
-          className="mr-0 h-[20px] w-[26px] grow-0 basis-7 md:h-[45px] md:w-[180px] md:basis-48 lg:mr-14"
-          onClick={() => {
-            if (!user) {
-              setUser({ load: false })
-            } else {
-              setUser({ load: true })
-            }
-          }}
-        >
-          <Image
-            removeWrapper
-            as={NextImage}
-            height={45}
-            width={180}
-            src="/biblevis-logo.svg"
-            alt="Biblevis Logo"
-            priority
-            className="hidden md:block"
-            radius="none"
-          />
-          <Image
-            removeWrapper
-            as={NextImage}
-            height={20}
-            width={26}
-            src="/biblevis-logo-small.svg"
-            alt="Biblevis Logo"
-            priority
-            className="block md:hidden"
-            radius="none"
-          />
+        <NavbarBrand className="mr-0 h-[20px] w-[26px] grow-0 basis-7 md:h-[45px] md:w-[180px] md:basis-48 lg:mr-14">
+          <Link href="/">
+            <Image
+              removeWrapper
+              as={NextImage}
+              height={45}
+              width={180}
+              src="/biblevis-logo.svg"
+              alt="Biblevis Logo"
+              priority
+              className="hidden md:block"
+              radius="none"
+            />
+            <Image
+              removeWrapper
+              as={NextImage}
+              height={20}
+              width={26}
+              src="/biblevis-logo-small.svg"
+              alt="Biblevis Logo"
+              priority
+              className="block md:hidden"
+              radius="none"
+            />
+          </Link>
         </NavbarBrand>
+
         <NavbarContent className="flex-grow">
           <BVInput
             classNames={{
@@ -109,7 +102,6 @@ function Navigation({ lng }) {
             type="search"
           />
         </NavbarContent>
-
         <div className="flex items-center gap-2">
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink href="/pages/license">{t('license')}</BVLink>
@@ -123,7 +115,7 @@ function Navigation({ lng }) {
           ) : (
             <></>
           )}
-          {user ? (
+          {user?.user ? (
             <Dropdown
               placement="bottom-end"
               className="bg-secondary-50"

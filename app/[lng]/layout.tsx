@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Wix_Madefor_Text } from 'next/font/google'
 
 import { dir } from 'i18next'
 
@@ -9,10 +9,11 @@ import '@/styles/globals.css'
 
 import React from 'react'
 
+import { getUser } from '../actions/getUser'
 import Navigation from '../components/Navigation'
 
-const baseFont = Plus_Jakarta_Sans({
-  subsets: ['latin', 'cyrillic-ext'],
+const baseFont = Wix_Madefor_Text({
+  subsets: ['cyrillic', 'latin'],
   weight: ['400', '500', '600', '700'],
 })
 
@@ -25,23 +26,25 @@ export const metadata = {
   description: 'Some description here',
 }
 
-export default function RootLayout(props: {
+export default async function RootLayout(props: {
   params: { lng: string }
   children: React.ReactNode
   modal: React.ReactNode
-}): JSX.Element {
+}): Promise<JSX.Element> {
   const {
     params: { lng },
     children,
     modal,
   } = props
+  const { user } = await getUser()
+  console.log({ user })
   return (
     <html lang={lng} dir={dir(lng)} className="light">
       <head />
       <body className={`${baseFont.className}`}>
         <Providers>
           <div className="w-full">
-            <Navigation lng={lng} />
+            <Navigation lng={lng} user={user} />
             <div id="hero-block"></div>
             <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
               {children}
