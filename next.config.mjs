@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '55521',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kgskpeyfzedphcanbnjz.supabase.co',
+      },
+    ],
+  },
   transpilePackages: ['react-syntax-highlighter', 'swagger-client', 'swagger-ui-react'],
   async headers() {
     return [

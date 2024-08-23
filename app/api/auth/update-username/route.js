@@ -1,19 +1,7 @@
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-export async function getUserInfoById(userId) {
-  const { data, error } = await supabaseService
-    .from('users')
-    .select('username, avatar_file_exists, cover_file_exists, email')
-    .eq('id', userId)
-
-  if (error) {
-    throw new Error('Error fetching username: ' + error.message)
-  }
-  return data[0] || null
-}
-
-export async function updateUsername(userId, newUsername) {
+async function updateUsername(userId, newUsername) {
   try {
     const { error } = await getUser()
     if (error) throw new Error(error.message)
@@ -35,4 +23,20 @@ export async function updateUsername(userId, newUsername) {
   }
 
   return data
+}
+
+export async function POST(request) {
+  try {
+    const { userId, newUsername } = await request.json()
+
+    const result = await updateUsername(userId, newUsername)
+
+    return new Response(JSON.stringify({ success: true, data: result }), {
+      status: 200,
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, message: error.message }), {
+      status: 500,
+    })
+  }
 }

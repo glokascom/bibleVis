@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { useRouter } from 'next/navigation'
 
 import { Tab, Tabs } from '@nextui-org/tabs'
 
@@ -10,15 +12,29 @@ import HeaderProfile from './HeaderProfile'
 import PasswordRestore from './PasswordRestore'
 import Profile from './Profile'
 
-function ProfileCard() {
+function ProfileCard({ userInfo, provider }) {
   const [tabKey, setTabKey] = useState('profile')
+  const router = useRouter()
+  const [profileLink, setProfileLink] = useState('#')
+  useEffect(() => {
+    if (!userInfo) {
+      router.push(`/login?redirectTo=/user/edit`)
+    } else {
+      setProfileLink(userInfo.username ? `/@${userInfo.username}` : '#')
+    }
+  }, [userInfo, router])
+
+  if (!userInfo) {
+    return null
+  }
+
   return (
     <>
       <div className="hidden flex-col sm:flex">
         <HeaderProfile
-          username="azedval"
+          userInfo={userInfo}
           title={tabKey}
-          link={tabKey === 'profile' ? { name: 'View profile', url: '#' } : null}
+          link={tabKey === 'profile' ? { name: 'View profile', url: profileLink } : null}
         />
         <div className="flex flex-col">
           <Tabs
@@ -37,19 +53,21 @@ function ProfileCard() {
             }}
           >
             <Tab key="profile" title="Profile">
-              <Profile />
+              <Profile userInfo={userInfo} />
             </Tab>
             <Tab key="email" title="Email">
-              <Email />
+              <Email userInfo={userInfo} />
             </Tab>
-            <Tab key="password" title="Password">
-              <PasswordRestore />
-            </Tab>
+            {provider !== 'google' && (
+              <Tab key="password" title="Password">
+                <PasswordRestore userInfo={userInfo} />
+              </Tab>
+            )}
           </Tabs>
         </div>
       </div>
       <div className="flex flex-col gap-7 sm:hidden">
-        <AvatarWithName userName="Vlad Syakov" />
+        <AvatarWithName userInfo={userInfo} />
         <Tabs
           aria-label="Options"
           variant="underlined"
@@ -63,14 +81,16 @@ function ProfileCard() {
           }}
         >
           <Tab key="profile" title="Profile" className="justify-start px-0">
-            <Profile />
+            <Profile userInfo={userInfo} />
           </Tab>
           <Tab key="email" title="Email">
-            <Email />
+            <Email userInfo={userInfo} />
           </Tab>
-          <Tab key="password" title="Password" className="justify-end px-0">
-            <PasswordRestore />
-          </Tab>
+          {provider !== 'google' && (
+            <Tab key="password" title="Password" className="justify-end px-0">
+              <PasswordRestore userInfo={userInfo} />
+            </Tab>
+          )}
         </Tabs>
       </div>
     </>

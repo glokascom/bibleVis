@@ -1,9 +1,8 @@
-function Email() {
-  const email = '2jw5M@example.com'
+function Email({ userInfo }) {
   return (
     <div>
       <div className="mb-1">Email</div>
-      {email}
+      {userInfo.email}
     </div>
   )
 }
