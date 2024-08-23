@@ -1,4 +1,4 @@
-import { getUserInfoById } from './actions/userService'
+import { getUserInfoById } from '../edit/actions/userService'
 
 export default async function Page({ params }) {
   const { uuid } = params

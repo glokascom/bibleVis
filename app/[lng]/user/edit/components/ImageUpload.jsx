@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 
 import Image from 'next/image'
@@ -7,36 +5,44 @@ import Image from 'next/image'
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
-function generateUniqueId(prefix = 'id') {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`
-}
+import { generateUniqueId } from '../actions/generateUniqueId'
 
 function ImageUpload({
   id,
   label,
   buttonLabel,
+  userId,
+  isAvatar = false,
   requiredWidth,
   requiredHeight,
-  defaultSrc,
   previewSize = { width: 100, height: 100 },
-  isAvatar = false,
+  defaultSrc = null,
 }) {
   const inputId = id || generateUniqueId('upload')
-  const [error, setError] = useState(null)
   const [preview, setPreview] = useState(defaultSrc || null)
+  const [error, setError] = useState(null)
 
-  const handleFileChange = (e) => {
+  useEffect(() => {
+    if (defaultSrc) {
+      setPreview(defaultSrc)
+    }
+  }, [defaultSrc])
+
+  const handleFileChange = async (e) => {
     const file = e.target.files[0]
+    if (!file) return
+
     setError(null)
 
-    if (!file.type.startsWith('image/')) {
-      setError('Choose an image file.')
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png']
+    if (!validImageTypes.includes(file.type)) {
+      setError('Invalid file type. Please upload an image.')
       return
     }
 
     const maxFileSizeMB = 2
     if (file.size > maxFileSizeMB * 1024 * 1024) {
-      setError('Max file size is ' + maxFileSizeMB + 'MB')
+      setError(`Max file size is ${maxFileSizeMB}MB`)
       return
     }
 
@@ -44,7 +50,7 @@ function ImageUpload({
     const objectUrl = URL.createObjectURL(file)
     img.src = objectUrl
 
-    img.onload = () => {
+    img.onload = async () => {
       if (
         requiredWidth &&
         requiredHeight &&
@@ -55,26 +61,33 @@ function ImageUpload({
         return
       }
 
-      setPreview(objectUrl)
+      try {
+        const formData = new FormData()
+        formData.append('uuid', userId)
+        formData.append(isAvatar ? 'avatar' : 'cover', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const result = await response.json()
+          throw new Error(result.error || 'Failed to upload image.')
+        }
+
+        await response.json()
+      } catch (err) {
+        setError(err.message)
+        URL.revokeObjectURL(objectUrl)
+      }
     }
 
     img.onerror = () => {
       setError('Failed to load image.')
       URL.revokeObjectURL(objectUrl)
     }
-
-    return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview)
-      }
-    }
   }
-
-  useEffect(() => {
-    if (error) {
-      alert(error)
-    }
-  }, [error])
 
   return (
     <div>
@@ -88,7 +101,10 @@ function ImageUpload({
             alt="preview"
             width={previewSize.width}
             height={previewSize.height}
-            className="rounded-medium object-contain"
+            layout="responsive"
+            objectFit="contain"
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="rounded-medium"
           />
         )}
         <label htmlFor={inputId}>
@@ -106,6 +122,7 @@ function ImageUpload({
             {requiredWidth} x {requiredHeight} px
           </div>
         )}
+        {error && <div className="text-red-500">{error}</div>}
       </div>
     </div>
   )
