@@ -3,17 +3,11 @@ import UsernameEdit from './UsernameEdit'
 
 function Profile({ userInfo }) {
   const avatarUrl = userInfo.avatar_file_exists
-    ? {
-        original: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/normal.jpg`,
-        mobile: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/small.jpg`,
-      }
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/normal.jpg`
     : null
 
   const coverUrl = userInfo.cover_file_exists
-    ? {
-        original: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`,
-        mobile: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/mobile.jpg`,
-      }
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`
     : `/cover.svg`
 
   return (

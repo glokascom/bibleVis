@@ -23,24 +23,10 @@ function ImageUpload({
   const inputId = id || generateUniqueId('upload')
   const [preview, setPreview] = useState(defaultSrc || null)
   const [error, setError] = useState(null)
+
   useEffect(() => {
     if (defaultSrc) {
-      const updatePreviewSrc = () => {
-        if (typeof defaultSrc === 'object') {
-          const isMobile = window.innerWidth < 640
-          setPreview(isMobile ? defaultSrc.mobile : defaultSrc.original)
-        } else {
-          setPreview(defaultSrc)
-        }
-      }
-
-      updatePreviewSrc()
-
-      window.addEventListener('resize', updatePreviewSrc)
-
-      return () => {
-        window.removeEventListener('resize', updatePreviewSrc)
-      }
+      setPreview(defaultSrc)
     }
   }, [defaultSrc])
 
@@ -119,7 +105,10 @@ function ImageUpload({
             alt="preview"
             width={previewSize.width}
             height={previewSize.height}
-            className="rounded-medium object-contain"
+            layout="responsive"
+            objectFit="contain"
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="rounded-medium"
           />
         )}
         <label htmlFor={inputId}>
