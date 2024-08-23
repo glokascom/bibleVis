@@ -15,10 +15,12 @@ import Profile from './Profile'
 function ProfileCard({ userInfo, provider }) {
   const [tabKey, setTabKey] = useState('profile')
   const router = useRouter()
-
+  const [profileLink, setProfileLink] = useState('#')
   useEffect(() => {
     if (!userInfo) {
       router.push(`/login?redirectTo=/user/edit`)
+    } else {
+      setProfileLink(userInfo.username ? `/@${userInfo.username}` : '#')
     }
   }, [userInfo, router])
 
@@ -32,7 +34,7 @@ function ProfileCard({ userInfo, provider }) {
         <HeaderProfile
           userInfo={userInfo}
           title={tabKey}
-          link={tabKey === 'profile' ? { name: 'View profile', url: '#' } : null}
+          link={tabKey === 'profile' ? { name: 'View profile', url: profileLink } : null}
         />
         <div className="flex flex-col">
           <Tabs
