@@ -14,15 +14,13 @@ function Cover({ isCurrentUser }: CoverProps) {
   const smallCover = '/cover.svg' // TODO берем с базы данных
   const largeCover = '/cover.svg' // TODO берем с базы данных
 
-  const [viewportWidth, setViewportWidth] = useState<number>(
-    typeof window !== 'undefined' ? window.innerWidth : 0
-  )
+  const [viewportWidth, setViewportWidth] = useState<number>(0)
 
   useEffect(() => {
+    setViewportWidth(window.innerWidth)
     const handleResize = () => setViewportWidth(window.innerWidth)
 
     window.addEventListener('resize', handleResize)
-    handleResize()
 
     return () => window.removeEventListener('resize', handleResize)
   }, [])
@@ -40,7 +38,7 @@ function Cover({ isCurrentUser }: CoverProps) {
       />
       {isCurrentUser && (
         <BVLink
-          className="absolute left-auto right-2.5 top-2.5 rounded-full bg-secondary-50 p-3 md:left-8 md:right-auto md:top-8"
+          className="absolute right-2.5 top-2.5 rounded-full bg-secondary-50 p-3 md:left-8 md:right-auto md:top-8"
           href="/user/edit"
         >
           <Image src="/pencil.svg" alt="edit" width={18} height={18} />

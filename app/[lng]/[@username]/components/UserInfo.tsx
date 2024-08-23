@@ -8,6 +8,7 @@ import { BVButton } from '@/app/components/BVButton'
 interface User {
   username: string
   total_followers: number
+  avatar: string
 }
 interface UserInfoProps {
   isCurrentUser: boolean
@@ -15,7 +16,7 @@ interface UserInfoProps {
 const is_followed = false
 
 const UserInfo: React.FC<UserInfoProps> = ({ isCurrentUser }) => {
-  const user: User = { username: 'AlenaAenami', total_followers: 0 }
+  const user: User = { username: 'AlenaAenami', total_followers: 0, avatar: '' }
   const handleToggleFollow = () => {
     console.log('подписался/отписался')
   }
@@ -23,7 +24,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ isCurrentUser }) => {
   return (
     <div className="h-full border-0 md:rounded-medium md:px-5 md:py-4 2xl:border 2xl:border-secondary-200">
       <div className="relative flex w-full flex-col items-center md:gap-3 2xl:gap-5">
-        <BVAvatar className="absolute bottom-0 left-0 h-14 w-14 md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36" />
+        <BVAvatar
+          className="absolute bottom-0 left-0 h-14 w-14 md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36"
+          src={user.avatar}
+        />
         <div className="text-semixlarge font-bold">{user.username}</div>
         <div className="flex flex-row-reverse items-center gap-1 xl:flex-col">
           <div className="text-small text-secondary-500">Followers</div>
