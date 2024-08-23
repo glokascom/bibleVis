@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { updateAvatar, updateCover } from '@/app/actions/bucketService'
@@ -12,6 +13,7 @@ export async function POST(req) {
   try {
     if (formData.get('avatar')) {
       await updateAvatar(uuid, formData.get('avatar'))
+      revalidateTag(`avatar-${uuid}`)
     }
     if (formData.get('cover')) {
       await updateCover(uuid, formData.get('cover'))
