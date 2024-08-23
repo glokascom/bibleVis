@@ -5,9 +5,7 @@ import Image from 'next/image'
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
-function generateUniqueId(prefix = 'id') {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`
-}
+import { generateUniqueId } from '../actions/generateUniqueId'
 
 function ImageUpload({
   id,
@@ -62,8 +60,6 @@ function ImageUpload({
         URL.revokeObjectURL(objectUrl)
         return
       }
-
-      setPreview(objectUrl)
 
       try {
         const formData = new FormData()

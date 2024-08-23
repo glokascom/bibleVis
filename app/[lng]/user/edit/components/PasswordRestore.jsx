@@ -14,16 +14,21 @@ function Password({ userInfo }) {
   const [isVisible, setIsVisible] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setErrorMessage('')
+    setSuccessMessage('')
 
     if (newPassword !== confirmPassword) {
       setErrorMessage('Passwords do not match.')
       return
     }
+
+    setLoading(true)
 
     try {
       const response = await fetch('/api/auth/change-password', {
@@ -51,13 +56,15 @@ function Password({ userInfo }) {
     } catch (error) {
       console.error('Request error:', error)
       setErrorMessage('Failed to update password.')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <form className="flex max-w-96 flex-col gap-4" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="password" className="mb-2 text-medium font-medium">
+        <label htmlFor="currentPassword" className="mb-2 text-medium font-medium">
           Current Password
         </label>
         <BVInput
@@ -92,38 +99,43 @@ function Password({ userInfo }) {
             </button>
           }
           type={isVisible ? 'text' : 'password'}
+          id="currentPassword"
           isRequired
         />
       </div>
       <div>
-        <label htmlFor="password" className="mb-2 text-medium font-medium">
-          Password
+        <label htmlFor="newPassword" className="mb-2 text-medium font-medium">
+          New Password
         </label>
         <BVInput
           variant="bordered"
           size="sm"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          type={'password'}
+          type="password"
+          id="newPassword"
           isRequired
         />
       </div>
       <div>
-        <label htmlFor="password" className="mb-2 text-medium font-medium">
-          Password confirmation
+        <label htmlFor="confirmPassword" className="mb-2 text-medium font-medium">
+          Confirm Password
         </label>
         <BVInput
           variant="bordered"
           size="sm"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          type={'password'}
+          type="password"
+          id="confirmPassword"
           isRequired
         />
       </div>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       {successMessage && <p className="text-green-500">{successMessage}</p>}
-      <BVButton type="submit">Save</BVButton>
+      <BVButton type="submit" disabled={loading}>
+        {loading ? 'Saving...' : 'Save'}
+      </BVButton>
     </form>
   )
 }

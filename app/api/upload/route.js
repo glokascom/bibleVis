@@ -13,7 +13,7 @@ export async function POST(req) {
   try {
     if (formData.get('avatar')) {
       await updateAvatar(uuid, formData.get('avatar'))
-      revalidatePath(`user/edit`)
+      revalidatePath('/', 'layout')
     }
     if (formData.get('cover')) {
       await updateCover(uuid, formData.get('cover'))
