@@ -1,5 +1,4 @@
 import { getUserInfoById } from './actions/userService'
-import UserUpload from './components/UserUpload'
 
 export default async function Page({ params }) {
   const { uuid } = params
@@ -38,7 +37,6 @@ export default async function Page({ params }) {
       <p>
         <strong>Cover Exists:</strong> {cover_file_exists ? 'Yes' : 'No'}
       </p>
-      <UserUpload uuid={uuid} />
     </div>
   )
 }
