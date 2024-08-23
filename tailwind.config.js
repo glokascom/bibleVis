@@ -12,6 +12,9 @@ module.exports = {
       xxlarge: '2.25rem',
       mega: '3rem',
     },
+    heights: {
+      'screen-with-appbar': 'calc(100vh - 80px)',
+    },
   },
   darkMode: 'class',
   plugins: [
