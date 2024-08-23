@@ -1,4 +1,3 @@
-
 import { getUserInfoById } from './actions/userService'
 
 export default async function Page({ params }) {
