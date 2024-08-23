@@ -50,7 +50,7 @@ function ImageUpload({
 
     setError(null)
 
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png']
     if (!validImageTypes.includes(file.type)) {
       setError('Invalid file type. Please upload an image.')
       return
