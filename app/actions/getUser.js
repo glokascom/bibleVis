@@ -15,7 +15,7 @@ export async function getUser() {
     }
 
     const { data: userData, error: userError } = await supabase
-      .from('users')
+      .from('private_user_view')
       .select('*')
       .eq('id', data.user.id)
       .single()

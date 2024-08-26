@@ -15,7 +15,6 @@ import {
 import { Image } from '@nextui-org/image'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/navbar'
 
-import { useTranslation } from '../i18n/client'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
@@ -26,8 +25,7 @@ function formatSearchQuery(query) {
   return encodeURIComponent(query.replace(/\s+/g, '-'))
 }
 
-function Navigation({ lng, user }) {
-  const { t } = useTranslation(lng)
+function Navigation({ user }) {
   const [search, setSearch] = useState('')
   const { push } = useRouter()
   const handleSearch = () => {
@@ -104,7 +102,7 @@ function Navigation({ lng, user }) {
         </NavbarContent>
         <div className="flex items-center gap-2">
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
-            <BVLink href="/pages/license">{t('license')}</BVLink>
+            <BVLink href="/pages/license">License</BVLink>
           </NavbarItem>
           {user?.load ? (
             <NavbarItem className="hidden lg:block">

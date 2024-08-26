@@ -4,8 +4,11 @@ alter table "public"."users" add constraint "users_username_check" CHECK (((leng
 
 alter table "public"."users" validate constraint "users_username_check";
 
-create or replace view "public"."private_user_view" as  SELECT users.username,
+create or replace view "public"."private_user_view" as
+  SELECT users.username,
     users.total_folowers,
+    users.avatar_file_exists,
+    users.cover_file_exists,
     users.email,
     users.id
    FROM users;
@@ -15,7 +18,8 @@ create or replace view "public"."public_user_view" as  SELECT users.id,
     users.username,
     users.total_folowers,
     users.avatar_file_exists,
-    users.cover_file_exists
+    users.cover_file_exists,
+    users.id
    FROM users;
 
 
