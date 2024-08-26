@@ -18,7 +18,7 @@ interface CoverProps {
 
 function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
   const smallCover = followUserInfo.cover_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/original.jpg`
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/mobile.jpg`
     : `/cover.svg`
 
   const largeCover = followUserInfo.cover_file_exists
@@ -58,9 +58,5 @@ function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
     </div>
   )
 }
-/*TODO
-1. Взять изображение обложки для 2 размеров из сторейджа
-
-*/
 
 export default Cover
