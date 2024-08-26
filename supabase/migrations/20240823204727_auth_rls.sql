@@ -14,12 +14,12 @@ create or replace view "public"."private_user_view" as
    FROM users;
 
 
-create or replace view "public"."public_user_view" as  SELECT users.id,
+create or replace view "public"."public_user_view" as
+  SELECT users.id,
     users.username,
     users.total_folowers,
     users.avatar_file_exists,
-    users.cover_file_exists,
-    users.id
+    users.cover_file_exists
    FROM users;
 
 
