@@ -124,11 +124,11 @@ function ImageUploadDragDrop({ onImageChange }) {
                   alt="white star"
                   radius="none"
                 />
-                <p className="mt-16 text-mega font-medium text-white">Drop</p>
+                <p className="text-mega mt-16 font-medium text-white">Drop</p>
               </>
             ) : (
               <>
-                <p className="mb-5 text-xlarge font-medium md:hidden">Add a file</p>
+                <p className="text-xlarge mb-5 font-medium md:hidden">Add a file</p>
 
                 <div className="hidden flex-col items-center justify-center font-medium md:flex">
                   <Image
@@ -140,8 +140,8 @@ function ImageUploadDragDrop({ onImageChange }) {
                     alt="Star"
                     radius="none"
                   />
-                  <p className="mt-5 text-mega">Drag and Drop</p>
-                  <p className="my-7 text-xlarge">or</p>
+                  <p className="text-mega mt-5">Drag and Drop</p>
+                  <p className="text-xlarge my-7">or</p>
                 </div>
 
                 <BVButton onClick={openFileDialog}>Browse file</BVButton>
