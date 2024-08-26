@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react'
 import NextImage from 'next/image'
 
 import { Image } from '@nextui-org/image'
+import { Switch } from '@nextui-org/react'
 
+import { BVButton } from '@/app/components/BVButton'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import TagInput from '@/app/components/TagInput'
 import { openFileDialog, validateAndLoadImage } from '@/app/utils/imageUpload'
@@ -14,6 +16,33 @@ export default function Upload() {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
+  const [isAIGeneration, setIsAIGeneration] = useState(true)
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    prompt: '',
+    software: [],
+    tags: [],
+  })
+
+  const handleInputBlur =
+    (field) =>
+    ({ value }) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }))
+    }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('Stored data:', {
+      image: validImage,
+      isAIGeneration,
+      ...formData,
+    })
+  }
 
   const handleImageChange = (file, errorMessage) => {
     setError(errorMessage)
@@ -54,9 +83,13 @@ export default function Upload() {
   if (validImage) {
     return (
       <div className="mb-12 mt-11 flex flex-col gap-7 md:flex-row md:gap-5">
-        <div>
+        <div className="md:w-2/3">
           <div className="relative">
-            <Image src={validImage} alt="Uploaded image" radius="md" />
+            <Image
+              src={validImage}
+              alt="Uploaded image"
+              className="rounded-medium border"
+            />
             <button
               className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/30 bg-[rgba(150,150,150,0.5)] px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
               onClick={handleReplaceImage}
@@ -75,7 +108,7 @@ export default function Upload() {
             </button>
           </div>
 
-          <div className="hidden flex-row gap-10 md:mt-12 md:flex md:px-4">
+          <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
             <p className="md:w-1/3">
               <span className="font-bold">File Formats and Size:</span> Acceptable formats
               are JPG and PNG, with a maximum file size of 4MB and at least 1920 pixels on
@@ -92,27 +125,61 @@ export default function Upload() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 rounded-medium border p-5">
-          <TagInput
-            label="Title"
-            isTagInput={false}
-            limitLettersAllTags={140}
-            placeholder="Add title of the image"
-          />
-          <TagInput
-            label="Description"
-            isTagInput={false}
-            limitLettersAllTags={280}
-            placeholder="Add optional description of the image"
-          />
-          <TagInput
-            label="Prompt"
-            limitLettersAllTags={280}
-            placeholder="Add AI prompt that you used to create the image"
-          />
-          <TagInput label="Software Used" showCounter={false} />
-          <TagInput label="Image tags" />
-        </div>
+        <form onSubmit={handleSubmit} className="md:w-1/3">
+          <div className="flex flex-col gap-5 rounded-medium border p-5">
+            <TagInput
+              label="Title"
+              isTagInput={false}
+              isSmallHeight={true}
+              limitLettersAllTags={140}
+              placeholder="Add title of the image"
+              onBlur={handleInputBlur('title')}
+            />
+            <TagInput
+              label="Description"
+              isTagInput={false}
+              limitLettersAllTags={280}
+              placeholder="Add optional description of the image"
+              onBlur={handleInputBlur('description')}
+            />
+            <Switch
+              isSelected={isAIGeneration}
+              onValueChange={setIsAIGeneration}
+              classNames={{
+                wrapper: 'mr-5',
+              }}
+            >
+              This media is AI generation
+            </Switch>
+            {isAIGeneration && (
+              <div className="flex flex-col gap-5">
+                <TagInput
+                  label="Prompt"
+                  isTagInput={false}
+                  limitLettersAllTags={280}
+                  placeholder="Add AI prompt that you used to create the image"
+                  onBlur={handleInputBlur('prompt')}
+                />
+                <TagInput
+                  label="Software Used"
+                  showCounter={false}
+                  onBlur={handleInputBlur('software')}
+                />
+              </div>
+            )}
+            <TagInput label="Image tags" onBlur={handleInputBlur('tags')} />
+          </div>
+
+          <BVButton type="submit" className="my-7 w-full bg-secondary-50 text-inherit">
+            Publish
+          </BVButton>
+          <p
+            onClick={() => setValidImage(null)}
+            className="cursor-pointer text-center text-small text-primary"
+          >
+            Cancel
+          </p>
+        </form>
       </div>
     )
   }

@@ -10,9 +10,11 @@ export default function TagInput({
   limitLetters = 0,
   isTagInput = true,
   showCounter = true,
+  isSmallHeight = false,
   allowAddOnEnter = true,
   limitLettersAllTags = 250,
   onTagsChange = () => {},
+  onBlur = () => {},
 }) {
   const [inputValue, setInputValue] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
@@ -26,6 +28,14 @@ export default function TagInput({
   useEffect(() => {
     onTagsChange({ allTags, selectedTags })
   }, [allTags, onTagsChange, selectedTags])
+
+  const handleBlur = () => {
+    onBlur({
+      value: isTagInput ? selectedTags : inputValue,
+      allTags,
+      selectedTags,
+    })
+  }
 
   const scrollToBottom = () => {
     if (tagsContainerRef.current) {
@@ -88,9 +98,7 @@ export default function TagInput({
       return uniqueTags
     })
 
-    // Обновляем suggestions после удаления тега
     updateSuggestions(inputValue, newSelectedTags)
-
     scrollToBottom()
     inputRef.current?.focus()
   }
@@ -137,7 +145,7 @@ export default function TagInput({
   }, [selectedTags])
 
   return (
-    <div className="relative w-full max-w-md cursor-text rounded-medium">
+    <div className="relative w-full cursor-text rounded-medium">
       {label && (
         <label className="mb-4 block text-small">
           <span className="font-bold">{label}</span>{' '}
@@ -151,56 +159,61 @@ export default function TagInput({
       <div
         ref={tagsContainerRef}
         onClick={handleContainerClick}
-        className="rounded-medium border border-gray-100 bg-secondary-50 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
+        onBlur={handleBlur}
+        className="rounded-medium border border-secondary-50 bg-secondary-50 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
       >
-        <div className="flex h-28 flex-wrap content-start items-start gap-2.5 overflow-y-auto">
-          {isTagInput &&
-            selectedTags.map((tag, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500]"
-              >
-                <span>{tag}</span>
-                <button
-                  aria-label={`delete ${tag}`}
-                  onClick={() => removeTag(tag)}
-                  className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary leading-none text-white hover:opacity-hover"
-                >
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 10 10"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M2 2L5 5M8 8L5 5M5 5L8 2L2 8"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ))}
-
+        <div
+          className={`flex ${
+            isSmallHeight ? '' : 'h-20'
+          } flex-wrap content-start items-start gap-2.5 overflow-y-auto`}
+        >
           {isTagInput ? (
-            <input
-              ref={inputRef}
-              data-testid="tag-input"
-              value={inputValue}
-              placeholder={
-                selectedTags.length === 0
-                  ? placeholder ||
-                    `up to ${limitLettersAllTags} letters total, separated by commas`
-                  : ''
-              }
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              className="placeholder-text-secondary-200 flex-grow rounded-medium border-none bg-secondary-50 py-3 text-small font-[500] focus:outline-none focus:ring-0"
-              style={{ width: `${inputValue.length + 1}ch` }}
-            />
+            <>
+              {selectedTags.map((tag, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500]"
+                >
+                  <span>{tag}</span>
+                  <button
+                    aria-label={`delete ${tag}`}
+                    onClick={() => removeTag(tag)}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary leading-none text-white hover:opacity-hover"
+                  >
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2 2L5 5M8 8L5 5M5 5L8 2L2 8"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+              <input
+                ref={inputRef}
+                data-testid="tag-input"
+                value={inputValue}
+                placeholder={
+                  selectedTags.length === 0
+                    ? placeholder ||
+                      `Up to ${limitLettersAllTags} letters total, separated by commas`
+                    : ''
+                }
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className="flex-grow rounded-medium border-none bg-secondary-50 text-small font-[500] placeholder:text-secondary-200 focus:py-3 focus:outline-none focus:ring-0"
+                style={{ width: `${inputValue.length + 1}ch` }}
+              />
+            </>
           ) : (
             <textarea
               ref={inputRef}
@@ -208,7 +221,9 @@ export default function TagInput({
               value={inputValue}
               placeholder={placeholder || `up to ${limitLettersAllTags} letters total`}
               onChange={handleInputChange}
-              className="placeholder-text-secondary-200 h-full w-full flex-grow resize-none rounded-medium border-none bg-secondary-50 py-3 text-small font-[500] focus:outline-none focus:ring-0"
+              className={`placeholder:text-secondary-200 ${
+                isSmallHeight ? 'content-center leading-3' : ''
+              } h-full w-full flex-grow resize-none border-none bg-secondary-50 text-small font-[500] focus:outline-none focus:ring-0`}
             />
           )}
         </div>
