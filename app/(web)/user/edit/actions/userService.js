@@ -15,7 +15,7 @@ export async function getUserInfoById(userId) {
 export async function getUserInfoByUsername(username) {
   const { data, error } = await supabaseService
     .from('users')
-    .select('id,username, avatar_file_exists, cover_file_exists, email')
+    .select('id,username, avatar_file_exists, cover_file_exists, total_followers')
     .eq('username', username)
 
   if (error) {
