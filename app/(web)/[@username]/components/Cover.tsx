@@ -6,13 +6,24 @@ import Image from 'next/image'
 
 import { BVLink } from '@/app/components/BVLink'
 
-interface CoverProps {
-  isCurrentUser: boolean
+interface FollowUserInfo {
+  id: string
+  cover_file_exists: boolean
 }
 
-function Cover({ isCurrentUser }: CoverProps) {
-  const smallCover = '/cover.svg' // TODO берем с базы данных
-  const largeCover = '/cover.svg' // TODO берем с базы данных
+interface CoverProps {
+  isCurrentUser: boolean
+  followUserInfo: FollowUserInfo
+}
+
+function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
+  const smallCover = followUserInfo.cover_file_exists
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/original.jpg`
+    : `/cover.svg`
+
+  const largeCover = followUserInfo.cover_file_exists
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/original.jpg`
+    : `/cover.svg`
 
   const [viewportWidth, setViewportWidth] = useState<number>(0)
 
