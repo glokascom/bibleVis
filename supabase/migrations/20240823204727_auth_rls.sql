@@ -38,3 +38,5 @@ for update
 to public
 using ((( SELECT auth.uid() AS uid) = id))
 with check ((( SELECT auth.uid() AS uid) = id));
+
+REVOKE ALL ON TABLE users FROM public;
