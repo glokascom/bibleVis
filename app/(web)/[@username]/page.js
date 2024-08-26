@@ -20,7 +20,7 @@ export default async function UserDetail({ params }) {
   const followUserInfo = await getUserInfoByUsername(username)
 
   return (
-    <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 md:mt-9 md:flex-row md:gap-1">
+    <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mt-9 md:flex-row md:gap-1 md:px-12">
       <div className="max-w-7xl">
         <Cover isCurrentUser={isCurrentUser} followUserInfo={followUserInfo} />
       </div>
