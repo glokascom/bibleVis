@@ -1,12 +1,11 @@
-import { NextResponse } from 'next/server'
-import { NextApiRequest } from 'next/types'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { createClient } from '@/app/supabase/server'
 import { ApiError, ApiResponse } from '@/app/types/api'
 
 import { jsonResponse } from '../../response'
 
-export async function GET(request: NextApiRequest): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const url = new URL(request.url as string)
   const redirectTo = url.searchParams.get('redirectedFrom')
 

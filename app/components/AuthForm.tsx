@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
@@ -19,7 +19,6 @@ import { BVLink } from './BVLink'
 function AuthForm() {
   const [isSignupVisible, setIsSignupVisible] = useState(false)
   const [isLoginVisible, setIsLoginVisible] = useState(false)
-  const pathname = usePathname()
 
   const [loginErrors, setLoginErrors] = useState<{
     message: string
@@ -402,8 +401,7 @@ function AuthForm() {
                   Join
                 </BVButton>
                 <BVLink
-                  as={pathname.startsWith('/login') ? Link : 'div'}
-                  onClick={() => push('/forgot-password')}
+                  as={Link}
                   color="primary"
                   size="md"
                   className="mt-8 flex justify-center font-[500]"
