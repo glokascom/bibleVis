@@ -18,6 +18,10 @@ export default async function UserDetail({ params }) {
 
   const isCurrentUser = username === userInfo.username
   const followUserInfo = await getUserInfoByUsername(username)
+  if (!followUserInfo) {
+    redirect(`/login`)
+    return null
+  }
 
   return (
     <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mt-9 md:flex-row md:gap-1 md:px-12">
