@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import NextImage from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import {
   Dropdown,
@@ -15,7 +15,6 @@ import {
 import { Image } from '@nextui-org/image'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/navbar'
 
-import { useTranslation } from '../i18n/client'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
@@ -26,10 +25,9 @@ function formatSearchQuery(query) {
   return encodeURIComponent(query.replace(/\s+/g, '-'))
 }
 
-function Navigation({ lng }) {
-  const { t } = useTranslation(lng)
-  const [user, setUser] = useState(null)
+function Navigation({ user }) {
   const [search, setSearch] = useState('')
+  const pathname = usePathname()
   const { push } = useRouter()
   const handleSearch = () => {
     if (!search.trim()) return
@@ -45,39 +43,33 @@ function Navigation({ lng }) {
       }}
     >
       <NavbarContent as="div">
-        <NavbarBrand
-          className="mr-0 h-[20px] w-[26px] grow-0 basis-7 md:h-[45px] md:w-[180px] md:basis-48 lg:mr-14"
-          onClick={() => {
-            if (!user) {
-              setUser({ load: false })
-            } else {
-              setUser({ load: true })
-            }
-          }}
-        >
-          <Image
-            removeWrapper
-            as={NextImage}
-            height={45}
-            width={180}
-            src="/biblevis-logo.svg"
-            alt="Biblevis Logo"
-            priority
-            className="hidden md:block"
-            radius="none"
-          />
-          <Image
-            removeWrapper
-            as={NextImage}
-            height={20}
-            width={26}
-            src="/biblevis-logo-small.svg"
-            alt="Biblevis Logo"
-            priority
-            className="block md:hidden"
-            radius="none"
-          />
+        <NavbarBrand className="mr-0 h-[20px] w-[26px] grow-0 basis-7 md:h-[45px] md:w-[180px] md:basis-48 lg:mr-14">
+          <Link href="/">
+            <Image
+              removeWrapper
+              as={NextImage}
+              height={45}
+              width={180}
+              src="/biblevis-logo.svg"
+              alt="Biblevis Logo"
+              priority
+              className="hidden md:block"
+              radius="none"
+            />
+            <Image
+              removeWrapper
+              as={NextImage}
+              height={20}
+              width={26}
+              src="/biblevis-logo-small.svg"
+              alt="Biblevis Logo"
+              priority
+              className="block md:hidden"
+              radius="none"
+            />
+          </Link>
         </NavbarBrand>
+
         <NavbarContent className="flex-grow">
           <BVInput
             classNames={{
@@ -109,10 +101,9 @@ function Navigation({ lng }) {
             type="search"
           />
         </NavbarContent>
-
         <div className="flex items-center gap-2">
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
-            <BVLink href="/pages/license">{t('license')}</BVLink>
+            <BVLink href="/pages/license">License</BVLink>
           </NavbarItem>
           {user?.load ? (
             <NavbarItem className="hidden lg:block">
@@ -136,9 +127,13 @@ function Navigation({ lng }) {
                   <BVAvatar
                     as="button"
                     className="transition-transform"
-                    name="Jason Hughes"
+                    name={user.username}
                     size="md"
-                    src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                    src={
+                      user.avatar_file_exists
+                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${user.id}/avatars/normal.jpg`
+                        : 'null'
+                    }
                   />
                   <svg
                     width="11"
@@ -166,7 +161,7 @@ function Navigation({ lng }) {
                   base: 'py-2.5',
                 }}
               >
-                <DropdownItem key="my_profile" href="/@foxprogs" showDivider>
+                <DropdownItem key="my_profile" href={`/@${user.username}`} showDivider>
                   My Profile
                 </DropdownItem>
                 <DropdownItem key="edit_profile" href="/user/edit" showDivider>
@@ -175,7 +170,7 @@ function Navigation({ lng }) {
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
-                {user.load ? (
+                {user?.load ? (
                   <DropdownItem key="upload_image" href="/user/upload" showDivider>
                     Upload Image
                   </DropdownItem>
@@ -190,7 +185,7 @@ function Navigation({ lng }) {
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
-                  href="/api/auth/logout"
+                  href={`/api/auth/logout?redirectedFrom=${pathname}`}
                   className="text-primary"
                 >
                   Logout

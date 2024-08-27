@@ -7,10 +7,12 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    fontSize: {
-      xlarge: '1.5rem',
-      xxlarge: '2.25rem',
-      mega: '3rem',
+    extend: {
+      fontSize: {
+        semixlarge: '1.25rem',
+        xlarge: '1.5rem',
+        mega: '3rem',
+      },
     },
     heights: {
       'screen-with-appbar': 'calc(100vh - 80px)',
