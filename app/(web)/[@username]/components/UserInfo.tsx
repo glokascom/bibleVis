@@ -7,11 +7,14 @@ import Link from 'next/link'
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
+import { toggleFollow } from '../actions/userActions'
+
 interface FollowUserInfo {
   id: string
   username: string
   total_followers: number
   avatar_file_exists: boolean
+  isFollowed: boolean
 }
 
 interface UserInfo {
@@ -30,59 +33,14 @@ const UserInfo: React.FC<UserInfoProps> = ({
   userInfo,
   followUserInfo,
 }) => {
-  const [isFollowed, setIsFollowed] = useState(false)
+  const [isFollowed, setIsFollowed] = useState(followUserInfo.isFollowed)
   const [totalFollowers, setTotalFollowers] = useState(followUserInfo.total_followers)
-
-  useEffect(() => {
-    if (!isCurrentUser) {
-      const checkSubscription = async () => {
-        try {
-          const response = await fetch('/api/subscription/check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              followerUuid: userInfo.id,
-              followingUuid: followUserInfo.id,
-            }),
-          })
-
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-
-          const data = await response.json()
-          setIsFollowed(data.isFollowed)
-        } catch (error) {
-          console.error('Failed to check subscription status:', error)
-        }
-      }
-
-      checkSubscription()
-    }
-  }, [isCurrentUser, userInfo.id, followUserInfo.id])
 
   const handleToggleFollow = async () => {
     try {
-      const response = await fetch('/api/subscription/toggle', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          followerUuid: userInfo.id,
-          followingUuid: followUserInfo.id,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-
-      const data = await response.json()
-      setIsFollowed(data.isFollowed)
-      setTotalFollowers((prev) => (data.isFollowed ? prev + 1 : prev - 1))
+      const result = await toggleFollow(userInfo.id, followUserInfo.id)
+      setIsFollowed(result.isFollowed)
+      setTotalFollowers((prev) => prev + result.totalFollowers)
     } catch (error) {
       console.error('Failed to toggle follow state:', error)
     }
