@@ -48,11 +48,11 @@ const UserInfo: React.FC<UserInfoProps> = ({
 
   const smallAvatar = followUserInfo.avatar_file_exists
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/small.jpg`
-    : `/cover.svg`
+    : null
 
   const largeAvatar = followUserInfo.avatar_file_exists
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/normal.jpg`
-    : `/cover.svg`
+    : null
 
   const [viewportWidth, setViewportWidth] = useState<number>(0)
 
