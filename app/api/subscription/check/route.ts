@@ -1,13 +1,43 @@
-import { NextResponse } from 'next/server'
+import { ApiError } from 'next/dist/server/api-utils'
 
+import { ApiResponse } from '@/app/types/api'
+
+import { jsonResponse } from '../../response'
 import { checkIfSubscribed } from '../actions'
 
 export async function POST(request: Request) {
-  const { followerUuid, followingUuid } = await request.json()
+  try {
+    const { followerUuid, followingUuid } = await request.json()
 
-  // Get the boolean value indicating whether the user is followed
-  const isFollowed = await checkIfSubscribed(followerUuid, followingUuid)
+    if (followerUuid || !followingUuid) {
+      const errorResponse: ApiResponse<ApiError> = {
+        status: 'error',
+        message: 'Missing followerUuid or followingUuid',
+      }
+      return jsonResponse(errorResponse, 400)
+    }
 
-  // Return a response with the result of the subscription check
-  return NextResponse.json({ isFollowed })
+    const isFollowed = await checkIfSubscribed(followerUuid, followingUuid)
+
+    if (isFollowed === null) {
+      const errorResponse: ApiResponse<ApiError> = {
+        status: 'error',
+        message: 'Error checking subscription status',
+      }
+      return jsonResponse(errorResponse, 500)
+    }
+
+    const successResponse: ApiResponse<{ isFollowed: boolean }> = {
+      status: 'success',
+      data: { isFollowed: isFollowed ?? false },
+    }
+    return jsonResponse(successResponse, 200)
+  } catch (err) {
+    console.error(err)
+    const errorResponse: ApiResponse<ApiError> = {
+      status: 'error',
+      message: 'An unexpected error occurred.',
+    }
+    return jsonResponse(errorResponse, 500)
+  }
 }

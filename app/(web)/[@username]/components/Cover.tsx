@@ -5,16 +5,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { BVLink } from '@/app/components/BVLink'
-
-interface FollowUserInfo {
-  id: string
-  cover_file_exists: boolean
-}
-
-interface CoverProps {
-  isCurrentUser: boolean
-  followUserInfo: FollowUserInfo
-}
+import { CoverProps } from '@/app/types/subscription'
 
 function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
   const smallCover = followUserInfo.cover_file_exists

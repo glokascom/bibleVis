@@ -6,27 +6,9 @@ import Link from 'next/link'
 
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
+import { UserInfoProps } from '@/app/types/subscription'
 
 import { toggleFollow } from '../actions/userActions'
-
-interface FollowUserInfo {
-  id: string
-  username: string
-  total_followers: number
-  avatar_file_exists: boolean
-  isFollowed: boolean
-}
-
-interface UserInfo {
-  id: string
-  username: string
-}
-
-interface UserInfoProps {
-  isCurrentUser: boolean
-  followUserInfo: FollowUserInfo
-  userInfo: UserInfo
-}
 
 const UserInfo: React.FC<UserInfoProps> = ({
   isCurrentUser,

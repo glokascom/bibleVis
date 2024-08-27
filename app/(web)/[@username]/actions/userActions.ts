@@ -2,6 +2,8 @@
 
 import { headers } from 'next/headers'
 
+import { ApiResponse } from '@/app/types/api'
+
 export async function checkSubscription(followerUuid: string, followingUuid: string) {
   const headersList = headers()
   const origin = headersList.get('origin')
@@ -43,9 +45,18 @@ export async function toggleFollow(followerUuid: string, followingUuid: string) 
     throw new Error('Network response was not ok')
   }
 
-  const data = await response.json()
-  return {
-    isFollowed: data.isFollowed,
-    totalFollowers: data.isFollowed ? 1 : -1,
+  const data: ApiResponse<{ isFollowed: boolean }> = await response.json()
+
+  if (data.status === 'error') {
+    throw new Error(data.message || 'An unknown error occurred')
   }
+
+  if (data.status === 'success') {
+    return {
+      isFollowed: data.data.isFollowed,
+      totalFollowers: data.data.isFollowed ? 1 : -1,
+    }
+  }
+
+  throw new Error('Unexpected response format')
 }
