@@ -113,6 +113,7 @@ export default function TagInput({
       } else if (e.key === 'Backspace' && inputValue === '') {
         if (selectedTags.length > 0) {
           removeTag(selectedTags[selectedTags.length - 1])
+          setSuggestions([])
         }
       }
     }
@@ -145,7 +146,7 @@ export default function TagInput({
   }, [selectedTags])
 
   return (
-    <div className="relative w-full cursor-text rounded-medium">
+    <div className="relative w-full cursor-text">
       {label && (
         <label className="mb-4 block text-small">
           <span className="font-bold">{label}</span>{' '}
@@ -160,7 +161,7 @@ export default function TagInput({
         ref={tagsContainerRef}
         onClick={handleContainerClick}
         onBlur={handleBlur}
-        className="rounded-medium border border-secondary-50 bg-secondary-50 p-5 text-small font-[500] focus-within:ring-1 focus-within:ring-secondary"
+        className="rounded-medium border border-secondary-50 bg-secondary-50 p-5 text-small font-medium focus-within:ring-1 focus-within:ring-secondary"
       >
         <div
           className={`flex ${
@@ -172,7 +173,7 @@ export default function TagInput({
               {selectedTags.map((tag, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500]"
+                  className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small"
                 >
                   <span>{tag}</span>
                   <button
@@ -210,9 +211,25 @@ export default function TagInput({
                 }
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                className="flex-grow rounded-medium border-none bg-secondary-50 text-small font-[500] placeholder:text-secondary-200 focus:py-3 focus:outline-none focus:ring-0"
+                className={`flex-grow border-none bg-secondary-50 text-small placeholder:text-secondary-200 focus:outline-none focus:ring-0 ${inputValue.length > 0 || selectedTags.length > 0 ? 'py-3' : ''}`}
                 style={{ width: `${inputValue.length + 1}ch` }}
               />
+
+              {suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 top-full z-10 mt-2.5 rounded-medium border border-secondary bg-secondary-50 p-5 text-small shadow-small">
+                  <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
+                    {suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        onClick={() => addTag(suggestion)}
+                        className="flex cursor-pointer items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5 text-small hover:bg-secondary-200"
+                      >
+                        <span>{suggestion}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <textarea
@@ -223,26 +240,11 @@ export default function TagInput({
               onChange={handleInputChange}
               className={`placeholder:text-secondary-200 ${
                 isSmallHeight ? 'content-center leading-3' : ''
-              } h-full w-full flex-grow resize-none border-none bg-secondary-50 text-small font-[500] focus:outline-none focus:ring-0`}
+              } h-full w-full flex-grow resize-none border-none bg-secondary-50 text-small focus:outline-none focus:ring-0`}
             />
           )}
         </div>
       </div>
-      {isTagInput && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-medium border border-secondary bg-secondary-50 p-5 text-small font-[500] shadow-small">
-          <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
-            {suggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                onClick={() => addTag(suggestion)}
-                className="flex cursor-pointer items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5 text-small font-[500] hover:bg-secondary-200"
-              >
-                <span>{suggestion}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

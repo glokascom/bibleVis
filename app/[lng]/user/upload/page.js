@@ -80,6 +80,26 @@ export default function Upload() {
     }
   }, [errorImage, validImage])
 
+  const initialSoftwareTags = [
+    'Leonardo',
+    'Playground.ai',
+    'DALL-E 2 by OpenAI',
+    'MidJourney',
+    'Stable Diffusion',
+    'Artbreeder',
+    'Deep Dream Generator',
+    'Runway ML',
+    'NightCafe Studio',
+    'Craiyon',
+    'DeepArt',
+    `Let's Enhance`,
+    'This Person Does Not Exist',
+    'Pix2Pix by TensorFlow',
+    'BigGAN by DeepMind',
+    'Artisto',
+    'Deep Dream by Google',
+  ]
+
   if (validImage) {
     return (
       <div className="mb-12 mt-11 flex flex-col gap-7 md:flex-row md:gap-5">
@@ -91,7 +111,7 @@ export default function Upload() {
               className="rounded-medium border"
             />
             <button
-              className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/30 bg-[rgba(150,150,150,0.5)] px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
+              className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
               onClick={handleReplaceImage}
             >
               <Image
@@ -164,6 +184,7 @@ export default function Upload() {
                   label="Software Used"
                   showCounter={false}
                   onBlur={handleInputBlur('software')}
+                  initialTags={initialSoftwareTags}
                 />
               </div>
             )}
