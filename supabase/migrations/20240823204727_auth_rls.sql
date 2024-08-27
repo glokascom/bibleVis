@@ -6,7 +6,7 @@ alter table "public"."users" validate constraint "users_username_check";
 
 create or replace view "public"."private_user_view" as
   SELECT users.username,
-    users.total_followers,
+    users.total_folowers,
     users.avatar_file_exists,
     users.cover_file_exists,
     users.email,
@@ -17,7 +17,7 @@ create or replace view "public"."private_user_view" as
 create or replace view "public"."public_user_view" as
   SELECT users.id,
     users.username,
-    users.total_followers,
+    users.total_folowers,
     users.avatar_file_exists,
     users.cover_file_exists
    FROM users;
