@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import NextImage from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import {
   Dropdown,
@@ -27,6 +27,7 @@ function formatSearchQuery(query) {
 
 function Navigation({ user }) {
   const [search, setSearch] = useState('')
+  const pathname = usePathname()
   const { push } = useRouter()
   const handleSearch = () => {
     if (!search.trim()) return
@@ -113,7 +114,7 @@ function Navigation({ user }) {
           ) : (
             <></>
           )}
-          {user?.user ? (
+          {user ? (
             <Dropdown
               placement="bottom-end"
               className="bg-secondary-50"
@@ -126,9 +127,13 @@ function Navigation({ user }) {
                   <BVAvatar
                     as="button"
                     className="transition-transform"
-                    name="Jason Hughes"
+                    name={user.username}
                     size="md"
-                    src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                    src={
+                      user.avatar_file_exists
+                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${user.id}/avatars/normal.jpg`
+                        : 'null'
+                    }
                   />
                   <svg
                     width="11"
@@ -156,7 +161,7 @@ function Navigation({ user }) {
                   base: 'py-2.5',
                 }}
               >
-                <DropdownItem key="my_profile" href="/@foxprogs" showDivider>
+                <DropdownItem key="my_profile" href={`/@${user.username}`} showDivider>
                   My Profile
                 </DropdownItem>
                 <DropdownItem key="edit_profile" href="/user/edit" showDivider>
@@ -165,7 +170,7 @@ function Navigation({ user }) {
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
-                {user.load ? (
+                {user?.load ? (
                   <DropdownItem key="upload_image" href="/user/upload" showDivider>
                     Upload Image
                   </DropdownItem>
@@ -180,7 +185,7 @@ function Navigation({ user }) {
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
-                  href="/api/auth/logout"
+                  href={`/api/auth/logout?redirectedFrom=${pathname}`}
                   className="text-primary"
                 >
                   Logout

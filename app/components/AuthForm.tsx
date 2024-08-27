@@ -19,6 +19,7 @@ import { BVLink } from './BVLink'
 function AuthForm() {
   const [isSignupVisible, setIsSignupVisible] = useState(false)
   const [isLoginVisible, setIsLoginVisible] = useState(false)
+
   const [loginErrors, setLoginErrors] = useState<{
     message: string
     fields: errorField[]
@@ -204,9 +205,7 @@ function AuthForm() {
                 <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
                   <span className="text-medium font-medium text-secondary">or</span>
                 </div>
-                <label htmlFor="username" className="mb-2 text-medium font-medium">
-                  *Username
-                </label>
+                <label className="mb-2 text-medium font-medium">*Username</label>
                 <BVInput
                   variant="bordered"
                   size="sm"
@@ -220,9 +219,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'username')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label htmlFor="email" className="mb-2 text-medium font-medium">
-                  *Email
-                </label>
+                <label className="mb-2 text-medium font-medium">*Email</label>
                 <BVInput
                   type="email"
                   variant="bordered"
@@ -237,9 +234,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'email')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label htmlFor="password" className="mb-2 text-medium font-medium">
-                  *Password
-                </label>
+                <label className="mb-2 text-medium font-medium">*Password</label>
                 <BVInput
                   variant="bordered"
                   size="sm"
@@ -327,9 +322,7 @@ function AuthForm() {
                 <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
                   <span className="text-medium font-medium text-secondary">or</span>
                 </div>
-                <label htmlFor="email" className="mb-2 text-medium font-medium">
-                  *Email
-                </label>
+                <label className="mb-2 text-medium font-medium">*Email</label>
                 <BVInput
                   type="email"
                   variant="bordered"
@@ -342,9 +335,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'email')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label htmlFor="password" className="mb-2 text-medium font-medium">
-                  *Password
-                </label>
+                <label className="mb-2 text-medium font-medium">*Password</label>
                 <BVInput
                   variant="bordered"
                   size="sm"

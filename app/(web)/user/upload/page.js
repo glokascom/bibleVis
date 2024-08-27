@@ -46,7 +46,7 @@ export default function Upload() {
               className="hidden md:block"
             />
             <div className="w-44 max-w-96 md:w-auto">
-              <p className="text-xlarge md:text-mega mb-5 leading-6 md:leading-10">
+              <p className="mb-5 text-xlarge leading-6 md:text-mega md:leading-10">
                 Error
               </p>
               <p className="text-balance text-small md:text-large">{error}</p>
