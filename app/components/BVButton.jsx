@@ -24,7 +24,7 @@ export const BVButton = extendVariants(Button, {
     {
       isDisabled: true,
       color: 'primary',
-      class: 'opacity-100 background-secondary-50 cursor-not-allowed',
+      class: 'background-secondary-50 cursor-not-allowed',
     },
   ],
 })

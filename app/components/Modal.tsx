@@ -19,7 +19,7 @@ export function Modal({ children, closeModal, isImageForm = false }: ModalProps)
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 top-0 z-40 flex items-center justify-center bg-black/40">
+    <div className="fixed bottom-0 left-0 right-0 top-0 z-40 flex items-center justify-center bg-black/70">
       <div className="relative">
         {children}
         {isImageForm && (
@@ -31,7 +31,7 @@ export function Modal({ children, closeModal, isImageForm = false }: ModalProps)
             src="/close.svg"
             alt="close"
             radius="none"
-            className="absolute -right-14 top-0 cursor-pointer"
+            className="absolute -right-9 top-5 hidden cursor-pointer md:block"
             onClick={closeModal}
           />
         )}

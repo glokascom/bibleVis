@@ -16,8 +16,9 @@ export default function Upload() {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
-  const [isAIGeneration, setIsAIGeneration] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFormFilled, setIsFormFilled] = useState(false)
+  const [isAIGeneration, setIsAIGeneration] = useState(true)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -107,23 +108,31 @@ export default function Upload() {
     'Deep Dream by Google',
   ]
 
+  useEffect(() => {
+    const isAnyFieldFilled = Object.values(formData).some((value) =>
+      Array.isArray(value) ? value.length > 0 : Boolean(value)
+    )
+    setIsFormFilled(isAnyFieldFilled)
+  }, [formData])
+
   if (validImage) {
     return (
       <>
         <ImageFormDisplay
           imageFile={validImage}
+          isFormFilled={isFormFilled}
           handleSubmit={handleSubmit}
+          handleCancel={handleCancel}
           isAIGeneration={isAIGeneration}
           handleInputBlur={handleInputBlur}
           setIsAIGeneration={setIsAIGeneration}
           handleReplaceImage={handleReplaceImage}
           initialSoftwareTags={initialSoftwareTags}
-          handleCancel={handleCancel}
         />
 
         {isModalOpen && (
           <Modal isImageForm={true} closeModal={closeModal}>
-            <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+            <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
               <p className="px-7">Are you sure you want to cancel?</p>
               <div className="mt-12 flex justify-center gap-2">
                 <BVButton

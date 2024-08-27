@@ -15,6 +15,7 @@ function ImageFormDisplay({
   initialSoftwareTags = [],
   isAIGeneration = true,
   imageFile = null,
+  isFormFilled = false,
   handleCancel = () => {},
   handleSubmit = () => {},
   handleInputBlur = () => {},
@@ -136,7 +137,11 @@ function ImageFormDisplay({
           />
         </div>
 
-        <BVButton type="submit" className="my-7 w-full bg-secondary-50 text-inherit">
+        <BVButton
+          type="submit"
+          isDisabled={!isFormFilled}
+          className="my-7 w-full bg-secondary-50 text-inherit"
+        >
           {initialFormData ? 'Update' : 'Publish'}
         </BVButton>
         <p
