@@ -48,11 +48,11 @@ const UserInfo: React.FC<UserInfoProps> = ({
 
   const smallAvatar = followUserInfo.avatar_file_exists
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/small.jpg`
-    : null
+    : ''
 
   const largeAvatar = followUserInfo.avatar_file_exists
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/normal.jpg`
-    : null
+    : ''
 
   const [viewportWidth, setViewportWidth] = useState<number>(0)
 
@@ -71,7 +71,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
     <div className="h-full border-0 md:rounded-medium md:px-5 md:py-4 2xl:border 2xl:border-secondary-200">
       <div className="relative flex w-full flex-col items-center md:gap-3 2xl:gap-5">
         <BVAvatar
-          className="absolute bottom-0 left-0 h-14 w-14 md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36"
+          className="mega absolute bottom-0 left-0 h-14 w-14 md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36"
           src={imageSrc}
           alt={`${followUserInfo.username}'s avatar`}
         />
