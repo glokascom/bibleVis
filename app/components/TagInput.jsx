@@ -6,6 +6,7 @@ export default function TagInput({
   label,
   suggestionCount,
   placeholder = '',
+  initialValue = '',
   initialTags = [],
   limitLetters = 0,
   isTagInput = true,
@@ -16,8 +17,8 @@ export default function TagInput({
   onTagsChange = () => {},
   onBlur = () => {},
 }) {
-  const [inputValue, setInputValue] = useState('')
-  const [selectedTags, setSelectedTags] = useState([])
+  const [inputValue, setInputValue] = useState(isTagInput ? '' : initialValue)
+  const [selectedTags, setSelectedTags] = useState(isTagInput ? initialValue : [])
   const [suggestions, setSuggestions] = useState([])
   const [allTags, setAllTags] = useState(initialTags)
   const tagsContainerRef = useRef(null)
