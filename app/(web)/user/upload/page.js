@@ -6,8 +6,10 @@ import NextImage from 'next/image'
 
 import { Image } from '@nextui-org/image'
 
+import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
+import { Modal } from '@/app/components/Modal'
 import { openFileDialog, validateAndLoadImage } from '@/app/utils/imageUpload'
 
 export default function Upload() {
@@ -15,6 +17,7 @@ export default function Upload() {
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -68,6 +71,14 @@ export default function Upload() {
     })
   }
 
+  const handleCancel = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   useEffect(() => {
     return () => {
       if (errorImage) {
@@ -98,16 +109,43 @@ export default function Upload() {
 
   if (validImage) {
     return (
-      <ImageFormDisplay
-        imageFile={validImage}
-        handleSubmit={handleSubmit}
-        isAIGeneration={isAIGeneration}
-        handleInputBlur={handleInputBlur}
-        setIsAIGeneration={setIsAIGeneration}
-        handleReplaceImage={handleReplaceImage}
-        handleCancel={() => setValidImage(null)}
-        initialSoftwareTags={initialSoftwareTags}
-      />
+      <>
+        <ImageFormDisplay
+          imageFile={validImage}
+          handleSubmit={handleSubmit}
+          isAIGeneration={isAIGeneration}
+          handleInputBlur={handleInputBlur}
+          setIsAIGeneration={setIsAIGeneration}
+          handleReplaceImage={handleReplaceImage}
+          initialSoftwareTags={initialSoftwareTags}
+          handleCancel={handleCancel}
+        />
+
+        {isModalOpen && (
+          <Modal isImageForm={true} closeModal={closeModal}>
+            <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+              <p className="px-7">Are you sure you want to cancel?</p>
+              <div className="mt-12 flex justify-center gap-2">
+                <BVButton
+                  className="w-1/2 bg-secondary-50 text-inherit"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </BVButton>
+                <BVButton
+                  className="w-1/2 bg-danger"
+                  onClick={() => {
+                    setValidImage(null)
+                    closeModal()
+                  }}
+                >
+                  Confirm
+                </BVButton>
+              </div>
+            </div>
+          </Modal>
+        )}
+      </>
     )
   }
 
