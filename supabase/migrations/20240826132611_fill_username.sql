@@ -1,3 +1,4 @@
+-- TODO: delete for release
 CREATE OR REPLACE FUNCTION update_username_with_email()
 RETURNS void AS $$
 DECLARE
