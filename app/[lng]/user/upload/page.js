@@ -100,12 +100,12 @@ export default function Upload() {
     return (
       <ImageFormDisplay
         imageFile={validImage}
-        handleReplaceImage={handleReplaceImage}
-        isAIGeneration={isAIGeneration}
-        setIsAIGeneration={setIsAIGeneration}
-        handleInputBlur={handleInputBlur}
         handleSubmit={handleSubmit}
-        setImage={setValidImage}
+        isAIGeneration={isAIGeneration}
+        handleInputBlur={handleInputBlur}
+        setIsAIGeneration={setIsAIGeneration}
+        handleReplaceImage={handleReplaceImage}
+        handleCancel={() => setValidImage(null)}
         initialSoftwareTags={initialSoftwareTags}
       />
     )

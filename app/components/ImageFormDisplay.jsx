@@ -11,15 +11,15 @@ import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
 function ImageFormDisplay({
-  imageFile,
-  handleReplaceImage,
-  isAIGeneration,
-  setIsAIGeneration,
-  handleInputBlur,
-  handleSubmit,
-  setImage,
-  initialSoftwareTags,
   initialFormData,
+  initialSoftwareTags = [],
+  isAIGeneration = true,
+  imageFile = null,
+  handleCancel = () => {},
+  handleSubmit = () => {},
+  handleInputBlur = () => {},
+  setIsAIGeneration = () => {},
+  handleReplaceImage = () => {},
 }) {
   const [imageUrl, setImageUrl] = useState(null)
 
@@ -35,7 +35,18 @@ function ImageFormDisplay({
     <div className="mb-12 mt-11 flex flex-col gap-7 md:flex-row md:gap-5">
       <div className="md:w-2/3">
         <div className="relative">
-          <Image src={imageUrl} alt="Uploaded image" className="rounded-medium border" />
+          {imageFile ? (
+            <Image
+              src={imageUrl}
+              alt="Uploaded image"
+              className="rounded-medium border"
+            />
+          ) : (
+            <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
+              <p className="text-mega">No Image</p>
+              <p>Failed to display image. Please make sure the file was uploaded.</p>
+            </div>
+          )}
           <button
             className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
             onClick={handleReplaceImage}
@@ -129,7 +140,7 @@ function ImageFormDisplay({
           {initialFormData ? 'Update' : 'Publish'}
         </BVButton>
         <p
-          onClick={() => setImage(null)}
+          onClick={handleCancel}
           className="cursor-pointer text-center text-small text-primary"
         >
           Cancel
