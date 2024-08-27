@@ -16,9 +16,7 @@ export const metadata = {
   description: 'Some description here',
 }
 
-export default async function RootLayout(props: {
-  children: React.ReactNode
-}): Promise<JSX.Element> {
+export default function RootLayout(props: { children: React.ReactNode }): JSX.Element {
   const { children } = props
 
   return (

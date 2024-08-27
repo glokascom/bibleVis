@@ -6,7 +6,7 @@ import { ApiError, ApiResponse } from '@/app/types/api'
 import { jsonResponse } from '../../response'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const url = new URL(request.url as string)
+  const url = new URL(request.url)
   const redirectTo = url.searchParams.get('redirectedFrom')
 
   const supabase = createClient()
