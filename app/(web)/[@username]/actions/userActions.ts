@@ -1,5 +1,11 @@
+'use server'
+
+import { headers } from 'next/headers'
+
 export async function checkSubscription(followerUuid: string, followingUuid: string) {
-  const response = await fetch('/api/subscription/check', {
+  const headersList = headers()
+  const origin = headersList.get('origin')
+  const response = await fetch(`${origin}/api/subscription/check`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -19,7 +25,10 @@ export async function checkSubscription(followerUuid: string, followingUuid: str
 }
 
 export async function toggleFollow(followerUuid: string, followingUuid: string) {
-  const response = await fetch('/api/subscription/toggle', {
+  const headersList = headers()
+  const origin = headersList.get('origin')
+
+  const response = await fetch(`${origin}/api/subscription/toggle`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,6 +46,6 @@ export async function toggleFollow(followerUuid: string, followingUuid: string) 
   const data = await response.json()
   return {
     isFollowed: data.isFollowed,
-    totalFollowers: data.isFollowed ? 1 : -1, // Вернём инкремент или декремент
+    totalFollowers: data.isFollowed ? 1 : -1,
   }
 }
