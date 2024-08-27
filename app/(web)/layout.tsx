@@ -25,7 +25,6 @@ export default async function RootLayout(props: {
 }): Promise<JSX.Element> {
   const { children, modal } = props
   const { user } = await getUser()
-  console.log({ user })
   return (
     <html lang="en" className="light">
       <head />

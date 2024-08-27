@@ -30,6 +30,8 @@
     "react-cookie": "^7.2.0",
     "react-dom": "^18",
     "react-i18next": "^15.0.1",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-responsive-masonry": "^2.3.0",
     "sharp": "^0.33.5",
     "swagger-ui-react": "^5.17.14"
   },

@@ -7,10 +7,11 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extends: {
+    extend: {
       fontSize: {
         semixlarge: '1.25rem',
         xlarge: '1.5rem',
+        semimega: '2rem',
         mega: '3rem',
       },
     },
