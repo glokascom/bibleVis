@@ -4,7 +4,9 @@ alter table "public"."users" add constraint "users_username_check" CHECK (((leng
 
 alter table "public"."users" validate constraint "users_username_check";
 
-create or replace view "public"."private_user_view" as
+create or replace view "public"."private_user_view"
+with (security_invoker=on)
+as
   SELECT users.username,
     users.total_folowers,
     users.avatar_file_exists,
@@ -14,7 +16,9 @@ create or replace view "public"."private_user_view" as
    FROM users;
 
 
-create or replace view "public"."public_user_view" as
+create or replace view "public"."public_user_view"
+with (security_invoker=on)
+as
   SELECT users.id,
     users.username,
     users.total_folowers,
@@ -38,3 +42,5 @@ for update
 to public
 using ((( SELECT auth.uid() AS uid) = id))
 with check ((( SELECT auth.uid() AS uid) = id));
+
+REVOKE ALL ON TABLE users FROM public;
