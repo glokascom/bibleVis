@@ -19,7 +19,7 @@ export default async function UserDetail({ params }) {
   const isCurrentUser = username === userInfo.username
   const followUserInfo = await getUserInfoByUsername(username)
   if (!followUserInfo) {
-    redirect(`/login`)
+    redirect('404')
     return null
   }
 
