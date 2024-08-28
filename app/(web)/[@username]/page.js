@@ -5,6 +5,7 @@ import { getUser } from '@/app/actions/getUser'
 import { getUserInfoByUsername } from '../user/edit/actions/userService'
 import { checkIfSubscribed } from './actions/userActions'
 import Cover from './components/Cover'
+import Gallery from './components/Gallery'
 import UserInfo from './components/UserInfo'
 
 export default async function UserDetail({ params }) {
@@ -27,7 +28,10 @@ export default async function UserDetail({ params }) {
 
   const isFollowed = await checkIfSubscribed(followUserInfo.id)
 
+  const count_images_username = 50 //TODO нужно подсчитать кол-во картинок юзера
+
   return (
+   <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
     <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mt-9 md:flex-row md:gap-1 md:px-12">
       <div className="max-w-7xl">
         <Cover isCurrentUser={isCurrentUser} followUserInfo={followUserInfo} />
@@ -41,5 +45,7 @@ export default async function UserDetail({ params }) {
         />
       </div>
     </div>
+   <Gallery />
+   </main>
   )
 }
