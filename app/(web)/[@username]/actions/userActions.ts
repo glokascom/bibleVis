@@ -7,7 +7,7 @@ export async function toggleSubscription(followingUuid: string) {
   const followerUuid = (await getUser()).user.id
   const isFollowed = await checkIfSubscribed(followingUuid)
 
-  if (isFollowed === null) {
+  if (isFollowed === false) {
     console.error('Error checking subscription status')
     return { error: 'Error checking subscription status', totalFollowers: 0 }
   }
