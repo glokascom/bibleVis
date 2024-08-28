@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
+import Link from 'next/link'
 
 import { Image } from '@nextui-org/image'
 
+import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
@@ -19,6 +21,8 @@ export default function Upload() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isAIGeneration, setIsAIGeneration] = useState(true)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submittedImageUrl, setSubmittedImageUrl] = useState(null)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -44,6 +48,11 @@ export default function Upload() {
       isAIGeneration,
       ...formData,
     })
+    setIsSubmitted(true)
+    if (validImage) {
+      const url = URL.createObjectURL(validImage)
+      setSubmittedImageUrl(url)
+    }
   }
 
   const handleImageChange = (file, errorMessage) => {
@@ -85,8 +94,11 @@ export default function Upload() {
       if (errorImage) {
         URL.revokeObjectURL(errorImage)
       }
+      if (submittedImageUrl) {
+        URL.revokeObjectURL(submittedImageUrl)
+      }
     }
-  }, [errorImage])
+  }, [errorImage, submittedImageUrl])
 
   const initialSoftwareTags = [
     'Leonardo',
@@ -114,6 +126,56 @@ export default function Upload() {
     )
     setIsFormFilled(isAnyFieldFilled)
   }, [formData])
+
+  if (isSubmitted) {
+    return (
+      <div className="mx-auto mb-12 mt-11 flex max-w-3xl flex-col items-center justify-center text-center">
+        <div className="relative mb-36 md:mb-12">
+          <Image
+            src={submittedImageUrl}
+            alt="Uploaded image"
+            className="rounded-medium border shadow-large"
+          />
+
+          <Link
+            href="/user/edit-image"
+            className="absolute left-2.5 top-2.5 z-10 rounded-full bg-background p-3 md:left-5 md:top-5"
+          >
+            <Image
+              removeWrapper
+              as={NextImage}
+              height={17}
+              width={17}
+              src="/pencil.svg"
+              alt="pencil"
+              radius="none"
+            />
+          </Link>
+        </div>
+
+        <BVAvatar size="md" />
+
+        <p className="pb-7 pt-5 text-large font-semibold md:pb-12 md:pt-6">
+          Great, User! Your image has been uploaded successfully
+        </p>
+
+        <div className="flex justify-center gap-2">
+          <BVButton as={Link} href="/user" className="w-1/2 bg-secondary-50 text-inherit">
+            View my profile
+          </BVButton>
+          <BVButton
+            onClick={() => {
+              setValidImage(null)
+              setIsSubmitted(false)
+            }}
+            className="w-1/2"
+          >
+            Upload an image
+          </BVButton>
+        </div>
+      </div>
+    )
+  }
 
   if (validImage) {
     return (
@@ -204,7 +266,7 @@ export default function Upload() {
           )}
         </div>
       ) : (
-        <div className="mb-5 mt-20 text-center md:mb-7 md:mt-16 md:w-2/5 md:self-center">
+        <div className="mb-5 mt-20 text-balance text-center md:mb-7 md:mt-16 md:w-2/5 md:self-center">
           <p className="text-xxlarge md:text-mega">Upload your image</p>
           <p className="my-5 text-small text-secondary-400">
             Join our community of creators and showcase your talent by uploading your
