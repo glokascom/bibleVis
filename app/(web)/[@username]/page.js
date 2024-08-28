@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import { getUser } from '@/app/actions/getUser'
 
@@ -19,7 +19,7 @@ export default async function UserDetail({ params }) {
   const isCurrentUser = username === userInfo.username
   const followUserInfo = await getUserInfoByUsername(username)
   if (!followUserInfo) {
-    redirect('404')
+    notFound()
     return null
   }
 
