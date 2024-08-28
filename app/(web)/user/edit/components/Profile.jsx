@@ -13,13 +13,11 @@ function Profile({ userInfo }) {
             label="Avatar"
             buttonLabel="Upload new avatar"
             isAvatar={true}
-            userId={userInfo.id}
             userInfo={userInfo}
           />
           <ImageUpload
             label="Cover image"
             buttonLabel="Upload new cover image"
-            userId={userInfo.id}
             requiredWidth={1280}
             requiredHeight={400}
             previewSize={{ width: 384, height: 120 }}

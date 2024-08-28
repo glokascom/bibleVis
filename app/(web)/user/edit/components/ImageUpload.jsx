@@ -5,21 +5,17 @@ import Image from 'next/image'
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
-import { generateUniqueId } from '../actions/generateUniqueId'
 import { uploadImage } from '../actions/uploadImage'
 
 function ImageUpload({
-  id,
   label,
   buttonLabel,
-  userId,
   isAvatar = false,
   requiredWidth,
   requiredHeight,
   previewSize = { width: 100, height: 100 },
   userInfo,
 }) {
-  const inputId = id || generateUniqueId('upload')
   const [error, setError] = useState(null)
 
   const handleFileChange = async (e) => {
@@ -50,14 +46,13 @@ function ImageUpload({
         requiredHeight &&
         (img.width !== requiredWidth || img.height !== requiredHeight)
       ) {
-        setError(`Image must be ${requiredWidth}x${requiredHeight} pixels.`)
+        setError(`Image must be ${requiredWidth} x ${requiredHeight} pixels.`)
         URL.revokeObjectURL(objectUrl)
         return
       }
 
       try {
         const formData = new FormData()
-        formData.append('uuid', userId)
         formData.append(isAvatar ? 'avatar' : 'cover', file)
 
         const { error } = await uploadImage(formData)
@@ -94,19 +89,18 @@ function ImageUpload({
             className="rounded-medium"
           />
         )}
-        <label htmlFor={inputId}>
+        <label>
           <BVButton as="span">{buttonLabel}</BVButton>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
         </label>
-        <input
-          id={inputId}
-          type="file"
-          onChange={handleFileChange}
-          accept="image/*"
-          className="hidden"
-        />
         {requiredWidth && requiredHeight && (
           <div className="text-small">
-            {requiredWidth} x {requiredHeight} px
+            {requiredWidth} x {requiredHeight} pixels
           </div>
         )}
         {error && <div className="text-red-500">{error}</div>}

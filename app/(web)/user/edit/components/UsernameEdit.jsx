@@ -17,7 +17,7 @@ function UsernameEdit({ userInfo }) {
     setLoading(true)
     setError('')
     try {
-      const { error } = await updateUsername(userInfo.id, username)
+      const { error } = await updateUsername(username)
       if (error) {
         throw new Error(error)
       }

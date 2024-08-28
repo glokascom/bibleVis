@@ -30,11 +30,11 @@ function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
   const imageSrc = viewportWidth <= 640 ? smallCover : largeCover
 
   return (
-    <div className="relative max-h-[400px] overflow-hidden rounded-medium">
+    <div className="relative h-full overflow-hidden rounded-medium">
       <Image
         src={imageSrc}
         alt="cover"
-        className="object-contain"
+        className="h-full object-cover"
         width={1280}
         height={400}
       />
