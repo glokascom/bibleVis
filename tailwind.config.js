@@ -11,6 +11,7 @@ module.exports = {
       fontSize: {
         semixlarge: '1.25rem',
         xlarge: '1.5rem',
+        semimega: '2rem',
         mega: '3rem',
       },
     },
