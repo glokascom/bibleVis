@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react'
 
+import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
+import { Modal } from '@/app/components/Modal'
 
 export default function EditImage() {
   const [validImage, setValidImage] = useState(null)
   const [isFormFilled, setIsFormFilled] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     isAIGeneration: true,
     title: 'заголовок',
@@ -29,28 +32,47 @@ export default function EditImage() {
       image: validImage,
       ...formData,
     })
-    // setIsSubmitted(true)
-    if (validImage) {
-      // const url = URL.createObjectURL(validImage)
-      // setSubmittedImageUrl(url)
-    }
   }
 
-  const handleCancel = () => {
-    setIsModalOpen(true)
+  const closeModal = () => {
+    setIsModalOpen(false)
   }
 
   return (
     <>
       <ImageFormDisplay
         initialFormData={formData}
-        setFormData={setFormData}
         imageFile={validImage}
+        setFormData={setFormData}
         isFormFilled={isFormFilled}
         handleSubmit={handleSubmit}
-        handleCancel={handleCancel}
+        handleCancel={() => setIsModalOpen(true)}
         setValidImage={setValidImage}
       />
+
+      {isModalOpen && (
+        <Modal isImageForm={true} closeModal={closeModal}>
+          <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+            <p className="px-7">Are you sure you want to cancel?</p>
+            <div className="mt-12 flex justify-center gap-2">
+              <BVButton
+                className="w-1/2 bg-secondary-50 text-inherit"
+                onClick={closeModal}
+              >
+                Cancel
+              </BVButton>
+              <BVButton
+                className="w-1/2 bg-danger"
+                onClick={() => {
+                  closeModal()
+                }}
+              >
+                Confirm
+              </BVButton>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   )
 }

@@ -12,7 +12,6 @@ import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
-import { openFileDialog, validateAndLoadImage } from '@/app/utils/imageUpload'
 
 export default function Upload() {
   const [error, setError] = useState(null)
@@ -20,7 +19,6 @@ export default function Upload() {
   const [validImage, setValidImage] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFormFilled, setIsFormFilled] = useState(false)
-  const [isAIGeneration, setIsAIGeneration] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submittedImageUrl, setSubmittedImageUrl] = useState(null)
 
@@ -32,20 +30,10 @@ export default function Upload() {
     tags: [],
   })
 
-  const handleInputBlur =
-    (field) =>
-    ({ value }) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }))
-    }
-
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Stored data:', {
       image: validImage,
-      isAIGeneration,
       ...formData,
     })
     setIsSubmitted(true)
@@ -75,16 +63,6 @@ export default function Upload() {
     }
   }
 
-  const handleReplaceImage = () => {
-    openFileDialog((file) => {
-      validateAndLoadImage(file, handleImageChange)
-    })
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(true)
-  }
-
   const closeModal = () => {
     setIsModalOpen(false)
   }
@@ -99,26 +77,6 @@ export default function Upload() {
       }
     }
   }, [errorImage, submittedImageUrl])
-
-  const initialSoftwareTags = [
-    'Leonardo',
-    'Playground.ai',
-    'DALL-E 2 by OpenAI',
-    'MidJourney',
-    'Stable Diffusion',
-    'Artbreeder',
-    'Deep Dream Generator',
-    'Runway ML',
-    'NightCafe Studio',
-    'Craiyon',
-    'DeepArt',
-    `Let's Enhance`,
-    'This Person Does Not Exist',
-    'Pix2Pix by TensorFlow',
-    'BigGAN by DeepMind',
-    'Artisto',
-    'Deep Dream by Google',
-  ]
 
   useEffect(() => {
     const isAnyFieldFilled = Object.values(formData).some((value) =>
@@ -182,14 +140,11 @@ export default function Upload() {
       <>
         <ImageFormDisplay
           imageFile={validImage}
+          setFormData={setFormData}
           isFormFilled={isFormFilled}
           handleSubmit={handleSubmit}
-          handleCancel={handleCancel}
-          isAIGeneration={isAIGeneration}
-          handleInputBlur={handleInputBlur}
-          setIsAIGeneration={setIsAIGeneration}
-          handleReplaceImage={handleReplaceImage}
-          initialSoftwareTags={initialSoftwareTags}
+          handleCancel={() => setIsModalOpen(true)}
+          setValidImage={setValidImage}
         />
 
         {isModalOpen && (
