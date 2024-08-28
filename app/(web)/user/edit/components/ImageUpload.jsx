@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Image from 'next/image'
 
@@ -6,6 +6,7 @@ import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 
 import { generateUniqueId } from '../actions/generateUniqueId'
+import { uploadImage } from '../actions/uploadImage'
 
 function ImageUpload({
   id,
@@ -16,17 +17,10 @@ function ImageUpload({
   requiredWidth,
   requiredHeight,
   previewSize = { width: 100, height: 100 },
-  defaultSrc = null,
+  userInfo,
 }) {
   const inputId = id || generateUniqueId('upload')
-  const [preview, setPreview] = useState(defaultSrc || null)
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    if (defaultSrc) {
-      setPreview(defaultSrc)
-    }
-  }, [defaultSrc])
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
@@ -66,17 +60,10 @@ function ImageUpload({
         formData.append('uuid', userId)
         formData.append(isAvatar ? 'avatar' : 'cover', file)
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        if (!response.ok) {
-          const result = await response.json()
-          throw new Error(result.error || 'Failed to upload image.')
+        const { error } = await uploadImage(formData)
+        if (error) {
+          throw new Error(error)
         }
-
-        await response.json()
       } catch (err) {
         setError(err.message)
         URL.revokeObjectURL(objectUrl)
@@ -94,10 +81,10 @@ function ImageUpload({
       <div className="mb-2.5 font-bold">{label}</div>
       <div className="flex flex-col items-center gap-5 rounded-small bg-secondary-50 px-4 py-7">
         {isAvatar ? (
-          <BVAvatar size="xxl" src={preview} />
+          <BVAvatar size="xxl" src={userInfo.avatarUrl} />
         ) : (
           <Image
-            src={preview}
+            src={userInfo.coverUrl}
             alt="preview"
             width={previewSize.width}
             height={previewSize.height}

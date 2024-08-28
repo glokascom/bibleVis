@@ -14,6 +14,8 @@ export interface FollowUserInfo {
 export interface UserInfo {
   id: string
   username: string
+  avatarUrl: string
+  coverUrl: string
 }
 
 export interface UserInfoProps {
