@@ -12,9 +12,9 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 
 function ImageForGallery({ image }) {
-  const is_current_image_liked = true // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер
-  const handleToggleFollow = () => {
-    console.log('follow/unfollow')
+  const is_current_image_liked = true // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер, скорей всего параметр уже нужно на сервере прикрутить к image, чтобы было удобнее
+  const handleToggleLike = (uuid) => {
+    console.log('like/unlike', uuid)
     // TODO: с помощью серверной функции в базе поменять значение, в функции сделат ревалидейт
     //P.s. эта фунцкция не нужна в данной реализации, если займёт много времени
   }
@@ -28,7 +28,10 @@ function ImageForGallery({ image }) {
         image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
       } overflow-hidden`}
     >
-      <BVLink className="absolute inset-0 h-full w-full" href={`/image/${image.uuid}`}>
+      <BVLink
+        className="absolute inset-0 h-full w-full group-hover:opacity-80"
+        href={`/image/${image.title}`}
+      >
         <Image
           src={image.url}
           alt="image of gallery"
@@ -37,7 +40,7 @@ function ImageForGallery({ image }) {
         />
       </BVLink>
       <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="ml-12">{image.title}</div>
+        <div className="ml-12 group-hover:opacity-80">{image.title}</div>
         <BVLink className="flex items-center gap-2" href={`/@${image.user.username}`}>
           <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
           <div className="text-large font-bold text-background">
@@ -47,8 +50,8 @@ function ImageForGallery({ image }) {
       </div>
       {!is_current_user_image ? (
         <div
-          className="absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3"
-          onClick={handleToggleFollow}
+          className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+          onClick={() => handleToggleLike(image.uuid)}
         >
           <Image
             src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
