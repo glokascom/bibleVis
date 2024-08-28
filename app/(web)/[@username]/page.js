@@ -27,7 +27,7 @@ export default async function UserDetail({ params }) {
 
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mt-9 md:flex-row md:gap-1 md:px-12">
+      <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mb-12 md:mt-9 md:flex-row md:gap-1 md:px-0">
         <div className="max-w-7xl">
           <Cover isCurrentUser={isCurrentUser} followUserInfo={followUserInfo} />
         </div>

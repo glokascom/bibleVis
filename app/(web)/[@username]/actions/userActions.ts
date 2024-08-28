@@ -32,7 +32,7 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (selectError) throw new Error('Error retrieving user data')
       if (!userData) throw new Error('User data not found')
-
+      //TODO:add trigger
       // Уменьшение числа подписчиков
       const newFollowersCount = userData.total_followers - 1
       const { error: updateError } = await supabaseService
@@ -60,7 +60,7 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (selectError) throw new Error('Error retrieving user data')
       if (!userData) throw new Error('User data not found')
-
+      //TODO:add trigger
       // Увеличение числа подписчиков
       const newFollowersCount = userData.total_followers + 1
       const { error: updateError } = await supabaseService
