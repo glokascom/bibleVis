@@ -14,6 +14,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   isCurrentUser,
   followUserInfo,
   initialIsFollowed,
+  userInfo,
 }) => {
   const [isFollowed, setIsFollowed] = useState<boolean>(initialIsFollowed || false)
   const [totalFollowers, setTotalFollowers] = useState(followUserInfo.total_followers)
@@ -75,6 +76,10 @@ const UserInfo: React.FC<UserInfoProps> = ({
               Edit Profile
             </BVButton>
           </Link>
+        ) : !userInfo ? (
+          <BVButton as={Link} href="/login" fullWidth color="primary" className="mt-5">
+            Follow
+          </BVButton>
         ) : (
           <BVButton
             fullWidth

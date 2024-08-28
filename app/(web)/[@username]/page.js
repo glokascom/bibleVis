@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 import { getUser } from '@/app/actions/getUser'
 
@@ -13,12 +13,7 @@ export default async function UserDetail({ params }) {
   const data = await getUser()
   const userInfo = data?.user
 
-  if (!userInfo) {
-    redirect(`/login?redirectedFrom=@${username}`)
-    return null
-  }
-
-  const isCurrentUser = username === userInfo.username
+  const isCurrentUser = username === userInfo?.username ? true : false
   const followUserInfo = await getUserInfoByUsername(username)
 
   if (!followUserInfo) {
@@ -26,7 +21,7 @@ export default async function UserDetail({ params }) {
     return null
   }
 
-  const isFollowed = await checkIfSubscribed(followUserInfo.id)
+  const isFollowed = userInfo ? await checkIfSubscribed(followUserInfo.id) : false
 
   // const count_images_username = 50 //TODO нужно подсчитать кол-во картинок юзера
 
