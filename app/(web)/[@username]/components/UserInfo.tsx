@@ -8,21 +8,26 @@ import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
 import { UserInfoProps } from '@/app/types/subscription'
 
-import { toggleFollow } from '../actions/userActions'
+import { toggleSubscription } from '../actions/userActions'
 
 const UserInfo: React.FC<UserInfoProps> = ({
   isCurrentUser,
-  userInfo,
   followUserInfo,
+  initialIsFollowed,
 }) => {
-  const [isFollowed, setIsFollowed] = useState(followUserInfo.isFollowed)
+  const [isFollowed, setIsFollowed] = useState<boolean>(initialIsFollowed || false)
   const [totalFollowers, setTotalFollowers] = useState(followUserInfo.total_followers)
 
   const handleToggleFollow = async () => {
     try {
-      const result = await toggleFollow(userInfo.id, followUserInfo.id)
-      setIsFollowed(result.isFollowed)
-      setTotalFollowers((prev) => prev + result.totalFollowers)
+      const result = await toggleSubscription(followUserInfo.id)
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
+      setIsFollowed(result.isFollowed ?? false)
+      setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
     } catch (error) {
       console.error('Failed to toggle follow state:', error)
     }

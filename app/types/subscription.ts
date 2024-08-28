@@ -19,6 +19,7 @@ export interface UserInfo {
 export interface UserInfoProps {
   isCurrentUser: boolean
   followUserInfo: FollowUserInfo
+  initialIsFollowed: boolean
   userInfo: UserInfo
 }
 

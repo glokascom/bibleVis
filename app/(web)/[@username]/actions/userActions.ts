@@ -1,62 +1,101 @@
 'use server'
 
-import { headers } from 'next/headers'
+import { getUser } from '@/app/actions/getUser'
+import { supabaseService } from '@/app/supabase/service'
 
-import { ApiResponse } from '@/app/types/api'
+export async function toggleSubscription(followingUuid: string) {
+  const followerUuid = (await getUser()).user.id
+  const isFollowed = await checkIfSubscribed(followingUuid)
 
-export async function checkSubscription(followerUuid: string, followingUuid: string) {
-  const headersList = headers()
-  const origin = headersList.get('origin')
-  const response = await fetch(`${origin}/api/subscription/check`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      followerUuid,
-      followingUuid,
-    }),
-  })
-
-  if (!response.ok) {
-    throw new Error('Network response was not ok')
+  if (isFollowed === null) {
+    console.error('Error checking subscription status')
+    return { error: 'Error checking subscription status', totalFollowers: 0 }
   }
 
-  const data = await response.json()
-  return data.isFollowed
-}
+  try {
+    if (isFollowed) {
+      // Удаление подписки
+      const { error: deleteError } = await supabaseService
+        .from('subscriptions')
+        .delete()
+        .eq('follower_id', followerUuid)
+        .eq('following_id', followingUuid)
 
-export async function toggleFollow(followerUuid: string, followingUuid: string) {
-  const headersList = headers()
-  const origin = headersList.get('origin')
+      if (deleteError) throw new Error('Error deleting subscription')
 
-  const response = await fetch(`${origin}/api/subscription/toggle`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      followerUuid,
-      followingUuid,
-    }),
-  })
+      // Получение текущего числа подписчиков
+      const { data: userData, error: selectError } = await supabaseService
+        .from('users')
+        .select('total_followers')
+        .eq('id', followingUuid)
+        .single()
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok')
-  }
+      if (selectError) throw new Error('Error retrieving user data')
+      if (!userData) throw new Error('User data not found')
 
-  const data: ApiResponse<{ isFollowed: boolean }> = await response.json()
+      // Уменьшение числа подписчиков
+      const newFollowersCount = userData.total_followers - 1
+      const { error: updateError } = await supabaseService
+        .from('users')
+        .update({ total_followers: newFollowersCount })
+        .eq('id', followingUuid)
 
-  if (data.status === 'error') {
-    throw new Error(data.message || 'An unknown error occurred')
-  }
+      if (updateError) throw new Error('Error decreasing follower count')
 
-  if (data.status === 'success') {
-    return {
-      isFollowed: data.data.isFollowed,
-      totalFollowers: data.data.isFollowed ? 1 : -1,
+      return { isFollowed: false, totalFollowers: newFollowersCount }
+    } else {
+      // Создание подписки
+      const { error: insertError } = await supabaseService
+        .from('subscriptions')
+        .insert([{ follower_id: followerUuid, following_id: followingUuid }])
+
+      if (insertError) throw new Error('Error creating subscription')
+
+      // Получение текущего числа подписчиков
+      const { data: userData, error: selectError } = await supabaseService
+        .from('users')
+        .select('total_followers')
+        .eq('id', followingUuid)
+        .single()
+
+      if (selectError) throw new Error('Error retrieving user data')
+      if (!userData) throw new Error('User data not found')
+
+      // Увеличение числа подписчиков
+      const newFollowersCount = userData.total_followers + 1
+      const { error: updateError } = await supabaseService
+        .from('users')
+        .update({ total_followers: newFollowersCount })
+        .eq('id', followingUuid)
+
+      if (updateError) throw new Error('Error increasing follower count')
+
+      return { isFollowed: true, totalFollowers: newFollowersCount }
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message)
+      return { error: error.message, totalFollowers: 0 }
+    } else {
+      console.error('Unknown error occurred')
+      return { error: 'Unknown error occurred', totalFollowers: 0 }
     }
   }
+}
 
-  throw new Error('Unexpected response format')
+export async function checkIfSubscribed(followingUuid: string): Promise<boolean> {
+  const followerUuid = (await getUser()).user.id
+
+  const { data, error } = await supabaseService
+    .from('subscriptions')
+    .select('id')
+    .eq('follower_id', followerUuid)
+    .eq('following_id', followingUuid)
+
+  if (error) {
+    console.error('Error checking subscription:', error)
+    return false
+  }
+
+  return data && data.length > 0
 }

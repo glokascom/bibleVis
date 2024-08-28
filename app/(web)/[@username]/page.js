@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getUser } from '@/app/actions/getUser'
 
 import { getUserInfoByUsername } from '../user/edit/actions/userService'
+import { checkIfSubscribed } from './actions/userActions'
 import Cover from './components/Cover'
 import UserInfo from './components/UserInfo'
 
@@ -18,10 +19,13 @@ export default async function UserDetail({ params }) {
 
   const isCurrentUser = username === userInfo.username
   const followUserInfo = await getUserInfoByUsername(username)
+
   if (!followUserInfo) {
     notFound()
     return null
   }
+
+  const isFollowed = await checkIfSubscribed(followUserInfo.id)
 
   return (
     <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mt-9 md:flex-row md:gap-1 md:px-12">
@@ -33,6 +37,7 @@ export default async function UserDetail({ params }) {
           isCurrentUser={isCurrentUser}
           userInfo={userInfo}
           followUserInfo={followUserInfo}
+          initialIsFollowed={isFollowed}
         />
       </div>
     </div>
