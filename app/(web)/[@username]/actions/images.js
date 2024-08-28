@@ -1,3 +1,7 @@
+'use server'
+
+import { supabaseService } from '@/app/supabase/service'
+
 let cachedImages = null
 let currentPage = 1
 
@@ -49,4 +53,38 @@ export const loadNextPage = async () => {
   const images = await getImages(currentPage)
   currentPage += 1
   return images
+}
+
+export const getUserImagesWithLikes = async (userId) => {
+  try {
+    const { data, error } = await supabaseService
+      .from('images')
+      .select(
+        `
+        *,
+        likes (
+          id
+        )
+      `
+      )
+      .eq('user_id', userId)
+      .order('uploaded_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching images:', error)
+      return []
+    }
+
+    const imagesWithLikes = data.map((image) => {
+      return {
+        ...image,
+        is_liked: image.likes.some((like) => like.user_id === userId),
+      }
+    })
+
+    return imagesWithLikes
+  } catch (err) {
+    console.error('Error:', err)
+    return []
+  }
 }
