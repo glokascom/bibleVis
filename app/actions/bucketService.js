@@ -3,6 +3,7 @@ import sharp from 'sharp'
 import { supabaseService } from '@/app/supabase/service'
 
 import { createClient } from '../supabase/server'
+import { getUser } from './getUser'
 
 const BUCKET_NAME = 'profile'
 const MAX_AVATAR_SIZE_MB = 2 // Максимальный размер аватара в мегабайтах
@@ -88,7 +89,12 @@ async function fileToBuffer(file) {
   return Buffer.from(await file.arrayBuffer())
 }
 
-async function updateAvatar(userId, newAvatarFile) {
+async function updateAvatar(newAvatarFile) {
+  const { user, error: userError } = await getUser()
+  if (userError) {
+    console.error('Error getting user:', userError.message)
+    throw new Error(userError?.message || 'User is not authenticated.')
+  }
   const avatarType = 'avatars'
 
   // Convert image to buffer
@@ -106,7 +112,7 @@ async function updateAvatar(userId, newAvatarFile) {
   }
 
   try {
-    await processAndUploadImage(userId, fileBuffer, avatarType, [
+    await processAndUploadImage(user.id, fileBuffer, avatarType, [
       { width: 100, height: 100, suffix: 'normal' },
       { width: 35, height: 35, suffix: 'small' },
     ])
@@ -119,7 +125,7 @@ async function updateAvatar(userId, newAvatarFile) {
   const { error: updateError } = await supabaseService
     .from('users')
     .update({ avatar_file_exists: true })
-    .eq('id', userId)
+    .eq('id', user.id)
 
   if (updateError) {
     console.error('Error updating avatar existence flag:', updateError.message)
@@ -127,7 +133,12 @@ async function updateAvatar(userId, newAvatarFile) {
   }
 }
 
-async function updateCover(userId, newCoverFile) {
+async function updateCover(newCoverFile) {
+  const { user, error: userError } = await getUser()
+  if (userError) {
+    console.error('Error getting user:', userError.message)
+    throw new Error(userError?.message || 'User is not authenticated.')
+  }
   const coverType = 'covers'
 
   // Convert image to buffer
@@ -140,7 +151,7 @@ async function updateCover(userId, newCoverFile) {
   }
 
   try {
-    await processAndUploadImage(userId, fileBuffer, coverType, [
+    await processAndUploadImage(user.id, fileBuffer, coverType, [
       { width: 1280, height: 400, suffix: 'original' },
       { width: 384, height: 120, suffix: 'mobile' },
     ])
@@ -153,7 +164,7 @@ async function updateCover(userId, newCoverFile) {
   const { error: updateError } = await supabaseService
     .from('users')
     .update({ cover_file_exists: true })
-    .eq('id', userId)
+    .eq('id', user.id)
 
   if (updateError) {
     console.error('Error updating cover existence flag:', updateError.message)

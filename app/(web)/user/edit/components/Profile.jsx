@@ -2,14 +2,6 @@ import ImageUpload from './ImageUpload'
 import UsernameEdit from './UsernameEdit'
 
 function Profile({ userInfo }) {
-  const avatarUrl = userInfo.avatar_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/avatars/normal.jpg`
-    : null
-
-  const coverUrl = userInfo.cover_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${userInfo.id}/covers/original.jpg`
-    : `/cover.svg`
-
   return (
     <div>
       <div className="flex w-full flex-col gap-5 sm:flex-row">
@@ -21,17 +13,15 @@ function Profile({ userInfo }) {
             label="Avatar"
             buttonLabel="Upload new avatar"
             isAvatar={true}
-            userId={userInfo.id}
-            defaultSrc={avatarUrl}
+            userInfo={userInfo}
           />
           <ImageUpload
             label="Cover image"
             buttonLabel="Upload new cover image"
-            userId={userInfo.id}
             requiredWidth={1280}
             requiredHeight={400}
             previewSize={{ width: 384, height: 120 }}
-            defaultSrc={coverUrl}
+            userInfo={userInfo}
           />
         </div>
       </div>

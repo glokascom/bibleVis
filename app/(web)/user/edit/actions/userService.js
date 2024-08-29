@@ -1,3 +1,4 @@
+import { getAvatars } from '@/app/actions/getAvatars'
 import { createClient } from '@/app/supabase/server'
 
 export async function getUserInfoById(userId) {
@@ -29,5 +30,10 @@ export async function getUserInfoByUsername(username) {
   if (error) {
     throw new Error('Error fetching username: ' + error.message)
   }
-  return data[0] || null
+  if (data.length === 0) {
+    return null
+  } else {
+    const { avatarUrl, coverUrl } = await getAvatars(data[0])
+    return { ...data[0], avatarUrl, coverUrl }
+  }
 }

@@ -27,11 +27,11 @@ export default async function UserDetail({ params }) {
 
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <div className="mt-2.5 flex h-[400px] flex-col items-start gap-7 px-4 md:mb-12 md:mt-9 md:flex-row md:gap-1 md:px-0">
-        <div className="max-w-7xl">
+      <div className="mb-12 mt-2.5 flex max-h-[400px] flex-col items-stretch gap-7 px-4 md:mt-9 md:flex-row md:gap-[10px] md:px-0">
+        <div className="flex-initial md:flex-[2_0_0] xl:flex-[3_0_0]">
           <Cover isCurrentUser={isCurrentUser} followUserInfo={followUserInfo} />
         </div>
-        <div className="h-full w-full md:w-auto md:min-w-44 md:grow lg:min-w-96">
+        <div className="w-full flex-initial md:flex-[1_0_0]">
           <UserInfo
             isCurrentUser={isCurrentUser}
             userInfo={userInfo}
