@@ -49,6 +49,7 @@ function AuthForm() {
   const toggleLoginVisibility = () => setIsLoginVisible((prev) => !prev)
 
   const handleSignup = async () => {
+    setSignupErrors({ message: '', fields: [] })
     const errors: { field?: string; message: string }[] = []
     if (!emailSignup) {
       errors.push({ field: 'email', message: 'Email is required' })
@@ -136,6 +137,7 @@ function AuthForm() {
   }
 
   const handleLogin = async () => {
+    setLoginErrors({ message: '', fields: [] })
     const errors: { field?: string; message: string }[] = []
     if (!emailLogin) {
       errors.push({ field: 'email', message: 'Email is required' })
@@ -205,7 +207,11 @@ function AuthForm() {
                 <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
                   <span className="text-medium font-medium text-secondary">or</span>
                 </div>
-                <label className="mb-2 text-medium font-medium">*Username</label>
+                <label
+                  className={`mb-2 text-medium font-medium ${signupErrors?.fields.some((error) => error.field === 'username') ? 'text-danger' : ''}`}
+                >
+                  *Username
+                </label>
                 <BVInput
                   variant="bordered"
                   size="sm"
@@ -219,7 +225,11 @@ function AuthForm() {
                     .filter((error) => error.field === 'username')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label className="mb-2 text-medium font-medium">*Email</label>
+                <label
+                  className={`mb-2 text-medium font-medium ${signupErrors?.fields.some((error) => error.field === 'email') ? 'text-danger' : ''}`}
+                >
+                  *Email
+                </label>
                 <BVInput
                   type="email"
                   variant="bordered"
@@ -234,7 +244,11 @@ function AuthForm() {
                     .filter((error) => error.field === 'email')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label className="mb-2 text-medium font-medium">*Password</label>
+                <label
+                  className={`mb-2 text-medium font-medium ${signupErrors?.fields.some((error) => error.field === 'password') ? 'text-danger' : ''}`}
+                >
+                  *Password
+                </label>
                 <BVInput
                   variant="bordered"
                   size="sm"
@@ -322,7 +336,11 @@ function AuthForm() {
                 <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
                   <span className="text-medium font-medium text-secondary">or</span>
                 </div>
-                <label className="mb-2 text-medium font-medium">*Email</label>
+                <label
+                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'email') ? 'text-danger' : ''}`}
+                >
+                  *Email
+                </label>
                 <BVInput
                   type="email"
                   variant="bordered"
@@ -335,7 +353,11 @@ function AuthForm() {
                     .filter((error) => error.field === 'email')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <label className="mb-2 text-medium font-medium">*Password</label>
+                <label
+                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'password') ? 'text-danger' : ''}`}
+                >
+                  *Password
+                </label>
                 <BVInput
                   variant="bordered"
                   size="sm"

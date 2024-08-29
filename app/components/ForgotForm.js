@@ -17,6 +17,7 @@ export default function ForgotForm() {
   const [errors, setErrors] = useState(null)
 
   const handle = async (event) => {
+    setErrors(null)
     event.preventDefault()
     const errors = []
     if (!email) {
@@ -86,7 +87,10 @@ export default function ForgotForm() {
                 and we will send a message to reset your password
               </div>
               <div>
-                <label htmlFor="email" className="mb-2 text-medium font-medium">
+                <label
+                  htmlFor="email"
+                  className={`mb-2 text-medium font-medium ${errors?.fields.some((error) => error.field === 'email') ? 'text-danger' : ''}`}
+                >
                   *Email
                 </label>
                 <BVInput
