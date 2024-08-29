@@ -2,12 +2,11 @@
 
 import { useEffect } from 'react'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
-export default function ImagePage() {
-  const { title } = useParams()
+export default function ImagePage({ params }) {
+  const { title } = params
   const router = useRouter()
-  console.log(title)
   const parts = title ? title.split('-') : []
   let uuid = ''
   let searchText = ''
