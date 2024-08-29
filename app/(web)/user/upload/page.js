@@ -149,9 +149,9 @@ export default function Upload() {
         />
 
         {isModalOpen && (
-          <Modal isImageForm={true} closeModal={closeModal}>
-            <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-              <p className="px-7">Are you sure you want to cancel?</p>
+          <Modal closeModal={closeModal}>
+            <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+              <p>Are you sure you want to cancel?</p>
               <div className="mt-12 flex justify-center gap-2">
                 <BVButton
                   className="w-1/2 bg-secondary-50 text-inherit"

@@ -2,27 +2,39 @@
 
 import { ApiError, ApiResponse } from '@/app/types/api'
 
-export async function forgotPassword(formData: FormData) {
-  const data = {
-    email: formData.get('email'),
-  }
-
+export async function forgotPassword({
+  email,
+}: {
+  email: string
+}): Promise<ApiResponse<unknown>> {
   try {
     const response = await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ email }),
     })
 
     if (response.ok) {
-      window.location.href = '/password-reset-sent'
+      const successResponse = await response.json()
+      return {
+        status: 'success',
+        data: successResponse.data,
+      }
     } else {
-      console.error('An unknown error occurred.')
+      const errorResponse: ApiError = await response.json()
+      return {
+        status: 'error',
+        message: errorResponse.message,
+        errors: errorResponse.errors,
+      }
     }
-  } catch (error) {
-    console.error('Request error:', error)
+  } catch {
+    return {
+      status: 'error',
+      message: 'An unknown error occurred.',
+    }
   }
 }
 
