@@ -1,5 +1,5 @@
-'use client'
+import ResetForm from '@/app/components/ResetForm'
 
 export default function NewPassword() {
-  return <div className="text-red-500">New Password Page </div>
+  return <ResetForm />
 }
