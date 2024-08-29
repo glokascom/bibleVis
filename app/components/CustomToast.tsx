@@ -8,27 +8,28 @@ const CustomToast: React.FC<CustomToastProps> = ({ message, type }) => {
 
   switch (type) {
     case 'success':
-      backgroundColor = 'bg-[#01AB6C4D]'
-      backgroundIconColor = '#10CD87'
+      backgroundColor = 'bg-primary-400/30'
+      backgroundIconColor = 'text-primary-500'
       break
     case 'error':
-      backgroundColor = 'bg-[#AB01014D]'
-      backgroundIconColor = '#EA4F57'
+      backgroundColor = 'bg-danger-400/30'
+      backgroundIconColor = 'text-danger-500'
       break
     case 'neutral':
     default:
-      backgroundColor = 'bg-[#96969680]'
-      backgroundIconColor = '#2D2D2E'
+      backgroundColor = 'bg-secondary-400/50'
+      backgroundIconColor = 'text-secondary'
       break
   }
 
   return (
     <div
-      className={`flex w-full max-w-xs items-center justify-between rounded-lg p-4 shadow-md ${backgroundColor} min-h-[50px] min-w-[356px]`}
+      className={`flex w-full max-w-md items-center justify-between rounded-lg p-4 shadow-md ${backgroundColor} min-h-[50px] min-w-80 backdrop-blur-2xl`}
     >
-      <div className="mr-4 h-full w-[2px] rounded bg-white"></div>
-      <div className="flex-grow font-sans text-sm font-medium text-white">{message}</div>
-      <div className="ml-4 p-1">
+      <div className="flex-grow border-l-1 border-background pl-2.5 font-sans text-sm font-medium text-background">
+        {message}
+      </div>
+      <div className={`ml-4 p-1 ${backgroundIconColor} cursor-pointer`}>
         <svg
           width="26"
           height="26"
@@ -42,7 +43,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ message, type }) => {
             rx="13"
             ry="13"
             transform="rotate(-180 13 13)"
-            fill={backgroundIconColor}
+            fill="currentColor"
           />
           <path
             d="M10 10L13 13M16 16L13 13M13 13L16 10L10 16"
