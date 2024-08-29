@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+import Link from 'next/link'
+
 import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import { Modal } from '@/app/components/Modal'
@@ -9,14 +11,14 @@ import { Modal } from '@/app/components/Modal'
 export default function EditImage() {
   const [validImage, setValidImage] = useState(null)
   const [isFormFilled, setIsFormFilled] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     isAIGeneration: true,
     title: 'заголовок',
     description: 'описание',
     prompt: 'промт ',
-    software: ['Leonardo', 'Playground.ai', 'MidJourney'],
-    tags: ['top', 'good', 'ship', 'art'],
+    software: ['Leonardo'],
+    tags: ['ship', 'art'],
   })
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function EditImage() {
   }
 
   const closeModal = () => {
-    setIsModalOpen(false)
+    setIsCancelModalOpen(false)
   }
 
   return (
@@ -47,11 +49,11 @@ export default function EditImage() {
         setFormData={setFormData}
         isFormFilled={isFormFilled}
         handleSubmit={handleSubmit}
-        handleCancel={() => setIsModalOpen(true)}
+        handleCancel={() => setIsCancelModalOpen(true)}
         setValidImage={setValidImage}
       />
 
-      {isModalOpen && (
+      {isCancelModalOpen && (
         <Modal isImageForm={true} closeModal={closeModal}>
           <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
             <p className="px-7">Are you sure you want to cancel?</p>
@@ -62,12 +64,7 @@ export default function EditImage() {
               >
                 Cancel
               </BVButton>
-              <BVButton
-                className="w-1/2 bg-danger"
-                onClick={() => {
-                  closeModal()
-                }}
-              >
+              <BVButton as={Link} href="/user" className="w-1/2 bg-danger">
                 Confirm
               </BVButton>
             </div>

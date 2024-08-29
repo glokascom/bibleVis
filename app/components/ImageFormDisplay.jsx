@@ -11,6 +11,7 @@ import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
+import { Modal } from './Modal'
 
 function ImageFormDisplay({
   initialFormData,
@@ -29,6 +30,20 @@ function ImageFormDisplay({
       ? initialFormData.isAIGeneration
       : true
   )
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
+
+  const closeModal = () => {
+    setIsSaveModalOpen(false)
+    setIsDeleteModalOpen(false)
+    setIsDeleteSuccess(false)
+  }
+
+  const handleFormSubmit = (e) => {
+    handleSubmit(e)
+    closeModal()
+  }
 
   const initialSoftwareTags = [
     'Leonardo',
@@ -104,6 +119,15 @@ function ImageFormDisplay({
       }
       setErrorImage(null)
     }
+  }
+
+  const handleDelete = () => {
+    setValidImage(null)
+    setIsDeleteSuccess(true)
+
+    setTimeout(() => {
+      closeModal()
+    }, 2000)
   }
 
   return (
@@ -257,10 +281,17 @@ function ImageFormDisplay({
               onBlur={handleInputBlur('tags')}
               initialValue={initialFormData?.tags || []}
             />
+
+            <BVButton
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="mt-4 bg-danger"
+            >
+              Delete
+            </BVButton>
           </div>
 
           <BVButton
-            type="submit"
+            onClick={() => setIsSaveModalOpen(true)}
             isDisabled={!isFormFilled}
             className={`my-7 w-full ${initialFormData ? '' : 'bg-secondary-50 text-inherit'}`}
           >
@@ -272,8 +303,56 @@ function ImageFormDisplay({
           >
             Cancel
           </p>
+
+          {isSaveModalOpen && (
+            <Modal isImageForm={true} closeModal={closeModal}>
+              <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+                <p className="px-7">Are you sure you need to save the file?</p>
+                <div className="mt-12 flex justify-center gap-2">
+                  <BVButton
+                    className="w-1/2 bg-secondary-50 text-inherit"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </BVButton>
+                  <BVButton
+                    type="submit"
+                    onClick={handleFormSubmit}
+                    className="w-1/2 bg-primary"
+                  >
+                    Save
+                  </BVButton>
+                </div>
+              </div>
+            </Modal>
+          )}
         </form>
       </div>
+
+      {isDeleteModalOpen && (
+        <Modal isImageForm={true} closeModal={closeModal}>
+          <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+            {isDeleteSuccess ? (
+              <p className="py-7">The image was successfully deleted</p>
+            ) : (
+              <>
+                <p className="px-7">Are you sure to delete file?</p>
+                <div className="mt-12 flex justify-center gap-2">
+                  <BVButton
+                    className="w-1/2 bg-secondary-50 text-inherit"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </BVButton>
+                  <BVButton onClick={handleDelete} className="bg-danger">
+                    Delete
+                  </BVButton>
+                </div>
+              </>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }
