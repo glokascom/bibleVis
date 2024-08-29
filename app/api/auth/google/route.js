@@ -5,12 +5,12 @@ import { createClient } from '@/app/supabase/server'
 export async function GET() {
   const supabase = createClient()
 
-  // const { origin } = new URL(request.url)
+  const { origin } = new URL(request.url)
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `http://localhost:3000/api/auth/google/callback`,
+      redirectTo: `${origin}/api/auth/google/callback`,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',

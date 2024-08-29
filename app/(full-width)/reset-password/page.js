@@ -1,5 +1,5 @@
 import ResetForm from '@/app/components/ResetForm'
 
-export default function NewPassword() {
+export default function ResetPassword() {
   return <ResetForm />
 }
