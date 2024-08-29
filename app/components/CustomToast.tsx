@@ -27,7 +27,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ message, type }) => {
       className={`flex w-full max-w-xs items-center justify-between rounded-lg p-4 shadow-md ${backgroundColor} min-h-[50px] min-w-[356px]`}
     >
       <div className="mr-4 h-full w-[2px] rounded bg-white"></div>
-      <div className="flex-grow text-sm font-medium text-white">{message}</div>
+      <div className="flex-grow font-sans text-sm font-medium text-white">{message}</div>
       <div className="ml-4 p-1">
         <svg
           width="26"
