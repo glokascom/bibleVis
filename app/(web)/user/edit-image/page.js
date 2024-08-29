@@ -24,8 +24,8 @@ export default function EditImage() {
       if (key === 'isAIGeneration') return false
       return Array.isArray(value) ? value.length > 0 : Boolean(value)
     })
-    setIsFormFilled(isAnyFieldFilled)
-  }, [formData])
+    setIsFormFilled(isAnyFieldFilled && validImage !== null)
+  }, [formData, validImage])
 
   const handleSubmit = (e) => {
     e.preventDefault()

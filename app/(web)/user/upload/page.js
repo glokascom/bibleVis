@@ -79,11 +79,12 @@ export default function Upload() {
   }, [errorImage, submittedImageUrl])
 
   useEffect(() => {
-    const isAnyFieldFilled = Object.values(formData).some((value) =>
-      Array.isArray(value) ? value.length > 0 : Boolean(value)
-    )
-    setIsFormFilled(isAnyFieldFilled)
-  }, [formData])
+    const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
+      if (key === 'isAIGeneration') return false
+      return Array.isArray(value) ? value.length > 0 : Boolean(value)
+    })
+    setIsFormFilled(isAnyFieldFilled && validImage !== null)
+  }, [formData, validImage])
 
   if (isSubmitted) {
     return (
