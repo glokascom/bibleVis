@@ -20,9 +20,10 @@ export default function EditImage() {
   })
 
   useEffect(() => {
-    const isAnyFieldFilled = Object.values(formData).some((value) =>
-      Array.isArray(value) ? value.length > 0 : Boolean(value)
-    )
+    const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
+      if (key === 'isAIGeneration') return false
+      return Array.isArray(value) ? value.length > 0 : Boolean(value)
+    })
     setIsFormFilled(isAnyFieldFilled)
   }, [formData])
 
