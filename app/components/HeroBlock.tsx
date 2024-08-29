@@ -29,7 +29,7 @@ function HeroBlock() {
       }}
     >
       <div className="relative z-10 flex flex-col items-center justify-center px-6">
-        <h2 className="text-3xl md:text-4xl mb-8 max-w-[750px] text-center font-[600] text-white">
+        <h2 className="mb-8 max-w-[750px] text-center text-3xl font-[600] text-white md:text-4xl">
           Лучшие бесплатные стоковые христианские изображения
         </h2>
         <BVInput
