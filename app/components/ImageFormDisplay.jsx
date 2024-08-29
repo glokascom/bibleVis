@@ -282,12 +282,12 @@ function ImageFormDisplay({
               initialValue={initialFormData?.tags || []}
             />
 
-            <BVButton
+            <p
               onClick={() => setIsDeleteModalOpen(true)}
-              className="mt-4 bg-danger"
+              className={`${!initialFormData ? 'hidden' : ''} cursor-pointer text-center text-small text-danger`}
             >
               Delete
-            </BVButton>
+            </p>
           </div>
 
           <BVButton
@@ -344,7 +344,7 @@ function ImageFormDisplay({
                   >
                     Cancel
                   </BVButton>
-                  <BVButton onClick={handleDelete} className="bg-danger">
+                  <BVButton onClick={handleDelete} className="w-1/2 bg-danger">
                     Delete
                   </BVButton>
                 </div>
