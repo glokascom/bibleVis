@@ -1,40 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import Image from 'next/image'
 
 import { BVLink } from '@/app/components/BVLink'
 import { CoverProps } from '@/app/types/subscription'
 
 function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
-  const smallCover = followUserInfo.cover_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/mobile.jpg`
-    : `/cover.svg`
-
-  const largeCover = followUserInfo.cover_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/covers/original.jpg`
-    : `/cover.svg`
-
-  const [viewportWidth, setViewportWidth] = useState<number>(0)
-
-  useEffect(() => {
-    setViewportWidth(window.innerWidth)
-    const handleResize = () => setViewportWidth(window.innerWidth)
-
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const imageSrc = viewportWidth <= 640 ? smallCover : largeCover
-
   return (
-    <div className="relative h-full overflow-hidden rounded-medium">
+    <div className="relative max-h-[400px] overflow-hidden rounded-medium">
       <Image
-        src={imageSrc}
+        src={followUserInfo.coverUrl}
         alt="cover"
         className="h-full object-cover"
+        sizes="(max-width: 640px) 100vw, 50vw"
         width={1280}
         height={400}
       />
