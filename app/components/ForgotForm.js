@@ -15,8 +15,10 @@ export default function ForgotForm() {
   const [email, setEmail] = useState('')
   const [data, setData] = useState(null)
   const [errors, setErrors] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handle = async (event) => {
+    setLoading(true)
     setErrors(null)
     event.preventDefault()
     const errors = []
@@ -26,6 +28,7 @@ export default function ForgotForm() {
         message: '',
         fields: errors,
       })
+      setLoading(false)
       return
     }
 
@@ -35,6 +38,7 @@ export default function ForgotForm() {
         message: '',
         fields: errors,
       })
+      setLoading(false)
       return
     }
 
@@ -47,6 +51,7 @@ export default function ForgotForm() {
     } else {
       setData(response.data)
     }
+    setLoading(false)
   }
 
   return (
@@ -113,8 +118,7 @@ export default function ForgotForm() {
                 <BVButton
                   fullWidth
                   onClick={handle}
-                  isDisabled={email === ''}
-                  disabled={email === ''}
+                  isDisabled={email === '' || loading}
                   color="primary"
                 >
                   Reset my password
