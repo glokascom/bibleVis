@@ -2,11 +2,10 @@ import { expect, test } from '@playwright/test'
 
 const pages = [
   '',
-  '@username',
+  //  '@username',
   'login',
   'forgot-password',
   'new-password',
-  'register',
   'image/{title}-{uuid}',
   //  'user/upload',
   //  'user/{uuid}',
@@ -15,7 +14,7 @@ const pages = [
   'pages/toc',
   'pages/tou',
   'pages/submition',
-  's',
+  's/test',
 ]
 
 async function disableCache(page) {

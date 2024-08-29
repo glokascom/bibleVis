@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
 
+import { updateUsername } from '../actions/updateUsername'
+
 function UsernameEdit({ userInfo }) {
   const [username, setUsername] = useState(userInfo.username)
   const [error, setError] = useState('')
@@ -13,26 +15,12 @@ function UsernameEdit({ userInfo }) {
   const handleSave = async (e) => {
     e.preventDefault()
     setLoading(true)
-
+    setError('')
     try {
-      const response = await fetch('/api/auth/update-username', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userInfo.id,
-          newUsername: username,
-        }),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to update username.')
+      const { error } = await updateUsername(username)
+      if (error) {
+        throw new Error(error)
       }
-
-      setError('')
       alert('Username updated successfully!')
     } catch (err) {
       setError(err.message || 'An error occurred while updating the username.')

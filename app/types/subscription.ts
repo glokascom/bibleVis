@@ -9,11 +9,16 @@ export interface FollowUserInfo {
   total_followers: number
   avatar_file_exists: boolean
   isFollowed: boolean
+  cover_file_exists: boolean
+  coverUrl: string
+  avatarUrl: string
 }
 
 export interface UserInfo {
   id: string
   username: string
+  avatarUrl: string
+  coverUrl: string
 }
 
 export interface UserInfoProps {

@@ -129,11 +129,7 @@ function Navigation({ user }) {
                     className="transition-transform"
                     name={user.username}
                     size="md"
-                    src={
-                      user.avatar_file_exists
-                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${user.id}/avatars/normal.jpg`
-                        : 'null'
-                    }
+                    src={user.avatarUrl}
                   />
                   <svg
                     width="11"

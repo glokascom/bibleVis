@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Link from 'next/link'
 
@@ -22,7 +22,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   const handleToggleFollow = async () => {
     try {
       const result = await toggleSubscription(followUserInfo.id)
-
+      if (result === null) return
       if (result.error) {
         throw new Error(result.error)
       }
@@ -34,33 +34,12 @@ const UserInfo: React.FC<UserInfoProps> = ({
     }
   }
 
-  const smallAvatar = followUserInfo.avatar_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/small.jpg`
-    : ''
-
-  const largeAvatar = followUserInfo.avatar_file_exists
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${followUserInfo.id}/avatars/normal.jpg`
-    : ''
-
-  const [viewportWidth, setViewportWidth] = useState<number>(0)
-
-  useEffect(() => {
-    setViewportWidth(window.innerWidth)
-    const handleResize = () => setViewportWidth(window.innerWidth)
-
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const imageSrc = viewportWidth <= 640 ? smallAvatar : largeAvatar
-
   return (
-    <div className="border-0 md:h-full md:rounded-medium md:px-5 md:py-4 2xl:border 2xl:border-secondary-200">
-      <div className="relative flex w-full flex-col items-center md:gap-3 2xl:gap-5">
+    <div className="border-0 md:h-full md:rounded-medium md:border md:px-5 md:py-8 lg:border-secondary-200">
+      <div className="relative flex w-full flex-col items-center justify-between md:gap-3 lg:gap-5">
         <BVAvatar
           className="absolute bottom-0 left-0 h-14 w-14 text-mega md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36"
-          src={imageSrc}
+          src={followUserInfo.avatarUrl}
           alt={`${followUserInfo.username}'s avatar`}
         />
         <div className="text-semixlarge font-bold">{followUserInfo.username}</div>
