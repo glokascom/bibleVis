@@ -305,9 +305,9 @@ function ImageFormDisplay({
           </p>
 
           {isSaveModalOpen && (
-            <Modal isImageForm={true} closeModal={closeModal}>
-              <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-                <p className="px-7">Are you sure you need to save the file?</p>
+            <Modal closeModal={closeModal}>
+              <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+                <p>Are you sure you need to save the file?</p>
                 <div className="mt-12 flex justify-center gap-2">
                   <BVButton
                     className="w-1/2 bg-secondary-50 text-inherit"
@@ -330,13 +330,13 @@ function ImageFormDisplay({
       </div>
 
       {isDeleteModalOpen && (
-        <Modal isImageForm={true} closeModal={closeModal}>
-          <div className="m-5 rounded-xlarge bg-background p-10 text-semixlarge font-medium">
+        <Modal closeModal={closeModal}>
+          <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
             {isDeleteSuccess ? (
               <p className="py-7">The image was successfully deleted</p>
             ) : (
               <>
-                <p className="px-7">Are you sure to delete file?</p>
+                <p>Are you sure to delete file?</p>
                 <div className="mt-12 flex justify-center gap-2">
                   <BVButton
                     className="w-1/2 bg-secondary-50 text-inherit"
