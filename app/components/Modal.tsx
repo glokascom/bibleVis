@@ -8,7 +8,7 @@ import { Image } from '@nextui-org/react'
 interface ModalProps {
   children: React.ReactNode
   isImageForm?: boolean
-  closeModal: () => void
+  closeModal?: () => void
 }
 
 export function Modal({ children, closeModal, isImageForm = false }: ModalProps) {
