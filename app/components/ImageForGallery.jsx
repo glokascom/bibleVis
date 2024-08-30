@@ -12,7 +12,7 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 
 function ImageForGallery({ image }) {
-  const is_current_image_liked = true // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер, скорей всего параметр уже нужно на сервере прикрутить к image, чтобы было удобнее
+  const is_current_image_liked = Math.random() > 0.5 // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер, скорей всего параметр уже нужно на сервере прикрутить к image, чтобы было удобнее
   const handleToggleLike = (uuid) => {
     console.log('like/unlike', uuid)
     // TODO: с помощью серверной функции в базе поменять значение, в функции сделат ревалидейт

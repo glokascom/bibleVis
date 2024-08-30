@@ -1,29 +1,43 @@
+import { notFound } from 'next/navigation'
+
+import { getUser } from '@/app/actions/getUser'
+
+import { getUserInfoByUsername } from '../user/edit/actions/userService'
+import { checkIfSubscribed } from './actions/userActions'
 import Cover from './components/Cover'
 import Gallery from './components/Gallery'
 import UserInfo from './components/UserInfo'
 
 export default async function UserDetail({ params }) {
   const username = decodeURIComponent(params['@username']).replace('@', '')
-  const user = { username: 'AlenaAenami' }
-  const isCurrentUser = username === user.username
+  const data = await getUser()
+  const userInfo = data?.user
 
-  const count_images_username = 50 //TODO нужно подсчитать кол-во картинок юзера
+  const isCurrentUser = username === userInfo?.username ? true : false
+  const followUserInfo = await getUserInfoByUsername(username)
+
+  if (!followUserInfo) {
+    notFound()
+    return null
+  }
+
+  const isFollowed = userInfo ? await checkIfSubscribed(followUserInfo.id) : false
+
+  // const count_images_username = 50 //TODO нужно подсчитать кол-во картинок юзера
 
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <div className="mt-2.5 flex flex-col items-start gap-7 md:mt-9 md:flex-row md:gap-1 xl:h-[400px]">
-        <div className="max-w-7xl">
-          <Cover isCurrentUser={isCurrentUser} />
+      <div className="mb-12 mt-2.5 flex max-h-[400px] flex-col items-stretch gap-7 px-4 md:mt-9 md:flex-row md:gap-[10px] md:px-0">
+        <div className="flex-initial md:flex-[2_0_0] xl:flex-[3_0_0]">
+          <Cover isCurrentUser={isCurrentUser} followUserInfo={followUserInfo} />
         </div>
-        <div className="h-auto w-full md:h-full md:w-auto md:min-w-44 md:grow lg:min-w-96">
-          <UserInfo isCurrentUser={isCurrentUser} />
-        </div>
-      </div>
-      <div className="mb-7 mt-7 flex items-end md:mt-0 2xl:mt-9">
-        <div className="text-semimega font-bold md:text-mega">Gallery</div>
-        <div className="mb-1 ml-5 font-bold lg:mb-3">Images</div>
-        <div className="mb-1 ml-2.5 text-small text-secondary-400 lg:mb-3">
-          {count_images_username}
+        <div className="w-full flex-initial md:flex-[1_0_0]">
+          <UserInfo
+            isCurrentUser={isCurrentUser}
+            userInfo={userInfo}
+            followUserInfo={followUserInfo}
+            initialIsFollowed={isFollowed}
+          />
         </div>
       </div>
       <Gallery />
