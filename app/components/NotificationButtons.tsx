@@ -1,9 +1,8 @@
-// NotificationButtons.tsx
 'use client'
 
 import React from 'react'
 
-import { useToast } from './ToastProvider' // Проверьте, что путь правильный
+import { useToast } from './ToastProvider'
 
 const NotificationButtons: React.FC = () => {
   const { success, error, neutral } = useToast()

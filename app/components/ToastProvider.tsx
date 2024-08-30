@@ -28,7 +28,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     message: string,
     options?: ToastOptions
   ) => {
-    toast.custom(<CustomToast message={message} type={type} />, options)
+    toast.custom((t) => <CustomToast message={message} type={type} id={t.id} />, options)
   }
 
   const success = (message: string, options?: ToastOptions) =>
