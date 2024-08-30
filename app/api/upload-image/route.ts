@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+import sharp from 'sharp'
+
 import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
 
@@ -20,7 +22,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No image file provided' }, { status: 400 })
     }
 
+    const imageBuffer = Buffer.from(await validImage.arrayBuffer())
+
+    const metadata = await sharp(imageBuffer).metadata()
+
+    if (!metadata) {
+      return NextResponse.json({ message: 'Invalid image format' }, { status: 400 })
+    }
+    const orientation = metadata?.width > metadata?.height ? 'landscape' : 'portrait'
+
     const originalFilePath = await uploadOriginalImage(validImage)
+
+    if (!originalFilePath) {
+      return NextResponse.json(
+        { message: 'Failed to upload image to storage' },
+        { status: 500 }
+      )
+    }
+
     const imageData = {
       title,
       description,
@@ -32,7 +51,7 @@ export async function POST(request: Request) {
       small_file_path: '',
       file_type: validImage.type,
       file_size: validImage.size,
-      orientation: 'landscape',
+      orientation,
     }
 
     const data = await insertImage(imageData)
