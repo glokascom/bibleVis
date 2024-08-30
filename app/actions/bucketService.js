@@ -8,13 +8,6 @@ const BUCKET_NAME = 'profile'
 const MAX_AVATAR_SIZE_MB = 2 // Максимальный размер аватара в мегабайтах
 const MAX_AVATAR_SIZE_BYTES = MAX_AVATAR_SIZE_MB * 1024 * 1024
 
-async function getUserId() {
-  if (!(await getUser())?.user?.id) {
-    throw new Error('User is not authenticated.')
-  }
-  return (await getUser())?.user?.id
-}
-
 function getCurrentTimestamp() {
   const date = new Date()
 
@@ -50,17 +43,24 @@ async function uploadFile(fileBuffer, filePath, prefix) {
   return data.path
 }
 
-async function deleteFile(path) {
+async function deleteFile(type) {
   if (!(await getUser())?.user?.id) {
     throw new Error('User is not authenticated.')
+  }
+  let path
+  if (type === 'avatar') {
+    path = (await getUser())?.user?.avatar_file_path
+  } else if (type === 'cover') {
+    path = (await getUser())?.user?.cover_file_path
+  }
+  if (path === null) {
+    return
   }
   const { error } = await supabaseService.storage.from(BUCKET_NAME).remove([path])
 
   if (error) {
     throw new Error('Failed to delete file: ' + error.message)
   }
-
-  return true
 }
 
 async function processAndUploadImage(fileBuffer, type, sizes) {
@@ -72,7 +72,7 @@ async function processAndUploadImage(fileBuffer, type, sizes) {
   for (const { width, height } of sizes) {
     try {
       const buffer = await sharp(fileBuffer).resize(width, height).toBuffer()
-      const userId = await getUserId()
+      const { id: userId } = (await getUser()).user
 
       const filePath = `${userId}`
       const uploadedPath = await uploadFile(buffer, filePath, type)
@@ -117,17 +117,13 @@ async function updateAvatar(newAvatarFile) {
     throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  const { id: userId, avatar_file_path } = (await getUser()).user
+  const { id: userId } = (await getUser()).user
 
-  const oldAvatarPath = avatar_file_path
-  // Удаляем старую аватарку, если она существует
-  if (oldAvatarPath) {
-    try {
-      await deleteFile(oldAvatarPath)
-    } catch (deleteError) {
-      console.error('Error deleting old avatar:', deleteError.message)
-      throw new Error('Failed to delete old avatar: ' + deleteError.message)
-    }
+  try {
+    await deleteFile(avatarType)
+  } catch (deleteError) {
+    console.error('Error deleting old avatar:', deleteError.message)
+    throw new Error('Failed to delete old avatar: ' + deleteError.message)
   }
 
   let uploadedPaths
@@ -155,7 +151,7 @@ async function updateAvatar(newAvatarFile) {
 async function updateCover(newCoverFile) {
   const coverType = 'cover'
 
-  const { id: userId, cover_file_path } = (await getUser()).user
+  const { id: userId } = (await getUser()).user
 
   let fileBuffer
   try {
@@ -165,16 +161,11 @@ async function updateCover(newCoverFile) {
     throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  const oldCoverPath = cover_file_path
-
-  // Удаляем старую обложку, если она существует
-  if (oldCoverPath) {
-    try {
-      await deleteFile(oldCoverPath)
-    } catch (deleteError) {
-      console.error('Error deleting old cover:', deleteError.message)
-      throw new Error('Failed to delete old cover: ' + deleteError.message)
-    }
+  try {
+    await deleteFile(coverType)
+  } catch (deleteError) {
+    console.error('Error deleting old cover:', deleteError.message)
+    throw new Error('Failed to delete old cover: ' + deleteError.message)
   }
 
   let uploadedPaths
@@ -200,4 +191,4 @@ async function updateCover(newCoverFile) {
   }
 }
 
-export { updateAvatar, updateCover, deleteFile }
+export { updateAvatar, updateCover }
