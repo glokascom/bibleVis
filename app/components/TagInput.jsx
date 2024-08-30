@@ -46,25 +46,29 @@ export default function TagInput({
 
   const handleInputChange = (e) => {
     const value = e.target.value
-    setInputValue(value)
-    if (isTagInput) {
-      updateSuggestions(value, selectedTags)
+    if (!isTagInput && value.length <= limitLettersAllTags) {
+      setInputValue(value)
+    } else if (isTagInput) {
+      setInputValue(value)
     }
+    updateSuggestions(value, selectedTags)
   }
 
-  const updateSuggestions = (value, selectedTags) => {
+  const updateSuggestions = (value, currentSelectedTags) => {
+    const filteredTags = allTags.filter((tag) => !currentSelectedTags.includes(tag))
     if (value) {
       setSuggestions(
-        allTags
-          .filter(
-            (tag) =>
-              tag.toLowerCase().includes(value.toLowerCase()) &&
-              !selectedTags.includes(tag)
-          )
-          .slice(0, suggestionCount === undefined ? allTags.length : suggestionCount)
+        filteredTags
+          .filter((tag) => tag.toLowerCase().includes(value.toLowerCase()))
+          .slice(0, suggestionCount === undefined ? filteredTags.length : suggestionCount)
       )
     } else {
-      setSuggestions(allTags.filter((tag) => !selectedTags.includes(tag)))
+      setSuggestions(
+        filteredTags.slice(
+          0,
+          suggestionCount === undefined ? filteredTags.length : suggestionCount
+        )
+      )
     }
   }
 
@@ -79,16 +83,28 @@ export default function TagInput({
     }
 
     if (!selectedTags.includes(tag)) {
-      setSelectedTags((prevTags) => [...prevTags, tag])
+      const newSelectedTags = [...selectedTags, tag]
+      setSelectedTags(newSelectedTags)
       setAllTags((prevTags) => (prevTags.includes(tag) ? prevTags : [...prevTags, tag]))
+
+      updateSuggestions('', newSelectedTags)
     }
     setInputValue('')
-    setSuggestions([])
+
     setTimeout(() => {
       scrollToBottom()
       inputRef.current?.focus()
     }, 0)
   }
+
+  useEffect(() => {
+    if (inputValue.trim()) {
+      updateSuggestions(inputValue, selectedTags)
+    } else {
+      setSuggestions([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTags, selectedTags, inputValue])
 
   const removeTag = (tag) => {
     const newSelectedTags = selectedTags.filter((t) => t !== tag)
@@ -105,17 +121,17 @@ export default function TagInput({
   }
 
   const handleKeyDown = (e) => {
-    if (isTagInput) {
-      if (e.key === 'Enter' && inputValue.trim()) {
-        if (allowAddOnEnter) {
-          addTag(inputValue.trim())
-        }
-        e.preventDefault()
-      } else if (e.key === 'Backspace' && inputValue === '') {
-        if (selectedTags.length > 0) {
-          removeTag(selectedTags[selectedTags.length - 1])
-          setSuggestions([])
-        }
+    if (!isTagInput) return
+
+    if (e.key === 'Enter' && inputValue.trim()) {
+      if (allowAddOnEnter) {
+        addTag(inputValue.trim())
+      }
+      e.preventDefault()
+    } else if (e.key === 'Backspace' && inputValue === '') {
+      if (selectedTags.length > 0) {
+        removeTag(selectedTags[selectedTags.length - 1])
+        setSuggestions([])
       }
     }
   }
@@ -166,7 +182,7 @@ export default function TagInput({
       >
         <div
           className={`flex ${
-            isSmallHeight ? '' : 'h-20'
+            isSmallHeight ? '' : 'h-[6.125rem]'
           } flex-wrap content-start items-start gap-2.5 overflow-y-auto`}
         >
           {isTagInput ? (
@@ -212,7 +228,7 @@ export default function TagInput({
                 }
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                className={`flex-grow border-none bg-secondary-50 text-small placeholder:text-secondary-200 focus:outline-none focus:ring-0 ${inputValue.length > 0 || selectedTags.length > 0 ? 'py-3' : ''}`}
+                className="flex-grow border-none bg-secondary-50 py-3 text-small placeholder:text-secondary-200 focus:outline-none focus:ring-0"
                 style={{ width: `${inputValue.length + 1}ch` }}
               />
 

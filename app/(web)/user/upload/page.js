@@ -44,22 +44,22 @@ export default function Upload() {
   }
 
   const handleImageChange = (file, errorMessage) => {
+    if (errorImage) {
+      URL.revokeObjectURL(errorImage)
+      setErrorImage(null)
+    }
+
     setError(errorMessage)
+
     if (errorMessage) {
       if (file) {
         setErrorImage(URL.createObjectURL(file))
-      } else {
-        setErrorImage(null)
       }
       setValidImage(null)
     } else {
       if (file) {
         setValidImage(file)
       }
-      if (errorImage) {
-        URL.revokeObjectURL(errorImage)
-      }
-      setErrorImage(null)
     }
   }
 

@@ -9,17 +9,18 @@ import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import { Modal } from '@/app/components/Modal'
 
 export default function EditImage() {
-  const [validImage, setValidImage] = useState(null)
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     isAIGeneration: true,
     title: 'заголовок',
     description: 'описание',
-    prompt: 'промт ',
+    prompt: 'промт',
     software: ['Leonardo'],
     tags: ['ship', 'art'],
   })
+
+  const validImage = null
 
   useEffect(() => {
     const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
@@ -50,7 +51,6 @@ export default function EditImage() {
         isFormFilled={isFormFilled}
         handleSubmit={handleSubmit}
         handleCancel={() => setIsCancelModalOpen(true)}
-        setValidImage={setValidImage}
       />
 
       {isCancelModalOpen && (

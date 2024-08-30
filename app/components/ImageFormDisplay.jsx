@@ -102,22 +102,22 @@ function ImageFormDisplay({
   }
 
   const handleImageChange = (file, errorMessage) => {
+    if (errorImage) {
+      URL.revokeObjectURL(errorImage)
+      setErrorImage(null)
+    }
+
     setError(errorMessage)
+
     if (errorMessage) {
       if (file) {
         setErrorImage(URL.createObjectURL(file))
-      } else {
-        setErrorImage(null)
       }
       setValidImage(null)
     } else {
       if (file) {
         setValidImage(file)
       }
-      if (errorImage) {
-        URL.revokeObjectURL(errorImage)
-      }
-      setErrorImage(null)
     }
   }
 
@@ -193,7 +193,7 @@ function ImageFormDisplay({
               </div>
             )}
             <button
-              className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
+              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData ? 'hidden' : ''}`}
               onClick={handleReplaceImage}
             >
               <Image
@@ -272,6 +272,7 @@ function ImageFormDisplay({
                   showCounter={false}
                   onBlur={handleInputBlur('software')}
                   initialTags={initialSoftwareTags}
+                  allowAddOnEnter={false}
                   initialValue={initialFormData?.software || []}
                 />
               </div>
@@ -299,7 +300,7 @@ function ImageFormDisplay({
           </BVButton>
           <p
             onClick={handleCancel}
-            className="cursor-pointer text-center text-small text-primary"
+            className="cursor-pointer pb-12 text-center text-small text-primary"
           >
             Cancel
           </p>
