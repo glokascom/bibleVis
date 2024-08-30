@@ -26,20 +26,43 @@ export default function Upload() {
     title: '',
     description: '',
     prompt: '',
+    is_ai_generated: true,
     software: [],
     tags: [],
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Stored data:', {
-      image: validImage,
-      ...formData,
-    })
-    setIsSubmitted(true)
-    if (validImage) {
-      const url = URL.createObjectURL(validImage)
-      setSubmittedImageUrl(url)
+
+    if (!validImage) {
+      setError('Please upload a valid image.')
+      return
+    }
+
+    const { title, description, prompt, is_ai_generated } = formData
+
+    const formDataToSend = new FormData()
+    formDataToSend.append('title', title)
+    formDataToSend.append('description', description)
+    formDataToSend.append('prompt', prompt)
+    formDataToSend.append('is_ai_generated', is_ai_generated)
+    formDataToSend.append('validImage', validImage)
+
+    try {
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formDataToSend,
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image.')
+      }
+
+      await response.json()
+      setIsSubmitted(true)
+      setSubmittedImageUrl(URL.createObjectURL(validImage))
+    } catch (error) {
+      setError(error.message)
     }
   }
 
