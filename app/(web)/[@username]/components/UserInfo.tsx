@@ -50,11 +50,9 @@ const UserInfo: React.FC<UserInfoProps> = ({
       </div>
       <div>
         {isCurrentUser ? (
-          <Link href="/user/edit">
-            <BVButton fullWidth className="mt-5">
-              Edit Profile
-            </BVButton>
-          </Link>
+          <BVButton as={Link} href="/user/edit" fullWidth className="mt-5">
+            Edit Profile
+          </BVButton>
         ) : !userInfo ? (
           <BVButton as={Link} href="/login" fullWidth color="primary" className="mt-5">
             Follow
