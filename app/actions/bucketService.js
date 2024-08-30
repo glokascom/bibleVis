@@ -109,7 +109,6 @@ async function updateAvatar(newAvatarFile) {
   let fileBuffer
   try {
     fileBuffer = await fileToBuffer(newAvatarFile)
-
     if (fileBuffer.length > MAX_AVATAR_SIZE_BYTES) {
       throw new Error(`Avatar size exceeds ${MAX_AVATAR_SIZE_MB} MB`)
     }
@@ -118,21 +117,9 @@ async function updateAvatar(newAvatarFile) {
     throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  const userId = await getUserId()
-  // Получаем текущий путь к аватару из базы данных
-  const { data: userData, error: userFetchError } = await supabaseService
-    .from('users')
-    .select('avatar_file_path')
-    .eq('id', userId)
-    .single()
+  const { id: userId, avatar_file_path } = (await getUser()).user
 
-  if (userFetchError) {
-    console.error('Error fetching user data:', userFetchError.message)
-    throw new Error('Failed to fetch user data: ' + userFetchError.message)
-  }
-
-  const oldAvatarPath = userData.avatar_file_path
-
+  const oldAvatarPath = avatar_file_path
   // Удаляем старую аватарку, если она существует
   if (oldAvatarPath) {
     try {
@@ -168,7 +155,7 @@ async function updateAvatar(newAvatarFile) {
 async function updateCover(newCoverFile) {
   const coverType = 'cover'
 
-  const userId = await getUserId()
+  const { id: userId, cover_file_path } = (await getUser()).user
 
   let fileBuffer
   try {
@@ -178,19 +165,7 @@ async function updateCover(newCoverFile) {
     throw new Error('Failed to convert file to buffer: ' + bufferError.message)
   }
 
-  // Получаем текущий путь к обложке из базы данных
-  const { data: userData, error: userFetchError } = await supabaseService
-    .from('users')
-    .select('cover_file_path')
-    .eq('id', userId)
-    .single()
-
-  if (userFetchError) {
-    console.error('Error fetching user data:', userFetchError.message)
-    throw new Error('Failed to fetch user data: ' + userFetchError.message)
-  }
-
-  const oldCoverPath = userData.cover_file_path
+  const oldCoverPath = cover_file_path
 
   // Удаляем старую обложку, если она существует
   if (oldCoverPath) {
