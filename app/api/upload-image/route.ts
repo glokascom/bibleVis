@@ -29,7 +29,22 @@ export async function POST(request: Request) {
     if (!metadata) {
       return NextResponse.json({ message: 'Invalid image format' }, { status: 400 })
     }
-    const orientation = metadata?.width > metadata?.height ? 'landscape' : 'portrait'
+
+    const sizes = {
+      small: { width: 640, height: Math.round((metadata.height / metadata.width) * 640) },
+      medium: {
+        width: 1920,
+        height: Math.round((metadata.height / metadata.width) * 1920),
+      },
+      large: {
+        width: 2400,
+        height: Math.round((metadata.height / metadata.width) * 2400),
+      },
+      original: { width: metadata.width, height: metadata.height },
+    }
+
+    // Log the sizes object
+    console.log('Sizes data:', sizes)
 
     const originalFilePath = await uploadOriginalImage(validImage)
 
@@ -51,7 +66,7 @@ export async function POST(request: Request) {
       small_file_path: '',
       file_type: validImage.type,
       file_size: validImage.size,
-      orientation,
+      orientation: metadata.width > metadata.height ? 'landscape' : 'portrait', // Orientation used here
     }
 
     const data = await insertImage(imageData)
