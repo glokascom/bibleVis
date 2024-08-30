@@ -81,7 +81,6 @@ function ImageFormDisplay({
       setFormData((prev) => ({
         ...prev,
         prompt: '',
-        software: [],
       }))
     }
   }
@@ -113,7 +112,6 @@ function ImageFormDisplay({
       if (file) {
         setErrorImage(URL.createObjectURL(file))
       }
-      setValidImage(null)
     } else {
       if (file) {
         setValidImage(file)
@@ -258,25 +256,23 @@ function ImageFormDisplay({
               This media is AI generation
             </Switch>
             {isAIGeneration && (
-              <div className="flex flex-col gap-5">
-                <TagInput
-                  label="Prompt"
-                  isTagInput={false}
-                  limitLettersAllTags={280}
-                  placeholder="Add AI prompt that you used to create the image"
-                  onBlur={handleInputBlur('prompt')}
-                  initialValue={initialFormData?.prompt || ''}
-                />
-                <TagInput
-                  label="Software Used"
-                  showCounter={false}
-                  onBlur={handleInputBlur('software')}
-                  initialTags={initialSoftwareTags}
-                  allowAddOnEnter={false}
-                  initialValue={initialFormData?.software || []}
-                />
-              </div>
+              <TagInput
+                label="Prompt"
+                isTagInput={false}
+                limitLettersAllTags={280}
+                placeholder="Add AI prompt that you used to create the image"
+                onBlur={handleInputBlur('prompt')}
+                initialValue={initialFormData?.prompt || ''}
+              />
             )}
+            <TagInput
+              label="Software Used"
+              showCounter={false}
+              onBlur={handleInputBlur('software')}
+              initialTags={initialSoftwareTags}
+              allowAddOnEnter={false}
+              initialValue={initialFormData?.software || []}
+            />
             <TagInput
               label="Image tags"
               onBlur={handleInputBlur('tags')}

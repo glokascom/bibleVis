@@ -55,7 +55,6 @@ export default function Upload() {
       if (file) {
         setErrorImage(URL.createObjectURL(file))
       }
-      setValidImage(null)
     } else {
       if (file) {
         setValidImage(file)
