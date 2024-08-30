@@ -82,19 +82,30 @@ export async function toggleSubscription(followingUuid: string) {
   }
 }
 
-export async function checkIfSubscribed(followingUuid: string): Promise<boolean> {
-  const followerUuid = (await getUser()).user.id
+export async function checkIfSubscribed(followingUuid: string): Promise<boolean | null> {
+  try {
+    const user = await getUser()
+    if (!user) {
+      console.error('User not found')
+      return null
+    }
 
-  const { data, error } = await supabaseService
-    .from('subscriptions')
-    .select('id')
-    .eq('follower_id', followerUuid)
-    .eq('following_id', followingUuid)
+    const followerUuid = user.user.id
 
-  if (error) {
-    console.error('Error checking subscription:', error)
-    return false
+    const { data, error } = await supabaseService
+      .from('subscriptions')
+      .select('id')
+      .eq('follower_id', followerUuid)
+      .eq('following_id', followingUuid)
+
+    if (error) {
+      console.error('Error checking subscription:', error)
+      return null
+    }
+
+    return !!data?.length
+  } catch (err) {
+    console.error('Unexpected error:', err)
+    return null
   }
-
-  return data && data.length > 0
 }
