@@ -2,11 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-interface ModalProps {
-  children: React.ReactNode
-  showCloseButton?: boolean
-  closeModal?: () => void
-}
+import { ModalProps } from '../types/api'
 
 export function Modal({ closeModal, showCloseButton = false, children }: ModalProps) {
   const router = useRouter()

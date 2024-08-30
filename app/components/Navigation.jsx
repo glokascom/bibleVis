@@ -37,9 +37,9 @@ function Navigation({ user }) {
     <Navbar
       isBordered
       maxWidth="full"
-      height="80px"
       classNames={{
         wrapper: 'mx-auto w-full max-w-[1806px] px-6 md:px-12',
+        base: 'md:py-2',
       }}
     >
       <NavbarContent as="div">

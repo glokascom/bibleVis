@@ -19,9 +19,6 @@ module.exports = {
         mega: '3rem',
       },
     },
-    heights: {
-      'screen-with-appbar': 'calc(100vh - 80px)',
-    },
   },
   darkMode: 'class',
   plugins: [

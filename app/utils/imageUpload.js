@@ -40,6 +40,7 @@ export const openFileDialog = (onFileSelect) => {
     if (files && files.length > 0) {
       onFileSelect(files[0])
     }
+    input.remove()
   }
   input.click()
 }

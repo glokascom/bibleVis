@@ -81,7 +81,6 @@ function ImageFormDisplay({
       setFormData((prev) => ({
         ...prev,
         prompt: '',
-        software: [],
       }))
     }
   }
@@ -102,22 +101,21 @@ function ImageFormDisplay({
   }
 
   const handleImageChange = (file, errorMessage) => {
+    if (errorImage) {
+      URL.revokeObjectURL(errorImage)
+      setErrorImage(null)
+    }
+
     setError(errorMessage)
+
     if (errorMessage) {
       if (file) {
         setErrorImage(URL.createObjectURL(file))
-      } else {
-        setErrorImage(null)
       }
-      setValidImage(null)
     } else {
       if (file) {
         setValidImage(file)
       }
-      if (errorImage) {
-        URL.revokeObjectURL(errorImage)
-      }
-      setErrorImage(null)
     }
   }
 
@@ -193,7 +191,7 @@ function ImageFormDisplay({
               </div>
             )}
             <button
-              className="absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9"
+              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData ? 'hidden' : ''}`}
               onClick={handleReplaceImage}
             >
               <Image
@@ -258,24 +256,23 @@ function ImageFormDisplay({
               This media is AI generation
             </Switch>
             {isAIGeneration && (
-              <div className="flex flex-col gap-5">
-                <TagInput
-                  label="Prompt"
-                  isTagInput={false}
-                  limitLettersAllTags={280}
-                  placeholder="Add AI prompt that you used to create the image"
-                  onBlur={handleInputBlur('prompt')}
-                  initialValue={initialFormData?.prompt || ''}
-                />
-                <TagInput
-                  label="Software Used"
-                  showCounter={false}
-                  onBlur={handleInputBlur('software')}
-                  initialTags={initialSoftwareTags}
-                  initialValue={initialFormData?.software || []}
-                />
-              </div>
+              <TagInput
+                label="Prompt"
+                isTagInput={false}
+                limitLettersAllTags={280}
+                placeholder="Add AI prompt that you used to create the image"
+                onBlur={handleInputBlur('prompt')}
+                initialValue={initialFormData?.prompt || ''}
+              />
             )}
+            <TagInput
+              label="Software Used"
+              showCounter={false}
+              onBlur={handleInputBlur('software')}
+              initialTags={initialSoftwareTags}
+              allowAddOnEnter={false}
+              initialValue={initialFormData?.software || []}
+            />
             <TagInput
               label="Image tags"
               onBlur={handleInputBlur('tags')}
@@ -299,7 +296,7 @@ function ImageFormDisplay({
           </BVButton>
           <p
             onClick={handleCancel}
-            className="cursor-pointer text-center text-small text-primary"
+            className="cursor-pointer pb-12 text-center text-small text-primary"
           >
             Cancel
           </p>
