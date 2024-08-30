@@ -1,4 +1,5 @@
 import { createClient } from '@/app/supabase/server'
+import { supabaseService } from '@/app/supabase/service'
 
 export async function getUser() {
   const supabase = createClient()
@@ -13,7 +14,7 @@ export async function getUser() {
       return { user: null, error: new Error('The user was not found') }
     }
 
-    const { data: userData, error: userError } = await supabase
+    const { data: userData, error: userError } = await supabaseService
       .from('private_user_view')
       .select('*')
       .eq('id', data.user.id)
