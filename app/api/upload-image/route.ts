@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
 
 import { insertImage } from './actions/insertImage'
@@ -18,20 +19,21 @@ export async function POST(request: Request) {
     if (!validImage) {
       return NextResponse.json({ message: 'No image file provided' }, { status: 400 })
     }
+
+    const originalFilePath = await uploadOriginalImage(validImage)
     const imageData = {
       title,
       description,
       prompt,
       is_ai_generated,
       user_id: user.id,
-      original_file_path: validImage.name,
+      original_file_path: originalFilePath,
       medium_file_path: '',
       small_file_path: '',
       file_type: validImage.type,
       file_size: validImage.size,
-      orientation: 'landscape', // Modify if needed
+      orientation: 'landscape',
     }
-    console.log(imageData)
 
     const data = await insertImage(imageData)
 
