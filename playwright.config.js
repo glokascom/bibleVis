@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test')
+import { defineConfig, devices } from '@playwright/test'
 
 module.exports = defineConfig({
   testDir: './e2e',
@@ -30,5 +30,6 @@ module.exports = defineConfig({
     command: 'yarn build && yarn start',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 })
