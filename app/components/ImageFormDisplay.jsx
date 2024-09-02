@@ -21,6 +21,7 @@ function ImageFormDisplay({
   handleCancel = () => {},
   handleSubmit = () => {},
   setValidImage = () => {},
+  softwareOptions = [],
 }) {
   const [imageUrl, setImageUrl] = useState(null)
   const [error, setError] = useState(null)
@@ -44,26 +45,6 @@ function ImageFormDisplay({
     handleSubmit(e)
     closeModal()
   }
-
-  const initialSoftwareTags = [
-    'Leonardo',
-    'Playground.ai',
-    'DALL-E 2 by OpenAI',
-    'MidJourney',
-    'Stable Diffusion',
-    'Artbreeder',
-    'Deep Dream Generator',
-    'Runway ML',
-    'NightCafe Studio',
-    'Craiyon',
-    'DeepArt',
-    `Let's Enhance`,
-    'This Person Does Not Exist',
-    'Pix2Pix by TensorFlow',
-    'BigGAN by DeepMind',
-    'Artisto',
-    'Deep Dream by Google',
-  ]
 
   useEffect(() => {
     if (imageFile) {
@@ -269,7 +250,7 @@ function ImageFormDisplay({
               label="Software Used"
               showCounter={false}
               onBlur={handleInputBlur('software')}
-              initialTags={initialSoftwareTags}
+              initialTags={softwareOptions}
               allowAddOnEnter={false}
               initialValue={initialFormData?.software || []}
             />
