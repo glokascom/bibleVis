@@ -1,38 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import Image from 'next/image'
 
 import { BVLink } from '@/app/components/BVLink'
+import { CoverProps } from '@/app/types/subscription'
 
-interface CoverProps {
-  isCurrentUser: boolean
-}
-
-function Cover({ isCurrentUser }: CoverProps) {
-  const smallCover = '/cover.svg' // TODO берем с базы данных
-  const largeCover = '/cover.svg' // TODO берем с базы данных
-
-  const [viewportWidth, setViewportWidth] = useState<number>(0)
-
-  useEffect(() => {
-    setViewportWidth(window.innerWidth)
-    const handleResize = () => setViewportWidth(window.innerWidth)
-
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const imageSrc = viewportWidth <= 640 ? smallCover : largeCover
-
+function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
   return (
     <div className="relative max-h-[400px] overflow-hidden rounded-medium">
       <Image
-        src={imageSrc}
+        src={followUserInfo.coverUrl}
         alt="cover"
-        className="object-contain"
+        className="h-full object-cover"
+        sizes="(max-width: 640px) 100vw, 50vw"
         width={1280}
         height={400}
       />
@@ -47,9 +27,5 @@ function Cover({ isCurrentUser }: CoverProps) {
     </div>
   )
 }
-/*TODO
-1. Взять изображение обложки для 2 размеров из сторейджа
-
-*/
 
 export default Cover
