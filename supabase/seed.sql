@@ -25,5 +25,23 @@ BEGIN
 END $$;
 
 
+INSERT INTO public.softwares (name) VALUES
+        ('Leonardo'),
+        ('Playground.ai'),
+        ('DALL-E 2 by OpenAI'),
+        ('MidJourney'),
+        ('Stable Diffusion'),
+        ('Artbreeder'),
+        ('Deep Dream Generator'),
+        ('Runway ML'),
+        ('NightCafe Studio'),
+        ('Craiyon'),
+        ('DeepArt'),
+        ('Lets Enhance'),
+        ('This Person Does Not Exist'),
+        ('Pix2Pix by TensorFlow'),
+        ('BigGAN by DeepMind'),
+        ('Artisto'),
+        ('Deep Dream by Google');
+END;
 
-SELECT update_username_with_email();
