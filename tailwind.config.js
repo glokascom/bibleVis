@@ -7,7 +7,18 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      borderRadius: {
+        xlarge: '1.25rem',
+      },
+      fontSize: {
+        semixlarge: '1.25rem',
+        xlarge: '1.5rem',
+        semimega: '2rem',
+        xxlarge: '2.25rem',
+        mega: '3rem',
+      },
+    },
   },
   darkMode: 'class',
   plugins: [
@@ -25,6 +36,7 @@ module.exports = {
           medium: '1rem',
           large: '1.125rem',
         },
+        boxShadow: { small: '0px 4px 24px rgba(0, 0, 0, 0.05)' },
       },
       themes: {
         light: {
