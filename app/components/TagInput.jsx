@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
@@ -57,25 +57,31 @@ export default function TagInput({
     updateSuggestions(value, selectedTags)
   }
 
-  const updateSuggestions = (value, currentSelectedTags) => {
-    const filteredTags = allTags.filter(
-      (tag) => !currentSelectedTags.some((t) => t.id === tag.id)
-    )
-    if (value) {
-      setSuggestions(
-        filteredTags
-          .filter((tag) => tag.name.toLowerCase().includes(value.toLowerCase()))
-          .slice(0, suggestionCount === undefined ? filteredTags.length : suggestionCount)
+  const updateSuggestions = useCallback(
+    (value, currentSelectedTags) => {
+      const filteredTags = allTags.filter(
+        (tag) => !currentSelectedTags.some((t) => t.id === tag.id)
       )
-    } else {
-      setSuggestions(
-        filteredTags.slice(
-          0,
-          suggestionCount === undefined ? filteredTags.length : suggestionCount
+      if (value) {
+        setSuggestions(
+          filteredTags
+            .filter((tag) => tag.name.toLowerCase().includes(value.toLowerCase()))
+            .slice(
+              0,
+              suggestionCount === undefined ? filteredTags.length : suggestionCount
+            )
         )
-      )
-    }
-  }
+      } else {
+        setSuggestions(
+          filteredTags.slice(
+            0,
+            suggestionCount === undefined ? filteredTags.length : suggestionCount
+          )
+        )
+      }
+    },
+    [allTags, suggestionCount]
+  )
 
   const addTag = (tag) => {
     const totalChars =
@@ -115,7 +121,7 @@ export default function TagInput({
     } else {
       setSuggestions([])
     }
-  }, [allTags, selectedTags, inputValue])
+  }, [allTags, selectedTags, inputValue, updateSuggestions])
 
   const removeTag = (tag) => {
     const newSelectedTags = selectedTags.filter((t) => t.id !== tag.id)
