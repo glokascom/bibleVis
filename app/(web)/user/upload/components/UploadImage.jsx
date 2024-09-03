@@ -39,7 +39,7 @@ export default function UploadImage({ softwareOptions }) {
       return
     }
 
-    const { title, description, prompt, is_ai_generated } = formData
+    const { title, description, prompt, is_ai_generated, software } = formData
 
     const formDataToSend = new FormData()
     formDataToSend.append('title', title)
@@ -47,6 +47,7 @@ export default function UploadImage({ softwareOptions }) {
     formDataToSend.append('prompt', prompt)
     formDataToSend.append('is_ai_generated', is_ai_generated)
     formDataToSend.append('validImage', validImage)
+    formDataToSend.append('software', JSON.stringify(software))
 
     try {
       const response = await fetch('/api/upload-image', {

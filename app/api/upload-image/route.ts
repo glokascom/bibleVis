@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
 
-import { insertImage } from './actions/insertImage'
+import { addImageSoftware, insertImage } from './actions/insertImage'
 
 export async function POST(request: Request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const prompt = formData.get('prompt')
     const is_ai_generated = formData.get('is_ai_generated') === 'true'
     const validImage = formData.get('validImage') as File
-
+    const software = JSON.parse(formData.get('software') as string)
     if (!validImage) {
       return NextResponse.json({ message: 'No image file provided' }, { status: 400 })
     }
@@ -43,7 +43,6 @@ export async function POST(request: Request) {
       original: { width: metadata.width, height: metadata.height },
     }
 
-    // Log the sizes object
     console.log('Sizes data:', sizes)
 
     const originalFilePath = await uploadOriginalImage(validImage)
@@ -66,12 +65,26 @@ export async function POST(request: Request) {
       small_file_path: '',
       file_type: validImage.type,
       file_size: validImage.size,
-      orientation: metadata.width > metadata.height ? 'landscape' : 'portrait', // Orientation used here
+      orientation: metadata.width > metadata.height ? 'landscape' : 'portrait',
     }
 
-    const data = await insertImage(imageData)
+    const { id: imageId } = await insertImage(imageData)
 
-    return NextResponse.json(data)
+    if (!imageId) {
+      throw new Error('Failed to insert image into database.')
+    }
+
+    for (let i = 0; i < software.length; i++) {
+      const softwareIdNumber = parseInt(software[i].id, 10)
+
+      if (!isNaN(softwareIdNumber)) {
+        await addImageSoftware(imageId, softwareIdNumber)
+      } else {
+        console.error('Invalid software ID:', software[i])
+      }
+    }
+
+    return NextResponse.json({ message: 'Image uploaded successfully', imageId })
   } catch (error) {
     console.error(error.message)
     return NextResponse.json({ message: error.message }, { status: 500 })
