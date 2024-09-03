@@ -45,7 +45,7 @@ export async function POST(
       )
     }
 
-    if (!validImage || !(validImage instanceof File)) {
+    if (!validImage) {
       return NextResponse.json<ApiError>(
         { status: 'error', message: 'Invalid or missing image file' },
         { status: 400 }
