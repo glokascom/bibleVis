@@ -8,8 +8,6 @@ import React from 'react'
 
 import { Toaster } from 'react-hot-toast'
 
-import { ToastProvider } from './components/ToastProvider'
-
 const baseFont = Wix_Madefor_Text({
   subsets: ['cyrillic', 'latin'],
   weight: ['400', '500', '600', '700'],
@@ -28,9 +26,7 @@ export default function RootLayout(props: { children: React.ReactNode }): JSX.El
       <head />
       <body className={`${baseFont.className}`}>
         <Providers>
-          <ToastProvider>
-            <div className="w-full">{children}</div>
-          </ToastProvider>
+          <div className="w-full">{children}</div>
         </Providers>
         <Toaster />
       </body>
