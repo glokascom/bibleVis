@@ -4,33 +4,65 @@ import sharp from 'sharp'
 
 import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
+import { ApiError, ApiResponse, ApiSuccess } from '@/app/types/api'
 
 import { addImageSoftware, insertImage, tagImage } from './actions/insertImage'
 
-export async function POST(request: Request) {
+interface Software {
+  id: string
+}
+
+interface Tag {
+  name: string
+}
+
+export async function POST(
+  request: Request
+): Promise<NextResponse<ApiResponse<{ imageId: string }>>> {
   try {
     const user = (await getUser())?.user
+    if (!user) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'User not authenticated' },
+        { status: 401 }
+      )
+    }
+
     const formData = await request.formData()
 
-    const title = formData.get('title')
-    const description = formData.get('description')
-    const prompt = formData.get('prompt')
+    const title = formData.get('title')?.toString().trim()
+    const description = formData.get('description')?.toString().trim()
+    const prompt = formData.get('prompt')?.toString().trim()
     const is_ai_generated = formData.get('is_ai_generated') === 'true'
     const validImage = formData.get('validImage') as File
-    const software = JSON.parse(formData.get('software') as string)
-    const tags = JSON.parse(formData.get('tags') as string)
-    if (!validImage) {
-      return NextResponse.json({ message: 'No image file provided' }, { status: 400 })
+    const software = JSON.parse(formData.get('software') as string) as Software[]
+    const tags = JSON.parse(formData.get('tags') as string) as Tag[]
+
+    if (!title) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Title is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!validImage || !(validImage instanceof File)) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Invalid or missing image file' },
+        { status: 400 }
+      )
     }
 
     const imageBuffer = Buffer.from(await validImage.arrayBuffer())
     const metadata = await sharp(imageBuffer).metadata()
 
-    if (!metadata) {
-      return NextResponse.json({ message: 'Invalid image format' }, { status: 400 })
+    if (!metadata || !metadata.width || !metadata.height) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Invalid or unreadable image format' },
+        { status: 400 }
+      )
     }
 
-    const sizes = {
+    const sizesImages = {
       small: { width: 640, height: Math.round((metadata.height / metadata.width) * 640) },
       medium: {
         width: 1920,
@@ -43,13 +75,11 @@ export async function POST(request: Request) {
       original: { width: metadata.width, height: metadata.height },
     }
 
-    console.log('Sizes data:', sizes)
-
     const originalFilePath = await uploadOriginalImage(validImage)
 
     if (!originalFilePath) {
-      return NextResponse.json(
-        { message: 'Failed to upload image to storage' },
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Failed to upload image to storage' },
         { status: 500 }
       )
     }
@@ -61,11 +91,9 @@ export async function POST(request: Request) {
       is_ai_generated,
       user_id: user.id,
       original_file_path: originalFilePath,
-      medium_file_path: '',
-      small_file_path: '',
       file_type: validImage.type,
-      file_size: validImage.size,
       orientation: metadata.width > metadata.height ? 'landscape' : 'portrait',
+      file_sizes: sizesImages,
     }
 
     const { id: imageId } = await insertImage(imageData)
@@ -74,28 +102,58 @@ export async function POST(request: Request) {
       throw new Error('Failed to insert image into database.')
     }
 
-    for (let i = 0; i < software.length; i++) {
-      const softwareIdNumber = parseInt(software[i].id, 10)
-
-      if (!isNaN(softwareIdNumber)) {
-        await addImageSoftware(imageId, softwareIdNumber)
-      } else {
-        console.error('Invalid software ID:', software[i])
-      }
+    try {
+      await Promise.all(
+        software.map(async (soft) => {
+          const softwareIdNumber = parseInt(soft.id, 10)
+          if (!isNaN(softwareIdNumber)) {
+            await addImageSoftware(imageId, softwareIdNumber)
+          } else {
+            throw new Error(`Invalid software ID: ${soft.id}`)
+          }
+        })
+      )
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error while adding software'
+      console.error(`Error adding software to image ${imageId}:`, errorMessage)
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: errorMessage },
+        { status: 500 }
+      )
     }
 
-    for (let i = 0; i < tags.length; i++) {
-      const tagName = tags[i].name
-      if (typeof tagName === 'string' && tagName.trim().length > 0) {
-        await tagImage(imageId, tagName)
-      } else {
-        console.error('Invalid tag:', tags[i])
-      }
+    try {
+      await Promise.all(
+        tags.map(async (tag) => {
+          const tagName = tag.name
+          if (typeof tagName === 'string' && tagName.trim().length > 0) {
+            await tagImage(imageId, tagName)
+          } else {
+            throw new Error(`Invalid tag: ${tag.name}`)
+          }
+        })
+      )
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error while adding tags'
+      console.error(`Error adding tags to image ${imageId}:`, errorMessage)
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: errorMessage },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ message: 'Image uploaded successfully', imageId })
+    return NextResponse.json<ApiSuccess<{ imageId: string }>>({
+      status: 'success',
+      data: { imageId },
+    })
   } catch (error) {
-    console.error(error.message)
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error processing POST request:', errorMessage)
+    return NextResponse.json<ApiError>(
+      { status: 'error', message: errorMessage },
+      { status: 500 }
+    )
   }
 }
