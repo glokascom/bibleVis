@@ -43,5 +43,5 @@ INSERT INTO public.softwares (name) VALUES
         ('BigGAN by DeepMind'),
         ('Artisto'),
         ('Deep Dream by Google');
-END;
+
 
