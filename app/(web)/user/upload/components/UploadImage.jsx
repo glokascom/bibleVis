@@ -13,7 +13,7 @@ import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 
-export default function UploadImage(softwareOptions) {
+export default function UploadImage({ softwareOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
