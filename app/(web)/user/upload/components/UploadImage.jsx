@@ -13,7 +13,7 @@ import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 
-export default function UploadImage({ softwareOptions }) {
+export default function UploadImage({ softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
@@ -39,8 +39,7 @@ export default function UploadImage({ softwareOptions }) {
       return
     }
 
-    const { title, description, prompt, is_ai_generated, software } = formData
-
+    const { title, description, prompt, is_ai_generated, software, tags } = formData
     const formDataToSend = new FormData()
     formDataToSend.append('title', title)
     formDataToSend.append('description', description)
@@ -48,6 +47,7 @@ export default function UploadImage({ softwareOptions }) {
     formDataToSend.append('is_ai_generated', is_ai_generated)
     formDataToSend.append('validImage', validImage)
     formDataToSend.append('software', JSON.stringify(software))
+    formDataToSend.append('tags', JSON.stringify(tags))
 
     try {
       const response = await fetch('/api/upload-image', {
@@ -170,6 +170,7 @@ export default function UploadImage({ softwareOptions }) {
           handleCancel={() => setIsModalOpen(true)}
           setValidImage={setValidImage}
           softwareOptions={softwareOptions}
+          tagsOptions={tagsOptions}
         />
 
         {isModalOpen && (

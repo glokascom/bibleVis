@@ -1,11 +1,12 @@
-import { getSoftwares } from './actions/getSoftwares'
+import { getSoftwares, getTags } from './actions/getSoftwares'
 import UploadImage from './components/UploadImage'
 
 export default async function EditUser() {
-  const softwareOptions = (await getSoftwares()).body
+  const softwareOptions = await getSoftwares()
+  const tagsOptions = await getTags()
   return (
     <>
-      <UploadImage softwareOptions={softwareOptions} />
+      <UploadImage softwareOptions={softwareOptions} tagsOptions={tagsOptions} />
     </>
   )
 }

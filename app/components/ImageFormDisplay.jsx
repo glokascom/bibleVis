@@ -22,6 +22,7 @@ function ImageFormDisplay({
   handleSubmit = () => {},
   setValidImage = () => {},
   softwareOptions = [],
+  tagsOptions = [],
 }) {
   const [imageUrl, setImageUrl] = useState(null)
   const [error, setError] = useState(null)
@@ -257,6 +258,7 @@ function ImageFormDisplay({
             <TagInput
               label="Image tags"
               onBlur={handleInputBlur('tags')}
+              initialTags={tagsOptions}
               initialValue={initialFormData?.tags || []}
             />
 

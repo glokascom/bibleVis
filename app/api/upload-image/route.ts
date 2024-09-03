@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
 
-import { addImageSoftware, insertImage } from './actions/insertImage'
+import { addImageSoftware, insertImage, tagImage } from './actions/insertImage'
 
 export async function POST(request: Request) {
   try {
@@ -18,12 +18,12 @@ export async function POST(request: Request) {
     const is_ai_generated = formData.get('is_ai_generated') === 'true'
     const validImage = formData.get('validImage') as File
     const software = JSON.parse(formData.get('software') as string)
+    const tags = JSON.parse(formData.get('tags') as string)
     if (!validImage) {
       return NextResponse.json({ message: 'No image file provided' }, { status: 400 })
     }
 
     const imageBuffer = Buffer.from(await validImage.arrayBuffer())
-
     const metadata = await sharp(imageBuffer).metadata()
 
     if (!metadata) {
@@ -81,6 +81,15 @@ export async function POST(request: Request) {
         await addImageSoftware(imageId, softwareIdNumber)
       } else {
         console.error('Invalid software ID:', software[i])
+      }
+    }
+
+    for (let i = 0; i < tags.length; i++) {
+      const tagName = tags[i].name
+      if (typeof tagName === 'string' && tagName.trim().length > 0) {
+        await tagImage(imageId, tagName)
+      } else {
+        console.error('Invalid tag:', tags[i])
       }
     }
 
