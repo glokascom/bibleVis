@@ -45,7 +45,7 @@ function Gallery() {
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 640: 3, 1280: 4 }}>
         <Masonry gutter="10px">
           {images.map((image) => (
-            <div key={image.uuid}>
+            <div key={image.id}>
               <ImageForGallery image={image} />
             </div>
           ))}
