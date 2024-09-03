@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
 export default function TagInput({
   label,
   suggestionCount,
@@ -86,6 +88,10 @@ export default function TagInput({
       return
     }
 
+    if (!tag.id) {
+      tag.id = generateId()
+    }
+
     if (!selectedTags.some((t) => t.id === tag.id)) {
       const newSelectedTags = [...selectedTags, tag]
       setSelectedTags(newSelectedTags)
@@ -130,7 +136,7 @@ export default function TagInput({
 
     if (e.key === 'Enter' && inputValue.trim()) {
       if (allowAddOnEnter) {
-        addTag({ name: inputValue.trim() }) // Добавьте объект с нужными полями
+        addTag({ name: inputValue.trim() })
       }
       e.preventDefault()
     } else if (e.key === 'Backspace' && inputValue === '') {
