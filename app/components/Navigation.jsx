@@ -105,7 +105,7 @@ function Navigation({ user }) {
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink href="/pages/license">License</BVLink>
           </NavbarItem>
-          {user?.load ? (
+          {user?.is_creator ? (
             <NavbarItem className="hidden lg:block">
               <BVButton as={Link} href="/user/upload" className="mr-2">
                 Upload
