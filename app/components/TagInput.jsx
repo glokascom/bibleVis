@@ -24,7 +24,8 @@ export default function TagInput({
   const tagsContainerRef = useRef(null)
   const inputRef = useRef(null)
 
-  const totalChars = selectedTags.join('').length + inputValue.length
+  const totalChars =
+    selectedTags.reduce((acc, t) => acc + t.name.length, 0) + inputValue.length
 
   useEffect(() => {
     onTagsChange({ allTags, selectedTags })
@@ -55,11 +56,13 @@ export default function TagInput({
   }
 
   const updateSuggestions = (value, currentSelectedTags) => {
-    const filteredTags = allTags.filter((tag) => !currentSelectedTags.includes(tag))
+    const filteredTags = allTags.filter(
+      (tag) => !currentSelectedTags.some((t) => t.id === tag.id)
+    )
     if (value) {
       setSuggestions(
         filteredTags
-          .filter((tag) => tag.toLowerCase().includes(value.toLowerCase()))
+          .filter((tag) => tag.name.toLowerCase().includes(value.toLowerCase()))
           .slice(0, suggestionCount === undefined ? filteredTags.length : suggestionCount)
       )
     } else {
@@ -73,19 +76,22 @@ export default function TagInput({
   }
 
   const addTag = (tag) => {
-    const totalChars = selectedTags.join('').length + tag.length
+    const totalChars =
+      selectedTags.reduce((acc, t) => acc + t.name.length, 0) + tag.name.length
 
     if (
-      (limitLetters > 0 && tag.length > limitLetters) ||
+      (limitLetters > 0 && tag.name.length > limitLetters) ||
       totalChars > limitLettersAllTags
     ) {
       return
     }
 
-    if (!selectedTags.includes(tag)) {
+    if (!selectedTags.some((t) => t.id === tag.id)) {
       const newSelectedTags = [...selectedTags, tag]
       setSelectedTags(newSelectedTags)
-      setAllTags((prevTags) => (prevTags.includes(tag) ? prevTags : [...prevTags, tag]))
+      setAllTags((prevTags) =>
+        prevTags.some((t) => t.id === tag.id) ? prevTags : [...prevTags, tag]
+      )
 
       updateSuggestions('', newSelectedTags)
     }
@@ -103,11 +109,10 @@ export default function TagInput({
     } else {
       setSuggestions([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTags, selectedTags, inputValue])
 
   const removeTag = (tag) => {
-    const newSelectedTags = selectedTags.filter((t) => t !== tag)
+    const newSelectedTags = selectedTags.filter((t) => t.id !== tag.id)
     setSelectedTags(newSelectedTags)
 
     setAllTags(() => {
@@ -125,7 +130,7 @@ export default function TagInput({
 
     if (e.key === 'Enter' && inputValue.trim()) {
       if (allowAddOnEnter) {
-        addTag(inputValue.trim())
+        addTag({ name: inputValue.trim() }) // Добавьте объект с нужными полями
       }
       e.preventDefault()
     } else if (e.key === 'Backspace' && inputValue === '') {
@@ -187,14 +192,14 @@ export default function TagInput({
         >
           {isTagInput ? (
             <>
-              {selectedTags.map((tag, index) => (
+              {selectedTags.map((tag) => (
                 <div
-                  key={index}
+                  key={tag.id}
                   className="flex items-center gap-2.5 rounded-medium bg-secondary-100 px-5 py-2.5 text-small"
                 >
-                  <span>{tag}</span>
+                  <span>{tag.name}</span>
                   <button
-                    aria-label={`delete ${tag}`}
+                    aria-label={`delete ${tag.name}`}
                     onClick={() => removeTag(tag)}
                     className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary leading-none text-white hover:opacity-hover"
                   >
@@ -235,13 +240,13 @@ export default function TagInput({
               {suggestions.length > 0 && (
                 <div className="absolute left-0 right-0 top-full z-10 mt-2.5 rounded-medium border border-secondary bg-secondary-50 p-5 text-small shadow-small">
                   <div className="flex max-h-56 flex-wrap gap-2.5 overflow-y-auto pr-2.5">
-                    {suggestions.map((suggestion, index) => (
+                    {suggestions.map((tag) => (
                       <div
-                        key={index}
-                        onClick={() => addTag(suggestion)}
+                        key={tag.id}
+                        onClick={() => addTag(tag)}
                         className="flex cursor-pointer items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5 text-small hover:bg-secondary-200"
                       >
-                        <span>{suggestion}</span>
+                        <span>{tag.name}</span>
                       </div>
                     ))}
                   </div>
