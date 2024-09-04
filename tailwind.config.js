@@ -8,10 +8,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        xlarge: '1.25rem',
+      },
       fontSize: {
         semixlarge: '1.25rem',
         xlarge: '1.5rem',
         semimega: '2rem',
+        xxlarge: '2.25rem',
         mega: '3rem',
       },
     },

@@ -37,9 +37,9 @@ function Navigation({ user }) {
     <Navbar
       isBordered
       maxWidth="full"
-      height="80px"
       classNames={{
         wrapper: 'mx-auto w-full max-w-[1806px] px-6 md:px-12',
+        base: 'md:py-2',
       }}
     >
       <NavbarContent as="div">
@@ -105,7 +105,7 @@ function Navigation({ user }) {
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink href="/pages/license">License</BVLink>
           </NavbarItem>
-          {user?.load ? (
+          {user?.is_creator ? (
             <NavbarItem className="hidden lg:block">
               <BVButton as={Link} href="/user/upload" className="mr-2">
                 Upload
@@ -129,11 +129,7 @@ function Navigation({ user }) {
                     className="transition-transform"
                     name={user.username}
                     size="md"
-                    src={
-                      user.avatar_file_exists
-                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile/${user.id}/avatars/normal.jpg`
-                        : 'null'
-                    }
+                    src={user.avatarUrl}
                   />
                   <svg
                     width="11"

@@ -1,7 +1,7 @@
 export default function UsersLayout({ children }) {
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <section className="flex h-screen flex-col">
+    <main className="mx-auto w-full max-w-[1806px] px-5 md:px-12">
+      <section className="flex h-[93.5vh] flex-col">
         <nav></nav>
         {children}
       </section>

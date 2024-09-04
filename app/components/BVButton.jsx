@@ -12,8 +12,8 @@ export const BVButton = extendVariants(Button, {
       true: 'opacity-70 cursor-not-allowed',
     },
     size: {
-      md: 'h-auto px-7 py-4 text-base font-[600] rounded-full',
-      lg: 'h-auto px-7 py-4 text-lg font-[600] rounded-full',
+      md: 'h-auto px-7 py-4 text-medium font-[600] rounded-full',
+      lg: 'h-auto px-7 py-4 text-large font-[600] rounded-full',
     },
   },
   defaultVariants: {
@@ -24,7 +24,7 @@ export const BVButton = extendVariants(Button, {
     {
       isDisabled: true,
       color: 'primary',
-      class: 'opacity-100 background-secondary-50 cursor-not-allowed',
+      class: 'opacity-100 bg-secondary-50 text-secondary',
     },
   ],
 })

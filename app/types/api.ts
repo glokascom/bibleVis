@@ -14,4 +14,10 @@ export type ApiSuccess<T> = {
   data: T
 }
 
+export interface ModalProps {
+  children: React.ReactNode
+  showCloseButton?: boolean
+  closeModal?: () => void
+}
+
 export type ApiResponse<T> = ApiSuccess<T> | ApiError
