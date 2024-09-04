@@ -31,23 +31,9 @@ type Image = {
   isOwnedByCurrentUser?: boolean
 }
 
-export const getImages = async (
-  userId: string,
-  currentUserId: string,
-  page: number = 1,
-  pageSize: number = 10
-): Promise<Image[]> => {
-  const images = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
-  return images
-}
-
-export const loadNextPage = async (
-  userId: string,
-  currentUserId: string,
-  page: number
-): Promise<Image[]> => {
-  const images = await getImages(userId, currentUserId, page)
-  return images
+interface ImageResponse {
+  images: Image[]
+  totalCount: number
 }
 
 export async function getUserImagesWithLikes(
@@ -55,10 +41,17 @@ export async function getUserImagesWithLikes(
   currentUserId: string,
   page: number = 1,
   pageSize: number = 10
-): Promise<Image[]> {
+): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
+
+    const { count: totalCount, error: countError } = await supabaseService
+      .from('images')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+
+    if (countError) throw countError
 
     const { data: images, error } = await supabaseService
       .from('images')
@@ -68,7 +61,7 @@ export async function getUserImagesWithLikes(
       .order('uploaded_at', { ascending: false })
 
     if (error) throw error
-    if (!images || images.length === 0) return []
+    if (!images || images.length === 0) return { images: [], totalCount: totalCount || 0 }
 
     const { data: likes, error: likesError } = await supabaseService
       .from('likes')
@@ -94,11 +87,29 @@ export async function getUserImagesWithLikes(
       }
     })
 
-    return imagesWithLikes
+    return { images: imagesWithLikes, totalCount: totalCount || 0 }
   } catch (error) {
     console.error('Error fetching user images:', (error as Error).message)
-    return []
+    return { images: [], totalCount: 0 }
   }
+}
+
+export const getImages = async (
+  userId: string,
+  currentUserId: string,
+  page: number = 1,
+  pageSize: number = 10
+): Promise<Image[]> => {
+  const { images } = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
+  return images
+}
+
+export const loadNextPage = async (
+  userId: string,
+  currentUserId: string,
+  page: number
+): Promise<Image[]> => {
+  return await getImages(userId, currentUserId, page)
 }
 
 interface LikeResponse {
@@ -107,42 +118,39 @@ interface LikeResponse {
 }
 
 export async function toggleLike(userId: string, imageId: number): Promise<LikeResponse> {
-  const { data: existingLike, error: fetchError } = await supabaseService
-    .from('likes')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('image_id', imageId)
-    .maybeSingle()
-
-  if (fetchError) {
-    return { error: fetchError, data: null }
-  }
-
-  if (existingLike) {
-    // Если лайк уже существует, удалим его
-    const { error: deleteError } = await supabaseService
+  try {
+    const { data: existingLike, error: fetchError } = await supabaseService
       .from('likes')
-      .delete()
-      .eq('id', existingLike.id)
+      .select('*')
+      .eq('user_id', userId)
+      .eq('image_id', imageId)
+      .maybeSingle()
 
-    if (deleteError) {
-      return { error: deleteError, data: null }
+    if (fetchError) return { error: fetchError, data: null }
+
+    if (existingLike) {
+      const { error: deleteError } = await supabaseService
+        .from('likes')
+        .delete()
+        .eq('id', existingLike.id)
+
+      if (deleteError) return { error: deleteError, data: null }
+
+      return { error: null, data: { message: 'Like removed' } }
+    } else {
+      const { error: insertError } = await supabaseService
+        .from('likes')
+        .insert([{ user_id: userId, image_id: imageId }])
+
+      if (insertError) return { error: insertError, data: null }
+
+      revalidatePath('/', 'layout')
+
+      return { error: null, data: { message: 'Like added' } }
     }
-
-    return { error: null, data: { message: 'Like removed' } }
-  } else {
-    // Если лайк не существует, создадим его
-    const { error: insertError } = await supabaseService
-      .from('likes')
-      .insert([{ user_id: userId, image_id: imageId }])
-
-    if (insertError) {
-      return { error: insertError, data: null }
-    }
-
-    revalidatePath('/', 'layout')
-
-    return { error: null, data: { message: 'Like added' } }
+  } catch (error) {
+    console.error('Error toggling like:', (error as Error).message)
+    return { error: error as PostgrestError, data: null }
   }
 }
 
