@@ -4,7 +4,9 @@ import { useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import Description from '@/app/components/Description'
 import Download from '@/app/components/Download'
+import TagList from '@/app/components/TagList'
 
 export default function ImagePage({ params }) {
   const { title } = params
@@ -51,8 +53,23 @@ export default function ImagePage({ params }) {
           <div className="flex h-56 items-center justify-center rounded-medium border md:h-[45rem] md:w-3/4">
             Image Here
           </div>
-          <div className="rounded-medium border p-5 md:w-1/4">
-            <Download />
+
+          <div className="flex flex-col gap-5 md:w-1/4">
+            <div className="rounded-medium border p-5">
+              <Download />
+              <Description />
+              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
+                Creator Details
+              </div>
+            </div>
+            <div className="rounded-medium border p-5">
+              <TagList />
+            </div>
+            <div className="rounded-medium border p-5">
+              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
+                More by Author Name / Related images
+              </div>
+            </div>
           </div>
         </div>
       </div>
