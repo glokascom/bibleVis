@@ -1,5 +1,9 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
+
+import { PostgrestError } from '@supabase/supabase-js'
+
 import { supabaseService } from '@/app/supabase/service'
 
 type User = {
@@ -98,20 +102,17 @@ export async function getUserImagesWithLikes(
 }
 
 interface LikeResponse {
-  error: Error | null
-  data: any
+  error: PostgrestError | null
+  data: object | null
 }
 
-export const toggleLike = async (
-  userId: string,
-  imageId: number
-): Promise<LikeResponse> => {
+export async function toggleLike(userId: string, imageId: number): Promise<LikeResponse> {
   const { data: existingLike, error: fetchError } = await supabaseService
     .from('likes')
     .select('*')
     .eq('user_id', userId)
     .eq('image_id', imageId)
-    .single()
+    .maybeSingle()
 
   if (fetchError) {
     return { error: fetchError, data: null }
@@ -139,6 +140,64 @@ export const toggleLike = async (
       return { error: insertError, data: null }
     }
 
+    revalidatePath('/', 'layout')
+
     return { error: null, data: { message: 'Like added' } }
+  }
+}
+
+export interface DeleteResponse {
+  error: PostgrestError | null
+  data: object | null
+}
+
+export async function deleteImage(
+  currentUserId: string,
+  imageId: number
+): Promise<DeleteResponse> {
+  try {
+    const { data: image, error: fetchError } = await supabaseService
+      .from('images')
+      .select('user_id')
+      .eq('id', imageId)
+      .single()
+
+    if (fetchError) {
+      return { error: fetchError, data: null }
+    }
+
+    if (image.user_id !== currentUserId) {
+      return {
+        error: {
+          message: 'You do not have permission to delete this image.',
+        } as PostgrestError,
+        data: null,
+      }
+    }
+
+    const { error: deleteLikesError } = await supabaseService
+      .from('likes')
+      .delete()
+      .eq('image_id', imageId)
+
+    if (deleteLikesError) {
+      return { error: deleteLikesError, data: null }
+    }
+
+    const { error: deleteImageError } = await supabaseService
+      .from('images')
+      .delete()
+      .eq('id', imageId)
+
+    if (deleteImageError) {
+      return { error: deleteImageError, data: null }
+    }
+
+    revalidatePath('/', 'layout')
+
+    return { error: null, data: { message: 'Image deleted successfully' } }
+  } catch (error) {
+    console.error('Error deleting image:', (error as Error).message)
+    return { error: error as PostgrestError, data: null }
   }
 }

@@ -9,7 +9,7 @@ import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPage } from '../actions/imagesActions'
 
-function Gallery({ userId, followUserId }) {
+function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -61,7 +61,12 @@ function Gallery({ userId, followUserId }) {
         <Masonry gutter="10px">
           {images.map((image) => (
             <div key={image.id}>
-              <ImageForGallery image={image} />
+              <ImageForGallery
+                userId={userId}
+                image={image}
+                toggleLike={toggleLike}
+                deleteImage={deleteImage}
+              />
             </div>
           ))}
         </Masonry>

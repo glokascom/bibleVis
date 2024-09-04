@@ -11,16 +11,20 @@ import { Image } from '@nextui-org/image'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 
-function ImageForGallery({ image }) {
+function ImageForGallery({ userId, image, toggleLike, deleteImage }) {
   const is_current_image_liked = image.liked_by_current_user
-  const handleToggleLike = (imageId) => {
-    console.log('like/unlike', imageId)
-    // TODO: с помощью серверной функции в базе поменять значение, в функции сделат ревалидейт
-    //P.s. эта фунцкция не нужна в данной реализации, если займёт много времени
+
+  const handleToggleLike = async () => {
+    if (toggleLike) {
+      await toggleLike(userId, image.id)
+    }
   }
+
   const is_current_user_image = image.isOwnedByCurrentUser
-  const deleteImage = (imageId) => {
-    console.log('delete image', imageId)
+  const handleDeleteImage = async () => {
+    if (deleteImage) {
+      await deleteImage(userId, image.id)
+    }
   }
   return (
     <div
@@ -50,7 +54,7 @@ function ImageForGallery({ image }) {
       </div>
       <div
         className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-        onClick={() => handleToggleLike(image.id)}
+        onClick={handleToggleLike}
       >
         <Image
           src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
@@ -85,7 +89,7 @@ function ImageForGallery({ image }) {
             <DropdownItem key="edit">
               <BVLink href={`/image/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
-            <DropdownItem key="delete" onClick={() => deleteImage(image.id)}>
+            <DropdownItem key="delete" onClick={handleDeleteImage}>
               Delete
             </DropdownItem>
           </DropdownMenu>
