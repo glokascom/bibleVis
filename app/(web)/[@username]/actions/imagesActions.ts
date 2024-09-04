@@ -96,3 +96,49 @@ export async function getUserImagesWithLikes(
     return []
   }
 }
+
+interface LikeResponse {
+  error: Error | null
+  data: any
+}
+
+export const toggleLike = async (
+  userId: string,
+  imageId: number
+): Promise<LikeResponse> => {
+  const { data: existingLike, error: fetchError } = await supabaseService
+    .from('likes')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('image_id', imageId)
+    .single()
+
+  if (fetchError) {
+    return { error: fetchError, data: null }
+  }
+
+  if (existingLike) {
+    // Если лайк уже существует, удалим его
+    const { error: deleteError } = await supabaseService
+      .from('likes')
+      .delete()
+      .eq('id', existingLike.id)
+
+    if (deleteError) {
+      return { error: deleteError, data: null }
+    }
+
+    return { error: null, data: { message: 'Like removed' } }
+  } else {
+    // Если лайк не существует, создадим его
+    const { error: insertError } = await supabaseService
+      .from('likes')
+      .insert([{ user_id: userId, image_id: imageId }])
+
+    if (insertError) {
+      return { error: insertError, data: null }
+    }
+
+    return { error: null, data: { message: 'Like added' } }
+  }
+}
