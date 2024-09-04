@@ -12,15 +12,15 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 
 function ImageForGallery({ image }) {
-  const is_current_image_liked = Math.random() > 0.5 // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер, скорей всего параметр уже нужно на сервере прикрутить к image, чтобы было удобнее
-  const handleToggleLike = (uuid) => {
-    console.log('like/unlike', uuid)
+  const is_current_image_liked = image.liked_by_current_user
+  const handleToggleLike = (imageId) => {
+    console.log('like/unlike', imageId)
     // TODO: с помощью серверной функции в базе поменять значение, в функции сделат ревалидейт
     //P.s. эта фунцкция не нужна в данной реализации, если займёт много времени
   }
-  const is_current_user_image = false // TODO: проверка на то, что это картинка текущего юзера
-  const deleteImage = (uuid) => {
-    console.log('delete image', uuid)
+  const is_current_user_image = image.isOwnedByCurrentUser
+  const deleteImage = (imageId) => {
+    console.log('delete image', imageId)
   }
   return (
     <div
@@ -33,7 +33,7 @@ function ImageForGallery({ image }) {
         href={`/image/${image.title}`}
       >
         <Image
-          src={image.url}
+          src={image.imagePath}
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
@@ -41,17 +41,17 @@ function ImageForGallery({ image }) {
       </BVLink>
       <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="ml-12 group-hover:opacity-80">{image.title}</div>
-        <BVLink className="flex items-center gap-2" href={`/@${image.user.username}`}>
+        <BVLink className="flex items-center gap-2" href={`/@${image.users.username}`}>
           <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
           <div className="text-large font-bold text-background">
-            @{image.user.username}
+            @{image.users.username}
           </div>
         </BVLink>
       </div>
       {!is_current_user_image ? (
         <div
           className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-          onClick={() => handleToggleLike(image.uuid)}
+          onClick={() => handleToggleLike(image.id)}
         >
           <Image
             src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
@@ -84,9 +84,9 @@ function ImageForGallery({ image }) {
             }}
           >
             <DropdownItem key="edit">
-              <BVLink href={`/image/${image.uuid}`}>Edit Image</BVLink>
+              <BVLink href={`/image/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
-            <DropdownItem key="delete" onClick={() => deleteImage(image.uuid)}>
+            <DropdownItem key="delete" onClick={() => deleteImage(image.id)}>
               Delete
             </DropdownItem>
           </DropdownMenu>

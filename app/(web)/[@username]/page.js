@@ -40,7 +40,7 @@ export default async function UserDetail({ params }) {
           />
         </div>
       </div>
-      <Gallery />
+      <Gallery userId={userInfo.id} followUserId={followUserInfo.id} />
     </main>
   )
 }
