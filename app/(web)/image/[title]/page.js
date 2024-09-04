@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import Download from '@/app/components/Download'
+
 export default function ImagePage({ params }) {
   const { title } = params
   const router = useRouter()
@@ -44,6 +46,15 @@ export default function ImagePage({ params }) {
       <div>
         <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
         <p className="text-red-500">Search Text: {searchText}</p>
+
+        <div className="flex flex-col gap-2.5 md:flex-row md:items-start">
+          <div className="flex h-56 items-center justify-center rounded-medium border md:h-[45rem] md:w-3/4">
+            Image Here
+          </div>
+          <div className="rounded-medium border p-5 md:w-1/4">
+            <Download />
+          </div>
+        </div>
       </div>
     </main>
   )
