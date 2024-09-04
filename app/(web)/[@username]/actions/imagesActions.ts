@@ -27,50 +27,44 @@ type Image = {
   isOwnedByCurrentUser?: boolean
 }
 
-let cachedImages: Image[] | null = null
-let currentPage: number = 1
-
 export const getImages = async (
   userId: string,
   currentUserId: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<Image[]> => {
-  if (!cachedImages) {
-    cachedImages = await getUserImagesWithLikes(userId, currentUserId)
-    console.log(cachedImages, 29)
-  }
-
-  const startIndex: number = (page - 1) * pageSize
-  const endIndex: number = startIndex + pageSize
-
-  return cachedImages.slice(startIndex, endIndex)
+  const images = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
+  return images
 }
 
 export const loadNextPage = async (
   userId: string,
-  currentUserId: string
+  currentUserId: string,
+  page: number
 ): Promise<Image[]> => {
-  const images = await getImages(userId, currentUserId, currentPage)
-  currentPage += 1
+  const images = await getImages(userId, currentUserId, page)
   return images
 }
 
 export async function getUserImagesWithLikes(
   userId: string,
-  currentUserId: string
+  currentUserId: string,
+  page: number = 1,
+  pageSize: number = 10
 ): Promise<Image[]> {
   try {
+    const rangeStart = (page - 1) * pageSize
+    const rangeEnd = page * pageSize - 1
+
     const { data: images, error } = await supabaseService
       .from('images')
-      .select(
-        'id, url_slug, title, description, original_file_path, medium_file_path, small_file_path, file_type, total_views, total_downloads, total_likes, orientation, uploaded_at, user_id, users(username)'
-      )
+      .select('*, users(username)')
       .eq('user_id', userId)
+      .range(rangeStart, rangeEnd)
+      .order('uploaded_at', { ascending: false })
 
     if (error) throw error
-
-    if (!images) return []
+    if (!images || images.length === 0) return []
 
     const { data: likes, error: likesError } = await supabaseService
       .from('likes')
