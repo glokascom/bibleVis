@@ -48,17 +48,16 @@ function ImageForGallery({ image }) {
           </div>
         </BVLink>
       </div>
-      {!is_current_user_image ? (
-        <div
-          className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-          onClick={() => handleToggleLike(image.id)}
-        >
-          <Image
-            src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
-            alt="heart"
-          />
-        </div>
-      ) : (
+      <div
+        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+        onClick={() => handleToggleLike(image.id)}
+      >
+        <Image
+          src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
+          alt="heart"
+        />
+      </div>
+      {is_current_user_image && (
         <Dropdown
           className="bg-secondary-50"
           classNames={{
