@@ -99,16 +99,16 @@ export const getImages = async (
   currentUserId: string,
   page: number = 1,
   pageSize: number = 10
-): Promise<Image[]> => {
-  const { images } = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
-  return images
+): Promise<ImageResponse> => {
+  const data = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
+  return data
 }
 
 export const loadNextPage = async (
   userId: string,
   currentUserId: string,
   page: number
-): Promise<Image[]> => {
+): Promise<ImageResponse> => {
   return await getImages(userId, currentUserId, page)
 }
 
