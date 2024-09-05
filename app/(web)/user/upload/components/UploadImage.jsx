@@ -12,8 +12,9 @@ import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
+import { useToast } from '@/app/components/ToastProvider'
 
-export default function UploadImage({ softwareOptions, tagsOptions }) {
+export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
@@ -21,12 +22,13 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submittedImageUrl, setSubmittedImageUrl] = useState(null)
-
+  const [isLoading, setIsLoading] = useState(false)
+  const { error: showToastError } = useToast()
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     prompt: '',
-    is_ai_generated: true,
+    isAIGeneration: true,
     software: [],
     tags: [],
   })
@@ -39,12 +41,14 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
       return
     }
 
-    const { title, description, prompt, is_ai_generated, software, tags } = formData
+    setIsLoading(true)
+
+    const { title, description, prompt, isAIGeneration, software, tags } = formData
     const formDataToSend = new FormData()
     formDataToSend.append('title', title)
     formDataToSend.append('description', description)
     formDataToSend.append('prompt', prompt)
-    formDataToSend.append('is_ai_generated', is_ai_generated)
+    formDataToSend.append('is_ai_generated', isAIGeneration)
     formDataToSend.append('validImage', validImage)
     formDataToSend.append('software', JSON.stringify(software))
     formDataToSend.append('tags', JSON.stringify(tags))
@@ -64,6 +68,9 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
       setSubmittedImageUrl(URL.createObjectURL(validImage))
     } catch (error) {
       setError(error.message)
+      showToastError('An error occurred while uploading the image.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -75,12 +82,10 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
 
     setError(errorMessage)
 
-    if (errorMessage) {
-      if (file) {
+    if (file) {
+      if (errorMessage) {
         setErrorImage(URL.createObjectURL(file))
-      }
-    } else {
-      if (file) {
+      } else {
         setValidImage(file)
       }
     }
@@ -138,16 +143,29 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
         <BVAvatar size="md" />
 
         <p className="pb-7 pt-5 text-large font-semibold md:pb-12 md:pt-6">
-          Great, User! Your image has been uploaded successfully
+          {`Great, ${user.username || 'User'}! Your image has been uploaded successfully`}
         </p>
 
         <div className="flex justify-center gap-2">
-          <BVButton as={Link} href="/user" className="w-1/2 bg-secondary-50 text-inherit">
+          <BVButton
+            as={Link}
+            href={`/@${user.username}`}
+            className="w-1/2 bg-secondary-50 text-inherit"
+          >
             View my profile
           </BVButton>
           <BVButton
             onClick={() => {
               setValidImage(null)
+              setFormData({
+                title: '',
+                description: '',
+                prompt: '',
+                isAIGeneration: true,
+                software: [],
+                tags: [],
+              })
+              setError(null)
               setIsSubmitted(false)
             }}
             className="w-1/2"
@@ -171,6 +189,7 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
           setValidImage={setValidImage}
           softwareOptions={softwareOptions}
           tagsOptions={tagsOptions}
+          isLoading={isLoading}
         />
 
         {isModalOpen && (
