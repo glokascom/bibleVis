@@ -58,8 +58,8 @@ export default function ImagesPage() {
           loader={customLoader}
           src={imageUrls[width || 'original']}
           alt={`Image at width ${width || 'original'}`}
-          width={width || 1640} // Используем оригинальную ширину
-          height={width ? (width * 1400) / 1640 : 1400} // Пропорционально высоте для оригинала
+          width={width || 1640}
+          height={width ? (width * 1400) / 1640 : 1400}
           className="rounded-lg shadow-md"
         />
       ))}
