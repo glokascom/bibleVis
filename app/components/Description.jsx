@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Accordion, AccordionItem } from '@nextui-org/react'
 
 import CopyButton from './CopyButton'
+import LikesCounter from './LikesCounter'
 
 const TextSection = ({ title, id, text }) => (
   <>
@@ -22,7 +23,7 @@ const StatItem = ({ label, value }) => (
 )
 
 function Description() {
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false)
+  const [isAccordionOpen, setIsAccordionOpen] = useState(true)
 
   const statistics = [
     { label: 'Views', value: '220,155' },
@@ -37,9 +38,7 @@ function Description() {
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-        Likes counter + toggle
-      </div>
+      <LikesCounter />
 
       <div className="hidden flex-col gap-5 md:flex">
         <p className="text-large font-bold">Title Jonah is in the city</p>
