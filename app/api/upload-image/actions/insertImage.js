@@ -18,10 +18,10 @@ export const insertImage = async (imageData) => {
   return data
 }
 
-export async function addImageSoftware(image_id, software_id) {
+export async function addImageSoftware(imageId, softwareId) {
   const { error } = await supabaseService
     .from('image_softwares')
-    .insert([{ image_id: image_id, software_id: software_id }])
+    .insert([{ image_id: imageId, software_id: softwareId }])
 
   if (error) {
     console.error('Error when adding a record:', error)
