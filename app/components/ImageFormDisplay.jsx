@@ -11,6 +11,7 @@ import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
 import { Modal } from './Modal'
 
 function ImageFormDisplay({
@@ -310,30 +311,12 @@ function ImageFormDisplay({
         </form>
       </div>
 
-      {isDeleteModalOpen && (
-        <Modal closeModal={closeModal}>
-          <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-            {isDeleteSuccess ? (
-              <p className="py-7">The image was successfully deleted</p>
-            ) : (
-              <>
-                <p>Are you sure to delete file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton onClick={handleDelete} className="w-1/2 bg-danger">
-                    Delete
-                  </BVButton>
-                </div>
-              </>
-            )}
-          </div>
-        </Modal>
-      )}
+      <DeleteConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        closeModal={closeModal}
+        handleDelete={handleDelete}
+        isDeleteSuccess={isDeleteSuccess}
+      />
     </div>
   )
 }
