@@ -1,7 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { PostgrestError } from '@supabase/supabase-js'
 
 import { supabaseService } from '@/app/supabase/service'
@@ -144,8 +142,6 @@ export async function toggleLike(userId: string, imageId: number): Promise<LikeR
 
       if (insertError) return { error: insertError, data: null }
 
-      revalidatePath('/', 'layout')
-
       return { error: null, data: { message: 'Like added' } }
     }
   } catch (error) {
@@ -200,8 +196,6 @@ export async function deleteImage(
     if (deleteImageError) {
       return { error: deleteImageError, data: null }
     }
-
-    revalidatePath('/', 'layout')
 
     return { error: null, data: { message: 'Image deleted successfully' } }
   } catch (error) {

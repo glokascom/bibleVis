@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { getUser } from '@/app/actions/getUser'
 
 import { getUserInfoByUsername } from '../user/edit/actions/userService'
-import { deleteImage, toggleLike } from './actions/imagesActions'
 import { checkIfSubscribed } from './actions/userActions'
 import Cover from './components/Cover'
 import Gallery from './components/Gallery'
@@ -41,13 +40,7 @@ export default async function UserDetail({ params }) {
           />
         </div>
       </div>
-      <Gallery
-        userId={userInfo.id}
-        followUserId={followUserInfo.id}
-        toggleLike={toggleLike}
-        deleteImage={deleteImage}
-        count={50}
-      />
+      <Gallery userId={userInfo.id} followUserId={followUserInfo.id} count={50} />
     </main>
   )
 }

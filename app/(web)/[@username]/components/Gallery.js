@@ -9,12 +9,12 @@ import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPage } from '../actions/imagesActions'
 
-function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
+function Gallery({ userId, followUserId }) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState(0) // Track total images
+  const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
@@ -43,7 +43,7 @@ function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
       return [...prevImages, ...filteredNewImages]
     })
 
-    setTotalImages(totalCount) // Update total images count
+    setTotalImages(totalCount)
 
     setPage((prevPage) => prevPage + 1)
 
@@ -74,12 +74,7 @@ function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
           <Masonry gutter="10px">
             {images.map((image) => (
               <div key={image.id}>
-                <ImageForGallery
-                  userId={userId}
-                  image={image}
-                  toggleLike={toggleLike}
-                  deleteImage={deleteImage}
-                />
+                <ImageForGallery userId={userId} image={image} />
               </div>
             ))}
           </Masonry>

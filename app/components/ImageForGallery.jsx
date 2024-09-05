@@ -8,23 +8,20 @@ import {
 } from '@nextui-org/dropdown'
 import { Image } from '@nextui-org/image'
 
+import { updateGallery } from '../(web)/[@username]/actions/updateGallery'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 
-function ImageForGallery({ userId, image, toggleLike, deleteImage }) {
+function ImageForGallery({ userId, image }) {
   const is_current_image_liked = image.liked_by_current_user
 
   const handleToggleLike = async () => {
-    if (toggleLike) {
-      await toggleLike(userId, image.id)
-    }
+    await updateGallery('toggleLike', userId, image.id)
   }
 
   const is_current_user_image = image.isOwnedByCurrentUser
   const handleDeleteImage = async () => {
-    if (deleteImage) {
-      await deleteImage(userId, image.id)
-    }
+    await updateGallery('deleteImage', userId, image.id)
   }
   return (
     <div
