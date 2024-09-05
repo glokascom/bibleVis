@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import {
   Dropdown,
   DropdownItem,
@@ -11,18 +13,47 @@ import { Image } from '@nextui-org/image'
 import { updateGallery } from '../(web)/[@username]/actions/updateGallery'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
 
 function ImageForGallery({ userId, image }) {
   const is_current_image_liked = image.liked_by_current_user
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const handleToggleLike = async () => {
     await updateGallery('toggleLike', userId, image.id)
   }
 
   const is_current_user_image = image.isOwnedByCurrentUser
+
   const handleDeleteImage = async () => {
-    await updateGallery('deleteImage', userId, image.id)
+    const result = await updateGallery('deleteImage', userId, image.id)
+
+    if (result.error) {
+      setDeleteError(result.error)
+      setIsDeleteSuccess(false)
+    } else {
+      setIsDeleteSuccess(true)
+      setDeleteError(null)
+      setTimeout(() => {
+        setIsDeleteModalOpen(false)
+        setIsDeleteSuccess(false)
+      }, 2000)
+    }
   }
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false)
+    setIsDeleteSuccess(false)
+    setDeleteError(null)
+  }
+
   return (
     <div
       className={`group relative h-0 w-full ${
@@ -86,12 +117,19 @@ function ImageForGallery({ userId, image }) {
             <DropdownItem key="edit">
               <BVLink href={`/image/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
-            <DropdownItem key="delete" onClick={handleDeleteImage}>
+            <DropdownItem key="delete" onClick={openDeleteModal}>
               Delete
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
       )}
+      <DeleteConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        closeModal={closeDeleteModal}
+        handleDelete={handleDeleteImage}
+        isDeleteSuccess={isDeleteSuccess}
+        deleteError={deleteError}
+      />
     </div>
   )
 }

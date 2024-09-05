@@ -10,7 +10,10 @@ export async function updateGallery(options, userId, imageId) {
       await toggleLike(userId, imageId)
     }
     if (options === 'deleteImage') {
-      await deleteImage(userId, imageId)
+      const { error } = await deleteImage(userId, imageId)
+      if (error) {
+        return { error: error.message }
+      }
     }
     revalidatePath('/', 'layout')
 
