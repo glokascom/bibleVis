@@ -75,12 +75,10 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
 
     setError(errorMessage)
 
-    if (errorMessage) {
-      if (file) {
+    if (file) {
+      if (errorMessage) {
         setErrorImage(URL.createObjectURL(file))
-      }
-    } else {
-      if (file) {
+      } else {
         setValidImage(file)
       }
     }
