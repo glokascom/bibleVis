@@ -7,30 +7,31 @@ import Image from 'next/image'
 const customLoader = ({ src }) => src
 
 const src = '4686d99d-32f7-4fe7-8df1-aa7bce0b5079/images/image_2024-08-30-142238.jpg'
+//TODO: delete on release. This is just for testing
+
+async function requestProcessedImage(src, width) {
+  const response = await fetch('/api/process-image', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      src: src,
+      width: width,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to process image at width ${width}`)
+  }
+
+  const blob = await response.blob()
+  return URL.createObjectURL(blob)
+}
 
 export default function ImagesPage() {
-  const [imageWidths] = useState([640, 1920, 2400])
+  const [imageWidths] = useState([720, 1920])
   const [imageUrls, setImageUrls] = useState({})
-
-  async function requestProcessedImage(src, width) {
-    const response = await fetch('/api/process-image', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        src: src,
-        width: width,
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`Failed to process image at width ${width}`)
-    }
-
-    const blob = await response.blob()
-    return URL.createObjectURL(blob)
-  }
 
   useEffect(() => {
     async function processImages() {
