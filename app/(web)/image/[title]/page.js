@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
 import Download from '@/app/components/Download'
 import TagList from '@/app/components/TagList'
@@ -58,9 +59,8 @@ export default function ImagePage({ params }) {
             <div className="rounded-medium border p-5">
               <Download />
               <Description />
-              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-                Creator Details
-              </div>
+
+              <CreatorDetails />
             </div>
             <div className="rounded-medium border p-5">
               <TagList />
