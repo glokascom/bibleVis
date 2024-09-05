@@ -13,7 +13,7 @@ import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 
-export default function UploadImage({ softwareOptions, tagsOptions }) {
+export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
@@ -21,6 +21,7 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submittedImageUrl, setSubmittedImageUrl] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -38,6 +39,8 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
       setError('Please upload a valid image.')
       return
     }
+
+    setIsLoading(true) // Set loading state to true
 
     const { title, description, prompt, is_ai_generated, software, tags } = formData
     const formDataToSend = new FormData()
@@ -64,6 +67,8 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
       setSubmittedImageUrl(URL.createObjectURL(validImage))
     } catch (error) {
       setError(error.message)
+    } finally {
+      setIsLoading(false) // Set loading state back to false after submission
     }
   }
 
@@ -136,11 +141,15 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
         <BVAvatar size="md" />
 
         <p className="pb-7 pt-5 text-large font-semibold md:pb-12 md:pt-6">
-          Great, User! Your image has been uploaded successfully
+          {`Great, ${user.username || 'User'}! Your image has been uploaded successfully`}
         </p>
 
         <div className="flex justify-center gap-2">
-          <BVButton as={Link} href="/user" className="w-1/2 bg-secondary-50 text-inherit">
+          <BVButton
+            as={Link}
+            href={`/@${user.username}`}
+            className="w-1/2 bg-secondary-50 text-inherit"
+          >
             View my profile
           </BVButton>
           <BVButton
@@ -169,6 +178,7 @@ export default function UploadImage({ softwareOptions, tagsOptions }) {
           setValidImage={setValidImage}
           softwareOptions={softwareOptions}
           tagsOptions={tagsOptions}
+          isLoading={isLoading}
         />
 
         {isModalOpen && (

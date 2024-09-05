@@ -23,6 +23,7 @@ function ImageFormDisplay({
   setValidImage = () => {},
   softwareOptions = [],
   tagsOptions = [],
+  isLoading = false,
 }) {
   const [imageUrl, setImageUrl] = useState(null)
   const [error, setError] = useState(null)
@@ -272,7 +273,7 @@ function ImageFormDisplay({
 
           <BVButton
             onClick={() => setIsSaveModalOpen(true)}
-            isDisabled={!isFormFilled}
+            isDisabled={!isFormFilled || isLoading}
             className={`my-7 w-full ${initialFormData ? '' : 'bg-secondary-50 text-inherit'}`}
           >
             {initialFormData ? 'Save' : 'Publish'}
