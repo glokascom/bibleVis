@@ -16,6 +16,10 @@ export async function getImageInfoById(
       return { error: fetchError, data: null }
     }
 
+    const imagePath = image.original_file_path
+      ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+      : null
+
     const { data: tagsData, error: tagsError } = await supabaseService
       .from('image_tags')
       .select('tag_id, tags(id, name)')
@@ -54,6 +58,7 @@ export async function getImageInfoById(
         ...image,
         tags: tags,
         software: software,
+        imagePath: imagePath,
       },
     }
   } catch (error) {

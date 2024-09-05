@@ -26,7 +26,7 @@ function ImageFormDisplay({
   tagsOptions = [],
   isLoading = false,
 }) {
-  const [imageUrl, setImageUrl] = useState(null)
+  const [imageUrl, setImageUrl] = useState(initialFormData.imagePath)
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(
