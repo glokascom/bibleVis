@@ -115,7 +115,7 @@ function ImageForGallery({ userId, image }) {
             }}
           >
             <DropdownItem key="edit">
-              <BVLink href={`/user/edit-image`}>Edit Image</BVLink>
+              <BVLink href={`/user/edit-image?id=${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
             <DropdownItem key="delete" onClick={openDeleteModal}>
               Delete
