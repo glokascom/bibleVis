@@ -9,13 +9,17 @@ import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPage } from '../actions/imagesActions'
 
-function Gallery({ userId, followUserId }) {
-  const [images, setImages] = useState([])
+function Gallery({ userId, followUserId, initialImages }) {
+  const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [mounted, setMounted] = useState(false)
   const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
+
+  useEffect(() => {
+    setImages(initialImages)
+  }, [initialImages])
 
   useEffect(() => {
     const initialize = async () => {
