@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 const customLoader = ({ src }) => src
 
-const src = '4686d99d-32f7-4fe7-8df1-aa7bce0b5079/images/image_2024-08-30-142238.jpg'
+const src = '4686d99d-32f7-4fe7-8df1-aa7bce0b5079/images/image_2024-09-05-093107.jpg'
 
 async function requestProcessedImage(src, width) {
   const response = await fetch('/api/process-image', {
@@ -30,7 +30,7 @@ async function requestProcessedImage(src, width) {
 }
 
 export default function ImagesPage() {
-  const [imageWidths] = useState([720, 1920])
+  const [imageWidths] = useState([null, 720, 1920])
   const [imageUrls, setImageUrls] = useState({})
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function ImagesPage() {
         const urls = {}
         for (const width of imageWidths) {
           const processedImageUrl = await requestProcessedImage(src, width)
-          urls[width] = processedImageUrl
+          urls[width || 'original'] = processedImageUrl
         }
         setImageUrls(urls)
       } catch (error) {
@@ -54,12 +54,12 @@ export default function ImagesPage() {
     <div className="flex flex-wrap gap-5 p-5">
       {imageWidths.map((width) => (
         <Image
-          key={width}
+          key={width || 'original'}
           loader={customLoader}
-          src={imageUrls[width]}
-          alt={`Image at width ${width}`}
-          width={width}
-          height={(width * 1400) / 1640}
+          src={imageUrls[width || 'original']}
+          alt={`Image at width ${width || 'original'}`}
+          width={width || 1640} // Используем оригинальную ширину
+          height={width ? (width * 1400) / 1640 : 1400} // Пропорционально высоте для оригинала
           className="rounded-lg shadow-md"
         />
       ))}
