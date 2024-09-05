@@ -16,8 +16,11 @@ export default function EditImage() {
     title: 'заголовок',
     description: 'описание',
     prompt: 'промт',
-    software: ['Leonardo'],
-    tags: ['ship', 'art'],
+    software: [{ id: '1', name: 'Leonardo' }],
+    tags: [
+      { id: '1', name: 'art' },
+      { id: '2', name: 'ship' },
+    ],
   })
 
   const validImage = null
