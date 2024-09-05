@@ -27,7 +27,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
     title: '',
     description: '',
     prompt: '',
-    is_ai_generated: true,
+    isAIGeneration: true,
     software: [],
     tags: [],
   })
@@ -40,14 +40,14 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
       return
     }
 
-    setIsLoading(true) // Set loading state to true
+    setIsLoading(true)
 
-    const { title, description, prompt, is_ai_generated, software, tags } = formData
+    const { title, description, prompt, isAIGeneration, software, tags } = formData
     const formDataToSend = new FormData()
     formDataToSend.append('title', title)
     formDataToSend.append('description', description)
     formDataToSend.append('prompt', prompt)
-    formDataToSend.append('is_ai_generated', is_ai_generated)
+    formDataToSend.append('is_ai_generated', isAIGeneration)
     formDataToSend.append('validImage', validImage)
     formDataToSend.append('software', JSON.stringify(software))
     formDataToSend.append('tags', JSON.stringify(tags))
@@ -68,7 +68,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
     } catch (error) {
       setError(error.message)
     } finally {
-      setIsLoading(false) // Set loading state back to false after submission
+      setIsLoading(false)
     }
   }
 
