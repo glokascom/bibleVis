@@ -12,6 +12,7 @@ import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
+import { useToast } from '@/app/components/ToastProvider'
 
 export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
@@ -22,7 +23,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submittedImageUrl, setSubmittedImageUrl] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-
+  const { error: showToastError } = useToast()
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -67,6 +68,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
       setSubmittedImageUrl(URL.createObjectURL(validImage))
     } catch (error) {
       setError(error.message)
+      showToastError('An error occurred while uploading the image.')
     } finally {
       setIsLoading(false)
     }
@@ -155,6 +157,15 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           <BVButton
             onClick={() => {
               setValidImage(null)
+              setFormData({
+                title: '',
+                description: '',
+                prompt: '',
+                isAIGeneration: true,
+                software: [],
+                tags: [],
+              })
+              setError(null)
               setIsSubmitted(false)
             }}
             className="w-1/2"
