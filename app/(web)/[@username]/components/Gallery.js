@@ -57,11 +57,11 @@ function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
   if (!mounted) return null
 
   return (
-    <div>
+    <>
       <div className="mb-4 flex items-center">
-        <h3 className="mr-4 text-3xl font-bold">Gallary</h3>
-        <span className="mt-1 text-xl font-bold">Images</span>
-        <span className="ml-2 mt-2 text-gray-500">{totalImages}</span>
+        <h3 className="mr-4 font-sans text-5xl text-secondary">Gallary</h3>
+        <span className="mt-6 font-sans text-base text-secondary">Images</span>
+        <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
       </div>
       <InfiniteScroll
         dataLength={images.length}
@@ -73,29 +73,19 @@ function Gallery({ userId, followUserId, toggleLike, deleteImage }) {
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 640: 3, 1280: 4 }}>
           <Masonry gutter="10px">
             {images.map((image) => (
-              <div key={image.id} className="group relative">
+              <div key={image.id}>
                 <ImageForGallery
                   userId={userId}
                   image={image}
                   toggleLike={toggleLike}
                   deleteImage={deleteImage}
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="text-center text-white">
-                    <button className="mb-2 block">Edit image</button>
-                    <button>Delete</button>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <p className="text-sm">Title {image.title}</p>
-                  <p className="text-xs text-gray-500">{image.username}</p>
-                </div>
               </div>
             ))}
           </Masonry>
         </ResponsiveMasonry>
       </InfiniteScroll>
-    </div>
+    </>
   )
 }
 
