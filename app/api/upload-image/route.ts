@@ -63,14 +63,10 @@ export async function POST(
     }
 
     const sizesImages = {
-      small: { width: 640, height: Math.round((metadata.height / metadata.width) * 640) },
+      small: { width: 720, height: Math.round((metadata.height / metadata.width) * 720) },
       medium: {
         width: 1920,
         height: Math.round((metadata.height / metadata.width) * 1920),
-      },
-      large: {
-        width: 2400,
-        height: Math.round((metadata.height / metadata.width) * 2400),
       },
       original: { width: metadata.width, height: metadata.height },
     }
