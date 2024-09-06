@@ -304,7 +304,7 @@ function ImageFormDisplay({
           {isSaveModalOpen && (
             <Modal closeModal={closeModal}>
               <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-                <p>Are you sure you need to save the file?</p>
+                <p>Are you sure you want to upload file?</p>
                 <div className="mt-12 flex justify-center gap-2">
                   <BVButton
                     className="w-1/2 bg-secondary-50 text-inherit"
