@@ -29,6 +29,10 @@ function ImageForGallery({ userId, image }) {
   const handleToggleLike = async () => {
     toggleOptimisticState(!optimisticState)
     await updateGallery('toggleLike', userId, image.id)
+    if (result.error) {
+      console.error('Error toggling like:', result.error)
+      toggleOptimisticState(optimisticState)
+    }
   }
 
   const is_current_user_image = image.isOwnedByCurrentUser
