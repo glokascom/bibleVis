@@ -8,7 +8,7 @@ import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import { Modal } from '@/app/components/Modal'
 
-export default function EditImage({ imageInfo }) {
+export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [formData, setFormData] = useState({
@@ -18,13 +18,11 @@ export default function EditImage({ imageInfo }) {
     prompt: imageInfo.prompt,
     software: imageInfo.software,
     tags: imageInfo.tags,
+    imagePath: imageInfo.imagePath,
   })
 
   const validImage = null
 
-  useEffect(() => {
-    console.log(imageInfo)
-  }, [imageInfo])
   useEffect(() => {
     const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
       if (key === 'isAIGeneration') return false
@@ -54,6 +52,8 @@ export default function EditImage({ imageInfo }) {
         isFormFilled={isFormFilled}
         handleSubmit={handleSubmit}
         handleCancel={() => setIsCancelModalOpen(true)}
+        softwareOptions={softwareOptions}
+        tagsOptions={tagsOptions}
       />
 
       {isCancelModalOpen && (

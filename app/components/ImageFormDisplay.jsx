@@ -26,7 +26,7 @@ function ImageFormDisplay({
   tagsOptions = [],
   isLoading = false,
 }) {
-  const [imageUrl, setImageUrl] = useState(initialFormData.imagePath)
+  const [imageUrl, setImageUrl] = useState(initialFormData.imagePath || '')
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(
@@ -37,6 +37,10 @@ function ImageFormDisplay({
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
+
+  useEffect(() => {
+    console.log(initialFormData, 42)
+  }, [initialFormData, imageUrl])
 
   const closeModal = () => {
     setIsSaveModalOpen(false)
@@ -99,12 +103,15 @@ function ImageFormDisplay({
     } else {
       if (file) {
         setValidImage(file)
+        const url = URL.createObjectURL(file)
+        setImageUrl(url)
       }
     }
   }
 
   const handleDelete = () => {
     setValidImage(null)
+    setImageUrl('')
     setIsDeleteSuccess(true)
 
     setTimeout(() => {
@@ -162,11 +169,13 @@ function ImageFormDisplay({
       <div className="flex flex-col gap-7 md:flex-row md:gap-5">
         <div className="md:w-2/3">
           <div className="relative">
-            {imageFile ? (
+            {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
                 className="rounded-medium border"
+                layout="fill"
+                objectFit="cover"
               />
             ) : (
               <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
@@ -221,6 +230,7 @@ function ImageFormDisplay({
               placeholder="Add title of the image"
               onBlur={handleInputBlur('title')}
               initialValue={initialFormData?.title || ''}
+              initialTags={softwareOptions}
             />
             <TagInput
               label="Description"
@@ -229,6 +239,7 @@ function ImageFormDisplay({
               placeholder="Add optional description of the image"
               onBlur={handleInputBlur('description')}
               initialValue={initialFormData?.description || ''}
+              initialTags={tagsOptions}
             />
             <Switch
               isSelected={isAIGeneration}
