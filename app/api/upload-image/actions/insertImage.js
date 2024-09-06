@@ -18,6 +18,21 @@ export const insertImage = async (imageData) => {
   return data
 }
 
+export const updateImage = async (imageId, updatedData) => {
+  const { data, error } = await supabaseService
+    .from('images')
+    .update(updatedData)
+    .match({ id: imageId })
+    .select('id')
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
 export async function addImageSoftware(imageId, softwareId) {
   const { error } = await supabaseService
     .from('image_softwares')

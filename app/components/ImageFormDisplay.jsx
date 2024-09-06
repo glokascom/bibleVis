@@ -39,8 +39,12 @@ function ImageFormDisplay({
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
 
   useEffect(() => {
-    console.log(initialFormData, 42)
-  }, [initialFormData, imageUrl])
+    if (imageFile) {
+      const url = URL.createObjectURL(imageFile)
+      setImageUrl(url)
+      return () => URL.revokeObjectURL(url)
+    }
+  }, [imageFile])
 
   const closeModal = () => {
     setIsSaveModalOpen(false)
@@ -48,18 +52,16 @@ function ImageFormDisplay({
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = (e) => {
-    handleSubmit(e)
-    closeModal()
-  }
-
-  useEffect(() => {
-    if (imageFile) {
-      const url = URL.createObjectURL(imageFile)
-      setImageUrl(url)
-      return () => URL.revokeObjectURL(url)
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    if (isLoading) return
+    try {
+      await handleSubmit()
+      closeModal()
+    } catch (error) {
+      console.error('Error submitting form:', error)
     }
-  }, [imageFile])
+  }
 
   const handleAIGenerationChange = (value) => {
     setIsAIGeneration(value)

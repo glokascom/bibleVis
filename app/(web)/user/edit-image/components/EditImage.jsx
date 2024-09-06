@@ -21,7 +21,8 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     imagePath: imageInfo.imagePath,
   })
 
-  const validImage = null
+  const [validImage, setValidImage] = useState(null) // moved to state
+  const [isLoading, setIsLoading] = useState(false) // added loading state
 
   useEffect(() => {
     const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
@@ -31,12 +32,21 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     setIsFormFilled(isAnyFieldFilled && validImage !== null)
   }, [formData, validImage])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Stored data:', {
-      image: validImage,
-      ...formData,
-    })
+    setIsLoading(true)
+    try {
+      console.log('Stored data:', {
+        image: validImage,
+        ...formData,
+      })
+      // You would add your form submission logic here, for example:
+      // const response = await saveData({ image: validImage, ...formData });
+    } catch (error) {
+      console.error('Error submitting form:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const closeModal = () => {
@@ -54,6 +64,8 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
         handleCancel={() => setIsCancelModalOpen(true)}
         softwareOptions={softwareOptions}
         tagsOptions={tagsOptions}
+        setValidImage={setValidImage}
+        isLoading={isLoading}
       />
 
       {isCancelModalOpen && (
