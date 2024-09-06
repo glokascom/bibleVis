@@ -1,15 +1,21 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
+
+import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
 import Download from '@/app/components/Download'
 import TagList from '@/app/components/TagList'
 
+import { getImages } from '../../[@username]/actions/images'
+
 export default function ImagePage({ params }) {
+  const [relatedImages, setRelatedImages] = useState([])
+
   const { title } = params
   const router = useRouter()
   const parts = title ? title.split('-') : []
@@ -34,6 +40,13 @@ export default function ImagePage({ params }) {
         router.replace(`/image/${uuid}`)
       }
     }
+
+    const fetchImages = async () => {
+      const images = await getImages(1, 9)
+      setRelatedImages(images)
+    }
+
+    fetchImages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid, searchText])
 
@@ -65,9 +78,20 @@ export default function ImagePage({ params }) {
             <div className="rounded-medium border p-5">
               <TagList />
             </div>
+
             <div className="rounded-medium border p-5">
-              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-                More by Author Name / Related images
+              <p className="font-bold">More by Author Name</p>
+              <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
+                {relatedImages.map((image) => (
+                  <Image
+                    key={image.id}
+                    src={image.url}
+                    alt={image.title}
+                    isZoomed
+                    className="mt-5 md:mt-0"
+                    classNames={{ img: 'md:aspect-square' }}
+                  />
+                ))}
               </div>
             </div>
           </div>
