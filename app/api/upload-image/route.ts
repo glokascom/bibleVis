@@ -196,9 +196,8 @@ export async function PUT(
       )
     }
 
-    const existingImage = await getImageInfoById(imageId)
-
-    if (!existingImage || existingImage.user_id !== user.id) {
+    const existingImage = await getImageInfoById(parseInt(imageId))
+    if (!existingImage) {
       return NextResponse.json<ApiError>(
         {
           status: 'error',
