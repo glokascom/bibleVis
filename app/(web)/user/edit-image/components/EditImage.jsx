@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { BVButton } from '@/app/components/BVButton'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
 import { Modal } from '@/app/components/Modal'
+import { useToast } from '@/app/components/ToastProvider'
 
 export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
   const [isFormFilled, setIsFormFilled] = useState(false)
@@ -21,29 +22,54 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     imagePath: imageInfo.imagePath,
   })
 
-  const [validImage, setValidImage] = useState(null) // moved to state
-  const [isLoading, setIsLoading] = useState(false) // added loading state
+  const [validImage, setValidImage] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const { success: showToastSuccess, error: showToastError } = useToast()
 
   useEffect(() => {
     const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
       if (key === 'isAIGeneration') return false
-      return Array.isArray(value) ? value.length > 0 : Boolean(value)
+
+      if (Array.isArray(value)) return value.length > 0
+      if (typeof value === 'string') return value.trim().length > 0
+
+      return Boolean(value)
     })
-    setIsFormFilled(isAnyFieldFilled && validImage !== null)
+
+    setIsFormFilled(isAnyFieldFilled)
   }, [formData, validImage])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     setIsLoading(true)
+    const { title, description, prompt, isAIGeneration, software, tags } = formData
+    const formDataToSend = new FormData()
+
+    formDataToSend.append('imageId', imageInfo.id)
+    formDataToSend.append('title', title)
+    formDataToSend.append('description', description)
+    formDataToSend.append('prompt', prompt)
+    formDataToSend.append('is_ai_generated', isAIGeneration)
+    formDataToSend.append('validImage', validImage)
+    formDataToSend.append('software', JSON.stringify(software))
+    formDataToSend.append('tags', JSON.stringify(tags))
+
     try {
-      console.log('Stored data:', {
-        image: validImage,
-        ...formData,
+      const response = await fetch('/api/upload-image', {
+        method: 'PUT',
+        body: formDataToSend,
       })
-      // You would add your form submission logic here, for example:
-      // const response = await saveData({ image: validImage, ...formData });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image. Статус: ' + response.status)
+      }
+
+      await response.json()
+
+      showToastSuccess('Form successfully submitted')
+      closeModal()
     } catch (error) {
-      console.error('Error submitting form:', error)
+      console.error('Error during image loading:', error)
+      showToastError(`${error}`)
     } finally {
       setIsLoading(false)
     }

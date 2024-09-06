@@ -26,7 +26,7 @@ function ImageFormDisplay({
   tagsOptions = [],
   isLoading = false,
 }) {
-  const [imageUrl, setImageUrl] = useState(initialFormData.imagePath || '')
+  const [imageUrl, setImageUrl] = useState(initialFormData?.imagePath || '')
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(
@@ -38,6 +38,17 @@ function ImageFormDisplay({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
 
+  const closeModal = () => {
+    setIsSaveModalOpen(false)
+    setIsDeleteModalOpen(false)
+    setIsDeleteSuccess(false)
+  }
+
+  const handleFormSubmit = (e) => {
+    handleSubmit(e)
+    closeModal()
+  }
+
   useEffect(() => {
     if (imageFile) {
       const url = URL.createObjectURL(imageFile)
@@ -45,23 +56,6 @@ function ImageFormDisplay({
       return () => URL.revokeObjectURL(url)
     }
   }, [imageFile])
-
-  const closeModal = () => {
-    setIsSaveModalOpen(false)
-    setIsDeleteModalOpen(false)
-    setIsDeleteSuccess(false)
-  }
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
-    if (isLoading) return
-    try {
-      await handleSubmit()
-      closeModal()
-    } catch (error) {
-      console.error('Error submitting form:', error)
-    }
-  }
 
   const handleAIGenerationChange = (value) => {
     setIsAIGeneration(value)
@@ -232,7 +226,6 @@ function ImageFormDisplay({
               placeholder="Add title of the image"
               onBlur={handleInputBlur('title')}
               initialValue={initialFormData?.title || ''}
-              initialTags={softwareOptions}
             />
             <TagInput
               label="Description"
@@ -241,7 +234,6 @@ function ImageFormDisplay({
               placeholder="Add optional description of the image"
               onBlur={handleInputBlur('description')}
               initialValue={initialFormData?.description || ''}
-              initialTags={tagsOptions}
             />
             <Switch
               isSelected={isAIGeneration}
