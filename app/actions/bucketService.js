@@ -191,4 +191,30 @@ async function updateCover(newCoverFile) {
   }
 }
 
-export { updateAvatar, updateCover }
+async function uploadOriginalImage(imageFile) {
+  const imageType = 'image'
+
+  const { id: userId } = (await getUser()).user
+
+  let fileBuffer
+  try {
+    fileBuffer = await fileToBuffer(imageFile)
+  } catch (bufferError) {
+    console.error('Error converting file to buffer:', bufferError.message)
+    throw new Error('Failed to convert file to buffer: ' + bufferError.message)
+  }
+
+  const filePath = `${userId}/images`
+
+  let uploadedPath
+  try {
+    uploadedPath = await uploadFile(fileBuffer, filePath, imageType)
+  } catch (uploadError) {
+    console.error('Error uploading original image:', uploadError.message)
+    throw new Error('Failed to upload original image: ' + uploadError.message)
+  }
+
+  return uploadedPath
+}
+
+export { updateAvatar, updateCover, uploadOriginalImage }

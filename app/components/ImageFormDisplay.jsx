@@ -11,6 +11,7 @@ import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
 import { Modal } from './Modal'
 
 function ImageFormDisplay({
@@ -21,6 +22,9 @@ function ImageFormDisplay({
   handleCancel = () => {},
   handleSubmit = () => {},
   setValidImage = () => {},
+  softwareOptions = [],
+  tagsOptions = [],
+  isLoading = false,
 }) {
   const [imageUrl, setImageUrl] = useState(null)
   const [error, setError] = useState(null)
@@ -44,26 +48,6 @@ function ImageFormDisplay({
     handleSubmit(e)
     closeModal()
   }
-
-  const initialSoftwareTags = [
-    'Leonardo',
-    'Playground.ai',
-    'DALL-E 2 by OpenAI',
-    'MidJourney',
-    'Stable Diffusion',
-    'Artbreeder',
-    'Deep Dream Generator',
-    'Runway ML',
-    'NightCafe Studio',
-    'Craiyon',
-    'DeepArt',
-    `Let's Enhance`,
-    'This Person Does Not Exist',
-    'Pix2Pix by TensorFlow',
-    'BigGAN by DeepMind',
-    'Artisto',
-    'Deep Dream by Google',
-  ]
 
   useEffect(() => {
     if (imageFile) {
@@ -269,13 +253,14 @@ function ImageFormDisplay({
               label="Software Used"
               showCounter={false}
               onBlur={handleInputBlur('software')}
-              initialTags={initialSoftwareTags}
+              initialTags={softwareOptions}
               allowAddOnEnter={false}
               initialValue={initialFormData?.software || []}
             />
             <TagInput
               label="Image tags"
               onBlur={handleInputBlur('tags')}
+              initialTags={tagsOptions}
               initialValue={initialFormData?.tags || []}
             />
 
@@ -289,7 +274,7 @@ function ImageFormDisplay({
 
           <BVButton
             onClick={() => setIsSaveModalOpen(true)}
-            isDisabled={!isFormFilled}
+            isDisabled={!isFormFilled || isLoading}
             className={`my-7 w-full ${initialFormData ? '' : 'bg-secondary-50 text-inherit'}`}
           >
             {initialFormData ? 'Save' : 'Publish'}
@@ -326,30 +311,12 @@ function ImageFormDisplay({
         </form>
       </div>
 
-      {isDeleteModalOpen && (
-        <Modal closeModal={closeModal}>
-          <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-            {isDeleteSuccess ? (
-              <p className="py-7">The image was successfully deleted</p>
-            ) : (
-              <>
-                <p>Are you sure to delete file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton onClick={handleDelete} className="w-1/2 bg-danger">
-                    Delete
-                  </BVButton>
-                </div>
-              </>
-            )}
-          </div>
-        </Modal>
-      )}
+      <DeleteConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        closeModal={closeModal}
+        handleDelete={handleDelete}
+        isDeleteSuccess={isDeleteSuccess}
+      />
     </div>
   )
 }
