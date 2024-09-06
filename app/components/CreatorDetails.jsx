@@ -9,6 +9,7 @@ function CreatorDetails() {
   const [follow, setFollow] = useState(false)
   const [isNarrow, setIsNarrow] = useState(false)
   const containerRef = useRef(null)
+  const resizeObserverRef = useRef(null)
 
   useEffect(() => {
     const container = containerRef.current
@@ -19,19 +20,24 @@ function CreatorDetails() {
       }
     }
 
+    if (!resizeObserverRef.current) {
+      resizeObserverRef.current = new ResizeObserver(checkWidth)
+    }
+
     checkWidth()
 
-    const resizeObserver = new ResizeObserver(checkWidth)
     if (container) {
-      resizeObserver.observe(container)
+      resizeObserverRef.current.observe(container)
     }
 
     return () => {
-      if (container) {
-        resizeObserver.unobserve(container)
+      if (container && resizeObserverRef.current) {
+        resizeObserverRef.current.unobserve(container)
       }
     }
   }, [])
+
+  const toggleFollow = () => setFollow((prev) => !prev)
 
   return (
     <div
@@ -44,11 +50,11 @@ function CreatorDetails() {
           className="transition-transform"
           name="user.username"
           size="md"
-          // src={user.avatarUrl}
         />
-
         <div className="max-w-32">
-          <p>Name creator</p>
+          <p className="truncate" title="Name creator_the_name_here_is_too_long">
+            Name creator_the_name_here_is_too_long
+          </p>
           <p className="mt-2.5 text-small text-secondary-400">22,465 followers</p>
         </div>
       </div>
@@ -57,19 +63,15 @@ function CreatorDetails() {
         variant="light"
         color="background"
         className="rounded-medium text-large"
-        onClick={() => setFollow((prev) => !prev)}
+        onClick={toggleFollow}
         startContent={
-          follow ? (
-            <Image
-              src="/unfollow.svg"
-              alt="unfollow"
-              width={20}
-              height={20}
-              radius="none"
-            />
-          ) : (
-            <Image src="/follow.svg" alt="follow" width={20} height={20} radius="none" />
-          )
+          <Image
+            src={follow ? '/unfollow.svg' : '/follow.svg'}
+            alt={follow ? 'unfollow' : 'follow'}
+            width={20}
+            height={20}
+            radius="none"
+          />
         }
       >
         {follow ? 'Unfollow' : 'Follow'}

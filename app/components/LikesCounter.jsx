@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 
@@ -8,10 +8,14 @@ function LikesCounter() {
   const [isLiked, setIsLiked] = useState(false)
   const [count, setCount] = useState(845)
 
-  const toggleLike = () => {
+  const toggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
     setCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
-  }
+  }, [isLiked])
+
+  const handleShare = useCallback(() => {
+    alert('share button')
+  }, [])
 
   const commonButtonClasses = 'w-1/2 leading-4'
 
@@ -40,9 +44,9 @@ function LikesCounter() {
         size="xl"
         variant="bordered"
         color="background"
-        aria-label="Like"
+        aria-label="Share"
         className={commonButtonClasses}
-        onClick={() => alert('share button')}
+        onClick={handleShare}
         isIconOnly
       >
         <Image src="/share.svg" alt="share" radius="none" width={20} height={20} />

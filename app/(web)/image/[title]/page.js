@@ -9,6 +9,7 @@ import { Image } from '@nextui-org/image'
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
 import Download from '@/app/components/Download'
+import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
 import { getImages } from '../../[@username]/actions/images'
@@ -63,35 +64,42 @@ export default function ImagePage({ params }) {
         <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
         <p className="text-red-500">Search Text: {searchText}</p>
 
-        <div className="flex flex-col gap-2.5 md:flex-row md:items-start">
-          <div className="flex h-56 items-center justify-center rounded-medium border md:h-[45rem] md:w-3/4">
+        <div className="flex flex-col md:flex-row md:items-start">
+          <div className="flex h-56 items-center justify-center rounded-medium bg-secondary-50 md:h-[45rem] md:w-3/4">
             Image Here
           </div>
 
-          <div className="flex flex-col gap-5 md:w-1/4">
-            <div className="rounded-medium border p-5">
-              <Download />
-              <Description />
+          <div className="rounded-medium bg-secondary-50 p-2.5 md:w-1/4">
+            <div className="flex flex-col gap-5 rounded-medium">
+              <div className="rounded-medium border bg-background p-5 shadow-small">
+                <Download />
+                <Description />
 
-              <CreatorDetails />
-            </div>
-            <div className="rounded-medium border p-5">
-              <TagList />
-            </div>
+                <CreatorDetails />
+              </div>
 
-            <div className="rounded-medium border p-5">
-              <p className="font-bold">More by Author Name</p>
-              <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
-                {relatedImages.map((image) => (
-                  <Image
-                    key={image.id}
-                    src={image.url}
-                    alt={image.title}
-                    isZoomed
-                    className="mt-5 md:mt-0"
-                    classNames={{ img: 'md:aspect-square' }}
-                  />
-                ))}
+              <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
+                <SoftwareUsed />
+              </div>
+
+              <div className="rounded-medium border bg-background p-5 shadow-small">
+                <TagList />
+              </div>
+
+              <div className="rounded-medium border bg-background p-5 shadow-small">
+                <p className="font-bold">More by Author Name</p>
+                <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
+                  {relatedImages.map((image) => (
+                    <Image
+                      key={image.id}
+                      src={image.url}
+                      alt={image.title}
+                      isZoomed
+                      className="mt-5 md:mt-0"
+                      classNames={{ img: 'md:aspect-square' }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

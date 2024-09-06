@@ -1,4 +1,5 @@
 import CopyButton from './CopyButton'
+import SoftwareUsed from './SoftwareUsed'
 
 const TextSection = ({ title, id, text }) => (
   <>
@@ -36,6 +37,10 @@ function TagList() {
           id="prompt"
           text="Lorem prompt ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum nibh."
         />
+      </div>
+
+      <div className="mt-5 md:hidden">
+        <SoftwareUsed />
       </div>
 
       <div className="flex py-5 md:pt-0">

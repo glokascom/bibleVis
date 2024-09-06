@@ -41,7 +41,7 @@ function Description() {
       <LikesCounter />
 
       <div className="hidden flex-col gap-5 md:flex">
-        <p className="text-large font-bold">Title Jonah is in the city</p>
+        <p className="text-large font-bold">Jonah is in the city</p>
         <TextSection
           title="Description"
           id="description"
@@ -70,7 +70,7 @@ function Description() {
             hideIndicator
             key="1"
             aria-label="statistics"
-            title="Title Jonah is in the city"
+            title="Jonah is in the city"
           >
             <div className="flex flex-col gap-3">
               {statistics.map((stat, index) => (
