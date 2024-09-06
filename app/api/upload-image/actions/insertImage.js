@@ -34,6 +34,21 @@ export const updateImage = async (imageId, updatedData) => {
 }
 
 export async function addImageSoftware(imageId, softwareId) {
+  const { data, error: selectError } = await supabaseService
+    .from('image_softwares')
+    .select('*')
+    .eq('image_id', imageId)
+    .eq('software_id', softwareId)
+
+  if (selectError) {
+    console.error('Error when fetching record:', selectError)
+    return
+  }
+
+  if (data.length > 0) {
+    return
+  }
+
   const { error } = await supabaseService
     .from('image_softwares')
     .insert([{ image_id: imageId, software_id: softwareId }])
