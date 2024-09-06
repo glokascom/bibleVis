@@ -1,3 +1,7 @@
+const widthLimit = 1000
+const heightLimit = 1000
+const maxSize = 7
+
 export const validateAndLoadImage = (file, onImageChange) => {
   const validTypes = ['image/jpeg', 'image/png']
   if (!validTypes.includes(file.type)) {
@@ -5,17 +9,17 @@ export const validateAndLoadImage = (file, onImageChange) => {
     return
   }
 
-  if (file.size > 4 * 1024 * 1024) {
-    onImageChange(file, 'The file is too large. Maximum size is 4MB.')
+  if (file.size > maxSize * 1024 * 1024) {
+    onImageChange(file, `The file is too large. Maximum size is ${maxSize}MB.`)
     return
   }
 
   const img = new window.Image()
   img.onload = function () {
-    if (this.width < 1920 && this.height < 1920) {
+    if (this.width < widthLimit && this.height < heightLimit) {
       onImageChange(
         file,
-        'The image is too small. The minimum size is 1920 pixels on one side.'
+        `The image is too small. The minimum size is ${widthLimit} pixels on one side.`
       )
     } else {
       onImageChange(file, null)
