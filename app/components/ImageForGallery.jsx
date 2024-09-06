@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useOptimistic, useState } from 'react'
 
 import {
   Dropdown,
@@ -16,13 +16,18 @@ import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
 function ImageForGallery({ userId, image }) {
-  const is_current_image_liked = image.liked_by_current_user
+  const [optimisticState, toggleOptimisticState] = useOptimistic(
+    image.liked_by_current_user,
+    (prevLiked, newValue) => newValue
+  )
+  // const optimisticState = image.liked_by_current_user
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
 
   const handleToggleLike = async () => {
+    toggleOptimisticState(!optimisticState)
     await updateGallery('toggleLike', userId, image.id)
   }
 
@@ -81,11 +86,11 @@ function ImageForGallery({ userId, image }) {
         </BVLink>
       </div>
       <div
-        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${optimisticState ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
         onClick={handleToggleLike}
       >
         <Image
-          src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
+          src={optimisticState ? '/heart-filled.svg' : '/heart-empty.svg'}
           alt="heart"
         />
       </div>
