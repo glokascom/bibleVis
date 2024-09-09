@@ -20,8 +20,6 @@ function ImageForGallery({ userId, image }) {
     image.liked_by_current_user,
     (prevLiked, newValue) => newValue
   )
-  // const optimisticState = image.liked_by_current_user
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
@@ -124,7 +122,7 @@ function ImageForGallery({ userId, image }) {
             }}
           >
             <DropdownItem key="edit">
-              <BVLink href={`/user/edit-image?id=${image.id}`}>Edit Image</BVLink>
+              <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
             <DropdownItem key="delete" onClick={openDeleteModal}>
               Delete

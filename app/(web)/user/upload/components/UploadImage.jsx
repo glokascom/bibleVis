@@ -125,7 +125,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           />
 
           <Link
-            href="/user/edit-image"
+            href={`/user/${image.id}`}
             className="absolute left-2.5 top-2.5 z-10 rounded-full bg-background p-3 md:left-5 md:top-5"
           >
             <Image

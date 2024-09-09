@@ -6,6 +6,7 @@ export async function getImageInfoById(
   imageId: number
 ): Promise<{ error: PostgrestError | null; data: any | null }> {
   try {
+    console.log(imageId, 9)
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
       .select('*')

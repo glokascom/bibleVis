@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import sharp from 'sharp'
 
-import { getImageInfoById } from '@/app/(web)/user/edit-image/actions/getImage'
+import { getImageInfoById } from '@/app/(web)/user/[uuid]/actions/getImage'
 import { uploadOriginalImage } from '@/app/actions/bucketService'
 import { getUser } from '@/app/actions/getUser'
 import { ApiError, ApiResponse, ApiSuccess } from '@/app/types/api'
