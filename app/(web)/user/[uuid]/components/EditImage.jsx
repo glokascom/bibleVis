@@ -41,12 +41,6 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     setIsFormFilled(isAnyFieldFilled)
   }, [formData, validImage])
 
-  useEffect(() => {
-    if (imageInfo) {
-      console.log(imageInfo)
-    }
-  }, [imageInfo])
-
   const handleSubmit = async () => {
     setIsLoading(true)
     const { title, description, prompt, isAIGeneration, software, tags } = formData

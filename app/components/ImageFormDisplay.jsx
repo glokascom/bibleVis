@@ -15,6 +15,7 @@ import { deleteImage } from '../(web)/[@username]/actions/imagesActions'
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 import { Modal } from './Modal'
+import { useToast } from './ToastProvider'
 
 function ImageFormDisplay({
   initialFormData,
@@ -40,7 +41,8 @@ function ImageFormDisplay({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
 
-  const router = useRouter() // Initialize useRouter for redirection
+  const router = useRouter()
+  const { success: showToastSuccess, error: showToastError } = useToast()
 
   const closeModal = () => {
     setIsSaveModalOpen(false)
@@ -112,10 +114,9 @@ function ImageFormDisplay({
   const handleDeleteImage = async () => {
     const result = await deleteImage(initialFormData.id)
     if (result.error) {
-      setError(result.error) // Передаем только сообщение ошибки
-      setIsDeleteSuccess(false)
+      showToastError(result.error)
     } else {
-      setIsDeleteSuccess(true)
+      showToastSuccess('Image deleted successfully')
       router.push(`/@${initialFormData.username}`)
     }
   }
