@@ -1,0 +1,25 @@
+name: Feature
+description: UI and code
+title: "[Feature]:"
+projects: ["glokascom/1"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Task description:"
+      description: Provide a clear and concise overview of what needs to be done and why. This should succinctly capture the main goal of the task.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: "Examples and links:"
+      description: Include examples or links to resources that will help understand the task (e.g., similar features, documentation, articles).
+    validations:
+      required: false
+  - type: textarea
+    id: details
+    attributes:
+      label: "Screenshots"
+    validations:
+      required: false
