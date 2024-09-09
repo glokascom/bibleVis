@@ -9,7 +9,11 @@ import { ApiError, ApiResponse, ApiSuccess } from '@/app/types/api'
 
 import {
   addImageSoftware,
+  getCurrentSoftwareIds,
+  getCurrentTagIds,
   insertImage,
+  removeImageSoftware,
+  removeImageTags,
   tagImage,
   updateImage,
 } from './actions/insertImage'
@@ -221,13 +225,20 @@ export async function PUT(
     }
 
     try {
+      const currentSoftwareIds = await getCurrentSoftwareIds(imageId)
+      const newSoftwareIds = software.map((soft) => parseInt(soft.id, 10))
+
+      const softwareToRemove = currentSoftwareIds.filter(
+        (id) => !newSoftwareIds.includes(id)
+      )
+      await removeImageSoftware(imageId, softwareToRemove)
+
       await Promise.all(
-        software.map(async (soft) => {
-          const softwareIdNumber = parseInt(soft.id, 10)
+        newSoftwareIds.map(async (softwareIdNumber) => {
           if (!isNaN(softwareIdNumber)) {
             await addImageSoftware(imageId, softwareIdNumber)
           } else {
-            throw new Error(`Invalid software ID: ${soft.id}`)
+            throw new Error(`Invalid software ID: ${softwareIdNumber}`)
           }
         })
       )
@@ -242,13 +253,18 @@ export async function PUT(
     }
 
     try {
+      const currentTagIds = await getCurrentTagIds(imageId)
+      const newTagNames = tags.map((tag) => tag.name)
+
+      const tagsToRemove = currentTagIds.filter((name) => !newTagNames.includes(name))
+      await removeImageTags(imageId, tagsToRemove)
+
       await Promise.all(
-        tags.map(async (tag) => {
-          const tagName = tag.name
+        newTagNames.map(async (tagName) => {
           if (typeof tagName === 'string' && tagName.trim().length > 0) {
             await tagImage(imageId, tagName)
           } else {
-            throw new Error(`Invalid tag: ${tag.name}`)
+            throw new Error(`Invalid tag: ${tagName}`)
           }
         })
       )

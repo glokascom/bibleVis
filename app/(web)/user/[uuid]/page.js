@@ -1,15 +1,13 @@
 import { getDataFromTable } from '../upload/actions/getSoftwares'
-import { getImageInfoById } from './actions/getImage'
+import { getImageInfoById } from './actions/getImage.js'
 import EditImage from './components/EditImage'
 
 export default async function Page({ params }) {
   const { uuid } = params
-  console.log(uuid, 7)
   if (!uuid) {
     return <div>Invalid ID</div>
   }
   const { error, data: imageInfo } = await getImageInfoById(uuid)
-
   if (!imageInfo) {
     return notFound()
   }

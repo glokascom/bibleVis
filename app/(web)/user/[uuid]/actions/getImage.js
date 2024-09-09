@@ -1,12 +1,7 @@
-import { PostgrestError } from '@supabase/supabase-js'
-
 import { supabaseService } from '@/app/supabase/service'
 
-export async function getImageInfoById(
-  imageId: number
-): Promise<{ error: PostgrestError | null; data: any | null }> {
+export async function getImageInfoById(imageId) {
   try {
-    console.log(imageId, 9)
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
       .select('*')
@@ -63,7 +58,7 @@ export async function getImageInfoById(
       },
     }
   } catch (error) {
-    console.error('Error fetching image info:', (error as Error).message)
-    return { error: error as PostgrestError, data: null }
+    console.error('Error fetching image info:', error.message)
+    return { error, data: null }
   }
 }
