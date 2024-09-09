@@ -16,6 +16,18 @@ const baseFont = Wix_Madefor_Text({
 export const metadata = {
   title: 'BibleVis',
   description: 'Some description here',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    other: [{ rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#5bbad5' }],
+  },
+  manifest: '/site.webmanifest',
+  themeColor: '#ffffff',
+  msTileColor: '#da532c',
 }
 
 export default function RootLayout(props: { children: React.ReactNode }): JSX.Element {
@@ -23,7 +35,6 @@ export default function RootLayout(props: { children: React.ReactNode }): JSX.El
 
   return (
     <html lang="en" className="light">
-      <head />
       <body className={`${baseFont.className}`}>
         <Providers>
           <div className="w-full">{children}</div>
