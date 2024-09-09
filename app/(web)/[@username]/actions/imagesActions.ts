@@ -237,7 +237,18 @@ export async function getRandomImagesExcluding(
 
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    return { images: randomImages, error: null }
+    const imagesWithPaths = randomImages.map((image) => {
+      const imagePath = image.original_file_path
+        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+        : null
+
+      return {
+        ...image,
+        imagePath,
+      }
+    })
+
+    return { images: imagesWithPaths, error: null }
   } catch (error) {
     console.error('Error fetching random images:', (error as Error).message)
     return { images: [], error: error as PostgrestError }
