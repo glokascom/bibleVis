@@ -2,13 +2,15 @@ import CopyButton from './CopyButton'
 import SoftwareUsed from './SoftwareUsed'
 
 const TextSection = ({ title, id, text }) => (
-  <>
+  <div>
     <div className="flex">
       <p className="mr-4 font-bold">{title}</p>
       <CopyButton textToCopy={text} />
     </div>
-    <p id={id}>{text}</p>
-  </>
+    <p className="p-5" id={id}>
+      {text}
+    </p>
+  </div>
 )
 
 function TagList() {

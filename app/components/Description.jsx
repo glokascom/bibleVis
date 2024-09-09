@@ -1,7 +1,3 @@
-import { useState } from 'react'
-
-import { Accordion, AccordionItem } from '@nextui-org/react'
-
 import CopyButton from './CopyButton'
 import LikesCounter from './LikesCounter'
 
@@ -23,18 +19,12 @@ const StatItem = ({ label, value }) => (
 )
 
 function Description() {
-  const [isAccordionOpen, setIsAccordionOpen] = useState(true)
-
   const statistics = [
     { label: 'Views', value: '220,155' },
     { label: 'Downloads', value: '142,642' },
     { label: 'Resolution', value: '6016 x 4016' },
     { label: 'Published date', value: 'August 5, 2017' },
   ]
-
-  const toggleAccordion = () => {
-    setIsAccordionOpen(!isAccordionOpen)
-  }
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
@@ -61,31 +51,12 @@ function Description() {
       </div>
 
       <div className="md:hidden">
-        <Accordion
-          selectedKeys={isAccordionOpen ? ['1'] : []}
-          onSelectionChange={(keys) => setIsAccordionOpen(keys.size > 0)}
-        >
-          <AccordionItem
-            classNames={{ title: 'font-bold' }}
-            hideIndicator
-            key="1"
-            aria-label="statistics"
-            title="Jonah is in the city"
-          >
-            <div className="flex flex-col gap-3">
-              {statistics.map((stat, index) => (
-                <StatItem key={index} label={stat.label} value={stat.value} />
-              ))}
-            </div>
-          </AccordionItem>
-        </Accordion>
-
-        <p
-          className="mt-1 cursor-pointer text-center font-medium"
-          onClick={toggleAccordion}
-        >
-          {isAccordionOpen ? 'Hide details' : 'Show details'}
-        </p>
+        <p className="mb-5 text-large font-bold">Jonah is in the city</p>
+        <div className="flex flex-col gap-3">
+          {statistics.map((stat, index) => (
+            <StatItem key={index} label={stat.label} value={stat.value} />
+          ))}
+        </div>
       </div>
     </div>
   )

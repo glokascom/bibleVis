@@ -16,7 +16,7 @@ function CreatorDetails() {
 
     const checkWidth = () => {
       if (container) {
-        setIsNarrow(container.offsetWidth < 360)
+        setIsNarrow(container.offsetWidth < 350)
       }
     }
 
@@ -42,7 +42,7 @@ function CreatorDetails() {
   return (
     <div
       ref={containerRef}
-      className={`flex items-center ${isNarrow ? 'flex-col space-y-7' : 'flex-row justify-around'} text-large font-semibold`}
+      className={`flex items-center ${isNarrow ? 'flex-col space-y-7' : 'flex-row justify-between pl-4'} text-large font-semibold`}
     >
       <div className="flex items-center gap-5">
         <BVAvatar
@@ -53,7 +53,7 @@ function CreatorDetails() {
         />
         <div className="max-w-32">
           <p className="truncate" title="Name creator_the_name_here_is_too_long">
-            Name creator_the_name_here_is_too_long
+            Name creator
           </p>
           <p className="mt-2.5 text-small text-secondary-400">22,465 followers</p>
         </div>
@@ -62,7 +62,7 @@ function CreatorDetails() {
       <BVButton
         variant="light"
         color="background"
-        className="rounded-medium text-large"
+        className="rounded-medium px-4 text-large"
         onClick={toggleFollow}
         startContent={
           <Image
