@@ -18,7 +18,37 @@ export const insertImage = async (imageData) => {
   return data
 }
 
+export const updateImage = async (imageId, updatedData) => {
+  const { data, error } = await supabaseService
+    .from('images')
+    .update(updatedData)
+    .match({ id: imageId })
+    .select('id')
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
 export async function addImageSoftware(imageId, softwareId) {
+  const { data, error: selectError } = await supabaseService
+    .from('image_softwares')
+    .select('*')
+    .eq('image_id', imageId)
+    .eq('software_id', softwareId)
+
+  if (selectError) {
+    console.error('Error when fetching record:', selectError)
+    return
+  }
+
+  if (data.length > 0) {
+    return
+  }
+
   const { error } = await supabaseService
     .from('image_softwares')
     .insert([{ image_id: imageId, software_id: softwareId }])
@@ -105,4 +135,72 @@ export async function tagImage(imageId, tagName) {
   }
 
   return imageTag
+}
+
+export async function getCurrentSoftwareIds(imageId) {
+  const { data, error } = await supabaseService
+    .from('image_softwares')
+    .select('software_id')
+    .eq('image_id', imageId)
+
+  if (error) {
+    throw new Error('Failed to fetch current software IDs')
+  }
+
+  return data.map((record) => record.software_id)
+}
+
+export async function removeImageSoftware(imageId, softwareIds) {
+  const { error } = await supabaseService
+    .from('image_softwares')
+    .delete()
+    .eq('image_id', imageId)
+    .in('software_id', softwareIds)
+
+  if (error) {
+    throw new Error('Failed to remove software links')
+  }
+}
+
+export async function getCurrentTagIds(imageId) {
+  const { data, error } = await supabaseService
+    .from('image_tags')
+    .select('tags(name)')
+    .eq('image_id', imageId)
+
+  if (error) {
+    throw new Error('Failed to fetch current tags')
+  }
+
+  return data.map((record) => record.tags.name)
+}
+
+export async function removeImageTags(imageId, tagNames) {
+  const tagIds = await Promise.all(
+    tagNames.map(async (tagName) => await getTagIdByName(tagName))
+  )
+
+  const { error } = await supabaseService
+    .from('image_tags')
+    .delete()
+    .eq('image_id', imageId)
+    .in('tag_id', tagIds)
+
+  if (error) {
+    throw new Error('Failed to remove tag links')
+  }
+}
+
+export async function getTagIdByName(tagName) {
+  const { data, error } = await supabaseService
+    .from('tags')
+    .select('id')
+    .eq('name', tagName)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch tag ID')
+  }
+
+  return data.id
 }

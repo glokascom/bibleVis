@@ -2,6 +2,7 @@
 
 import { PostgrestError } from '@supabase/supabase-js'
 
+import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
 type User = {
@@ -115,8 +116,10 @@ interface LikeResponse {
   data: object | null
 }
 
-export async function toggleLike(userId: string, imageId: number): Promise<LikeResponse> {
+export async function toggleLike(imageId: number): Promise<LikeResponse> {
   try {
+    const { id: userId } = (await getUser()).user
+
     const { data: existingLike, error: fetchError } = await supabaseService
       .from('likes')
       .select('*')
@@ -155,22 +158,23 @@ export interface DeleteResponse {
   data: object | null
 }
 
-export async function deleteImage(
-  currentUserId: string,
-  imageId: number
-): Promise<DeleteResponse> {
+export async function deleteImage(imageId: number): Promise<DeleteResponse> {
   try {
+    const { id: userId } = (await getUser()).user
+
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
       .select('user_id')
       .eq('id', imageId)
       .single()
 
+    // Handle error during fetching the image
     if (fetchError) {
       return { error: fetchError, data: null }
     }
 
-    if (image.user_id !== currentUserId) {
+    // Check if the current user owns the image
+    if (image.user_id !== userId) {
       return {
         error: {
           message: 'You do not have permission to delete this image.',
@@ -179,27 +183,37 @@ export async function deleteImage(
       }
     }
 
+    // Delete likes associated with the image
     const { error: deleteLikesError } = await supabaseService
       .from('likes')
       .delete()
       .eq('image_id', imageId)
 
+    // Handle error during deleting likes
     if (deleteLikesError) {
       return { error: deleteLikesError, data: null }
     }
 
+    // Delete the image itself
     const { error: deleteImageError } = await supabaseService
       .from('images')
       .delete()
       .eq('id', imageId)
 
+    // Handle error during deleting the image
     if (deleteImageError) {
       return { error: deleteImageError, data: null }
     }
 
+    // Successful deletion response
     return { error: null, data: { message: 'Image deleted successfully' } }
   } catch (error) {
     console.error('Error deleting image:', (error as Error).message)
-    return { error: error as PostgrestError, data: null }
+    return {
+      error: {
+        message: (error as Error).message,
+      } as PostgrestError,
+      data: null,
+    }
   }
 }

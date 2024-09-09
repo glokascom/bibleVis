@@ -44,4 +44,4 @@ INSERT INTO public.softwares (name) VALUES
         ('Artisto'),
         ('Deep Dream by Google');
 
-
+SELECT update_username_with_email();

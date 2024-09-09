@@ -15,20 +15,18 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
-function ImageForGallery({ userId, image }) {
+function ImageForGallery({ image }) {
   const [optimisticState, toggleOptimisticState] = useOptimistic(
     image.liked_by_current_user,
     (prevLiked, newValue) => newValue
   )
-  // const optimisticState = image.liked_by_current_user
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
 
   const handleToggleLike = async () => {
     toggleOptimisticState(!optimisticState)
-    await updateGallery('toggleLike', userId, image.id)
+    await updateGallery('toggleLike', image.id)
     if (result.error) {
       console.error('Error toggling like:', result.error)
       toggleOptimisticState(optimisticState)
@@ -38,7 +36,7 @@ function ImageForGallery({ userId, image }) {
   const is_current_user_image = image.isOwnedByCurrentUser
 
   const handleDeleteImage = async () => {
-    const result = await updateGallery('deleteImage', userId, image.id)
+    const result = await updateGallery('deleteImage', image.id)
 
     if (result.error) {
       setDeleteError(result.error)
@@ -124,7 +122,7 @@ function ImageForGallery({ userId, image }) {
             }}
           >
             <DropdownItem key="edit">
-              <BVLink href={`/user/edit-image`}>Edit Image</BVLink>
+              <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
             <DropdownItem key="delete" onClick={openDeleteModal}>
               Delete

@@ -26,8 +26,11 @@ export const metadata = {
     other: [{ rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#5bbad5' }],
   },
   manifest: '/site.webmanifest',
-  themeColor: '#ffffff',
   msTileColor: '#da532c',
+}
+
+export const viewport = {
+  themeColor: '#ffffff',
 }
 
 export default function RootLayout(props: { children: React.ReactNode }): JSX.Element {
