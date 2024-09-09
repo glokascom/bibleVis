@@ -1,8 +1,5 @@
-import { useState } from 'react'
-
-import { Accordion, AccordionItem } from '@nextui-org/react'
-
 import CopyButton from './CopyButton'
+import LikesCounter from './LikesCounter'
 
 const TextSection = ({ title, id, text }) => (
   <>
@@ -22,8 +19,6 @@ const StatItem = ({ label, value }) => (
 )
 
 function Description() {
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false)
-
   const statistics = [
     { label: 'Views', value: '220,155' },
     { label: 'Downloads', value: '142,642' },
@@ -31,18 +26,12 @@ function Description() {
     { label: 'Published date', value: 'August 5, 2017' },
   ]
 
-  const toggleAccordion = () => {
-    setIsAccordionOpen(!isAccordionOpen)
-  }
-
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-        Likes counter + toggle
-      </div>
+      <LikesCounter />
 
       <div className="hidden flex-col gap-5 md:flex">
-        <p className="text-large font-bold">Title Jonah is in the city</p>
+        <p className="text-large font-bold">Jonah is in the city</p>
         <TextSection
           title="Description"
           id="description"
@@ -62,31 +51,12 @@ function Description() {
       </div>
 
       <div className="md:hidden">
-        <Accordion
-          selectedKeys={isAccordionOpen ? ['1'] : []}
-          onSelectionChange={(keys) => setIsAccordionOpen(keys.size > 0)}
-        >
-          <AccordionItem
-            classNames={{ title: 'font-bold' }}
-            hideIndicator
-            key="1"
-            aria-label="statistics"
-            title="Title Jonah is in the city"
-          >
-            <div className="flex flex-col gap-3">
-              {statistics.map((stat, index) => (
-                <StatItem key={index} label={stat.label} value={stat.value} />
-              ))}
-            </div>
-          </AccordionItem>
-        </Accordion>
-
-        <p
-          className="mt-1 cursor-pointer text-center font-medium"
-          onClick={toggleAccordion}
-        >
-          {isAccordionOpen ? 'Hide details' : 'Show details'}
-        </p>
+        <p className="mb-5 text-large font-bold">Jonah is in the city</p>
+        <div className="flex flex-col gap-3">
+          {statistics.map((stat, index) => (
+            <StatItem key={index} label={stat.label} value={stat.value} />
+          ))}
+        </div>
       </div>
     </div>
   )
