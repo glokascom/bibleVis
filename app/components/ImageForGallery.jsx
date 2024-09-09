@@ -1,5 +1,7 @@
 'use client'
 
+import { useOptimistic, useState } from 'react'
+
 import {
   Dropdown,
   DropdownItem,
@@ -8,20 +10,59 @@ import {
 } from '@nextui-org/dropdown'
 import { Image } from '@nextui-org/image'
 
+import { updateGallery } from '../(web)/[@username]/actions/updateGallery'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
 
-function ImageForGallery({ image }) {
-  const is_current_image_liked = Math.random() > 0.5 // TODO: проверка на то, что эту картинку уже лайкнул текущий юзер, скорей всего параметр уже нужно на сервере прикрутить к image, чтобы было удобнее
-  const handleToggleLike = (uuid) => {
-    console.log('like/unlike', uuid)
-    // TODO: с помощью серверной функции в базе поменять значение, в функции сделат ревалидейт
-    //P.s. эта фунцкция не нужна в данной реализации, если займёт много времени
+function ImageForGallery({ userId, image }) {
+  const [optimisticState, toggleOptimisticState] = useOptimistic(
+    image.liked_by_current_user,
+    (prevLiked, newValue) => newValue
+  )
+  // const optimisticState = image.liked_by_current_user
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
+
+  const handleToggleLike = async () => {
+    toggleOptimisticState(!optimisticState)
+    await updateGallery('toggleLike', userId, image.id)
+    if (result.error) {
+      console.error('Error toggling like:', result.error)
+      toggleOptimisticState(optimisticState)
+    }
   }
-  const is_current_user_image = false // TODO: проверка на то, что это картинка текущего юзера
-  const deleteImage = (uuid) => {
-    console.log('delete image', uuid)
+
+  const is_current_user_image = image.isOwnedByCurrentUser
+
+  const handleDeleteImage = async () => {
+    const result = await updateGallery('deleteImage', userId, image.id)
+
+    if (result.error) {
+      setDeleteError(result.error)
+      setIsDeleteSuccess(false)
+    } else {
+      setIsDeleteSuccess(true)
+      setDeleteError(null)
+      setTimeout(() => {
+        setIsDeleteModalOpen(false)
+        setIsDeleteSuccess(false)
+      }, 2000)
+    }
   }
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false)
+    setIsDeleteSuccess(false)
+    setDeleteError(null)
+  }
+
   return (
     <div
       className={`group relative h-0 w-full ${
@@ -33,7 +74,7 @@ function ImageForGallery({ image }) {
         href={`/image/${image.title}`}
       >
         <Image
-          src={image.url}
+          src={image.imagePath}
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
@@ -41,24 +82,23 @@ function ImageForGallery({ image }) {
       </BVLink>
       <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="ml-12 group-hover:opacity-80">{image.title}</div>
-        <BVLink className="flex items-center gap-2" href={`/@${image.user.username}`}>
+        <BVLink className="flex items-center gap-2" href={`/@${image.users.username}`}>
           <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
           <div className="text-large font-bold text-background">
-            @{image.user.username}
+            @{image.users.username}
           </div>
         </BVLink>
       </div>
-      {!is_current_user_image ? (
-        <div
-          className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${is_current_image_liked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-          onClick={() => handleToggleLike(image.uuid)}
-        >
-          <Image
-            src={is_current_image_liked ? '/heart-filled.svg' : '/heart-empty.svg'}
-            alt="heart"
-          />
-        </div>
-      ) : (
+      <div
+        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${optimisticState ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+        onClick={handleToggleLike}
+      >
+        <Image
+          src={optimisticState ? '/heart-filled.svg' : '/heart-empty.svg'}
+          alt="heart"
+        />
+      </div>
+      {is_current_user_image && (
         <Dropdown
           className="bg-secondary-50"
           classNames={{
@@ -84,14 +124,21 @@ function ImageForGallery({ image }) {
             }}
           >
             <DropdownItem key="edit">
-              <BVLink href={`/image/${image.uuid}`}>Edit Image</BVLink>
+              <BVLink href={`/user/edit-image`}>Edit Image</BVLink>
             </DropdownItem>
-            <DropdownItem key="delete" onClick={() => deleteImage(image.uuid)}>
+            <DropdownItem key="delete" onClick={openDeleteModal}>
               Delete
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
       )}
+      <DeleteConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        closeModal={closeDeleteModal}
+        handleDelete={handleDeleteImage}
+        isDeleteSuccess={isDeleteSuccess}
+        deleteError={deleteError}
+      />
     </div>
   )
 }

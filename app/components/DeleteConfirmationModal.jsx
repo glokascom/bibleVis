@@ -7,6 +7,7 @@ const DeleteConfirmationModal = ({
   closeModal,
   handleDelete,
   isDeleteSuccess,
+  deleteError,
 }) => {
   return (
     <>
@@ -18,6 +19,7 @@ const DeleteConfirmationModal = ({
             ) : (
               <>
                 <p>Are you sure to delete the file?</p>
+                {deleteError && <p className="mt-4 text-red-600">{deleteError}</p>}
                 <div className="mt-12 flex justify-center gap-2">
                   <BVButton
                     className="w-1/2 bg-secondary-50 text-inherit"
