@@ -84,7 +84,6 @@ function ImageUpload({
             width={previewSize.width}
             height={previewSize.height}
             layout="responsive"
-            objectFit="contain"
             sizes="(max-width: 640px) 100vw, 50vw"
             className="rounded-medium"
           />

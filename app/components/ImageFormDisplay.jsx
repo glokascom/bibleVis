@@ -171,7 +171,6 @@ function ImageFormDisplay({
                 alt="Uploaded image"
                 className="rounded-medium border"
                 layout="fill"
-                objectFit="cover"
               />
             ) : (
               <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
