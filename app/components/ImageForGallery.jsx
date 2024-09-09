@@ -15,7 +15,7 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
-function ImageForGallery({ userId, image }) {
+function ImageForGallery({ image }) {
   const [optimisticState, toggleOptimisticState] = useOptimistic(
     image.liked_by_current_user,
     (prevLiked, newValue) => newValue
@@ -26,7 +26,7 @@ function ImageForGallery({ userId, image }) {
 
   const handleToggleLike = async () => {
     toggleOptimisticState(!optimisticState)
-    await updateGallery('toggleLike', userId, image.id)
+    await updateGallery('toggleLike', image.id)
     if (result.error) {
       console.error('Error toggling like:', result.error)
       toggleOptimisticState(optimisticState)
@@ -36,7 +36,7 @@ function ImageForGallery({ userId, image }) {
   const is_current_user_image = image.isOwnedByCurrentUser
 
   const handleDeleteImage = async () => {
-    const result = await updateGallery('deleteImage', userId, image.id)
+    const result = await updateGallery('deleteImage', image.id)
 
     if (result.error) {
       setDeleteError(result.error)

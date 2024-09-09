@@ -13,6 +13,8 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [formData, setFormData] = useState({
+    id: imageInfo.id,
+    username: imageInfo.users.username,
     isAIGeneration: imageInfo.is_ai_generated,
     title: imageInfo.title,
     description: imageInfo.description,
@@ -38,6 +40,12 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
 
     setIsFormFilled(isAnyFieldFilled)
   }, [formData, validImage])
+
+  useEffect(() => {
+    if (imageInfo) {
+      console.log(imageInfo)
+    }
+  }, [imageInfo])
 
   const handleSubmit = async () => {
     setIsLoading(true)

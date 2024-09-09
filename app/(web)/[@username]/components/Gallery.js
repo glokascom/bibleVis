@@ -65,7 +65,7 @@ function Gallery({ userId, followUserId, initialImages }) {
           <Masonry gutter="10px">
             {images?.map((image) => (
               <div key={image.id}>
-                <ImageForGallery userId={userId} image={image} />
+                <ImageForGallery image={image} />
               </div>
             ))}
           </Masonry>
