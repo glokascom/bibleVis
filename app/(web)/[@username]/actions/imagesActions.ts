@@ -217,3 +217,29 @@ export async function deleteImage(imageId: number): Promise<DeleteResponse> {
     }
   }
 }
+
+export async function getRandomImagesExcluding(
+  userId: string,
+  excludeImageId: number,
+  numberOfImages: number = 3
+): Promise<{ images: Image[]; error: PostgrestError | null }> {
+  try {
+    const { data: images, error: fetchError } = await supabaseService
+      .from('images')
+      .select('*')
+      .eq('user_id', userId)
+
+    if (fetchError) throw fetchError
+
+    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+
+    const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
+
+    const randomImages = shuffledImages.slice(0, numberOfImages)
+
+    return { images: randomImages, error: null }
+  } catch (error) {
+    console.error('Error fetching random images:', (error as Error).message)
+    return { images: [], error: error as PostgrestError }
+  }
+}
