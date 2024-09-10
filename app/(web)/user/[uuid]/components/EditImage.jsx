@@ -62,7 +62,8 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload image. Status: ' + response.status)
+        const errorResponse = await response.json()
+        throw new Error(errorResponse?.message || 'Failed to upload image.')
       }
 
       await response.json()
@@ -71,7 +72,7 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
       closeModal()
     } catch (error) {
       console.error('Error during image loading:', error)
-      showToastError(`${error}`)
+      showToastError(`Error: ${error.message}`)
     } finally {
       setIsLoading(false)
     }
