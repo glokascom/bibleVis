@@ -9,7 +9,7 @@ export default async function Page({ params }) {
   }
   const { error, data: imageInfo } = await getImageInfoById(uuid)
   if (error) {
-    return <div className="text-red-500">{error}</div>
+    return <div className="text-danger-500">{error}</div>
   }
 
   const softwareOptions = (await getDataFromTable('softwares')).data

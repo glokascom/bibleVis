@@ -1,18 +1,6 @@
 import CopyButton from './CopyButton'
 import SoftwareUsed from './SoftwareUsed'
 
-const TextSection = ({ title, id, text }) => (
-  <div>
-    <div className="flex">
-      <p className="mr-4 font-bold">{title}</p>
-      <CopyButton textToCopy={text} />
-    </div>
-    <p className="p-5" id={id}>
-      {text}
-    </p>
-  </div>
-)
-
 function TagList() {
   const tags = [
     'Biblical scenes',
@@ -28,20 +16,7 @@ function TagList() {
 
   return (
     <div className="text-small">
-      <div className="flex flex-col gap-5 md:hidden">
-        <TextSection
-          title="Description"
-          id="description"
-          text="Lorem description ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum nibh."
-        />
-        <TextSection
-          title="Prompt"
-          id="prompt"
-          text="Lorem prompt ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum nibh."
-        />
-      </div>
-
-      <div className="mt-5 md:hidden">
+      <div className="md:hidden">
         <SoftwareUsed />
       </div>
 

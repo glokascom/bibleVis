@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { BVButton } from '@/app/components/BVButton'
 
 import { Modal } from './Modal'
@@ -9,6 +11,13 @@ const DeleteConfirmationModal = ({
   isDeleteSuccess,
   deleteError,
 }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const handleDeleteClick = async () => {
+    setIsLoading(true)
+    await handleDelete()
+    setIsLoading(false)
+  }
+
   return (
     <>
       {isDeleteModalOpen && (
@@ -24,11 +33,16 @@ const DeleteConfirmationModal = ({
                   <BVButton
                     className="w-1/2 bg-secondary-50 text-inherit"
                     onClick={closeModal}
+                    disabled={isLoading}
                   >
                     Cancel
                   </BVButton>
-                  <BVButton onClick={handleDelete} className="w-1/2 bg-danger">
-                    Delete
+                  <BVButton
+                    onClick={handleDeleteClick}
+                    className="w-1/2 bg-danger"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Deleting...' : 'Delete'}{' '}
                   </BVButton>
                 </div>
               </>

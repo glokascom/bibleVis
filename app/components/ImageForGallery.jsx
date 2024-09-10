@@ -26,7 +26,7 @@ function ImageForGallery({ image }) {
 
   const handleToggleLike = async () => {
     toggleOptimisticState(!optimisticState)
-    await updateGallery('toggleLike', image.id)
+    const result = await updateGallery('toggleLike', image.id)
     if (result.error) {
       console.error('Error toggling like:', result.error)
       toggleOptimisticState(optimisticState)

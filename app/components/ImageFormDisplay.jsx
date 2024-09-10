@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
-import { useRouter } from 'next/navigation' // Import useRouter for redirection
+import { useRouter } from 'next/navigation'
 
 import { Image } from '@nextui-org/image'
 import { Switch } from '@nextui-org/react'
@@ -14,7 +14,7 @@ import TagInput from '@/app/components/TagInput'
 import { deleteImage } from '../(web)/[@username]/actions/imagesActions'
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
-import { Modal } from './Modal'
+import SaveConfirmationModal from './SaveConfirmationModal'
 import { useToast } from './ToastProvider'
 
 function ImageFormDisplay({
@@ -50,9 +50,14 @@ function ImageFormDisplay({
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = (e) => {
-    handleSubmit(e)
-    closeModal()
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await handleSubmit(e)
+      closeModal()
+    } catch (error) {
+      console.error('Error uploading the image:', error)
+    }
   }
 
   useEffect(() => {
@@ -296,28 +301,12 @@ function ImageFormDisplay({
             Cancel
           </p>
 
-          {isSaveModalOpen && (
-            <Modal closeModal={closeModal}>
-              <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-                <p>Are you sure you want to upload file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton
-                    type="submit"
-                    onClick={handleFormSubmit}
-                    className="w-1/2 bg-primary"
-                  >
-                    Save
-                  </BVButton>
-                </div>
-              </div>
-            </Modal>
-          )}
+          <SaveConfirmationModal
+            isSaveModalOpen={isSaveModalOpen}
+            closeModal={closeModal}
+            handleFormSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
         </form>
       </div>
 

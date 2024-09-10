@@ -24,22 +24,24 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     imagePath: imageInfo.imagePath,
   })
 
+  const [initialFormData] = useState(formData)
   const [validImage, setValidImage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const { success: showToastSuccess, error: showToastError } = useToast()
 
   useEffect(() => {
-    const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
-      if (key === 'isAIGeneration') return false
+    const isAnyFieldChanged = Object.entries(formData).some(([key, value]) => {
+      if (key === 'isAIGeneration') return value !== initialFormData.isAIGeneration
 
-      if (Array.isArray(value)) return value.length > 0
-      if (typeof value === 'string') return value.trim().length > 0
+      if (Array.isArray(value))
+        return JSON.stringify(value) !== JSON.stringify(initialFormData[key])
+      if (typeof value === 'string') return value.trim() !== initialFormData[key].trim()
 
-      return Boolean(value)
+      return value !== initialFormData[key]
     })
 
-    setIsFormFilled(isAnyFieldFilled)
-  }, [formData, validImage])
+    setIsFormFilled(isAnyFieldChanged || validImage !== null)
+  }, [formData, validImage, initialFormData])
 
   const handleSubmit = async () => {
     setIsLoading(true)
@@ -62,7 +64,8 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload image. Статус: ' + response.status)
+        const errorResponse = await response.json()
+        throw new Error(errorResponse?.message || 'Failed to upload image.')
       }
 
       await response.json()
@@ -71,7 +74,7 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
       closeModal()
     } catch (error) {
       console.error('Error during image loading:', error)
-      showToastError(`${error}`)
+      showToastError(`Error: ${error.message}`)
     } finally {
       setIsLoading(false)
     }
@@ -107,7 +110,11 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
               >
                 Cancel
               </BVButton>
-              <BVButton as={Link} href="/user" className="w-1/2 bg-danger">
+              <BVButton
+                as={Link}
+                href={`/@${initialFormData.username}`}
+                className="w-1/2 bg-danger"
+              >
                 Confirm
               </BVButton>
             </div>
