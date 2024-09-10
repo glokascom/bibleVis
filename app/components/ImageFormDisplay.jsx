@@ -300,6 +300,7 @@ function ImageFormDisplay({
             isSaveModalOpen={isSaveModalOpen}
             closeModal={closeModal}
             handleFormSubmit={handleFormSubmit}
+            isLoading={isLoading}
           />
         </form>
       </div>

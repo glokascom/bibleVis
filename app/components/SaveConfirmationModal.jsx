@@ -4,7 +4,12 @@ import { BVButton } from '@/app/components/BVButton'
 
 import { Modal } from './Modal'
 
-function SaveConfirmationModal({ isSaveModalOpen, closeModal, handleFormSubmit }) {
+function SaveConfirmationModal({
+  isSaveModalOpen,
+  closeModal,
+  handleFormSubmit,
+  isLoading,
+}) {
   return (
     <>
       {isSaveModalOpen && (
@@ -22,8 +27,9 @@ function SaveConfirmationModal({ isSaveModalOpen, closeModal, handleFormSubmit }
                 type="submit"
                 onClick={handleFormSubmit}
                 className="w-1/2 bg-primary"
+                isLoading={isLoading}
               >
-                Save
+                {isLoading ? 'Saving...' : 'Save'}
               </BVButton>
             </div>
           </div>
