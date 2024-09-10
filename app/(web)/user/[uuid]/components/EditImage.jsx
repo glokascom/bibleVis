@@ -24,22 +24,24 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
     imagePath: imageInfo.imagePath,
   })
 
+  const [initialFormData] = useState(formData)
   const [validImage, setValidImage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const { success: showToastSuccess, error: showToastError } = useToast()
 
   useEffect(() => {
-    const isAnyFieldFilled = Object.entries(formData).some(([key, value]) => {
-      if (key === 'isAIGeneration') return false
+    const isAnyFieldChanged = Object.entries(formData).some(([key, value]) => {
+      if (key === 'isAIGeneration') return value !== initialFormData.isAIGeneration
 
-      if (Array.isArray(value)) return value.length > 0
-      if (typeof value === 'string') return value.trim().length > 0
+      if (Array.isArray(value))
+        return JSON.stringify(value) !== JSON.stringify(initialFormData[key])
+      if (typeof value === 'string') return value.trim() !== initialFormData[key].trim()
 
-      return Boolean(value)
+      return value !== initialFormData[key]
     })
 
-    setIsFormFilled(isAnyFieldFilled)
-  }, [formData, validImage])
+    setIsFormFilled(isAnyFieldChanged || validImage !== null)
+  }, [formData, validImage, initialFormData])
 
   const handleSubmit = async () => {
     setIsLoading(true)
