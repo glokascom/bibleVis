@@ -159,14 +159,14 @@ function ImageFormDisplay({
         </div>
       )}
 
-      <div className="flex flex-col gap-7 md:flex-row md:gap-5">
+      <div className="flex flex-col gap-7 md:flex-row md:items-start md:gap-2.5">
         <div className="md:w-2/3">
-          <div className="relative">
+          <div className="relative w-full rounded-medium bg-secondary-50">
             {imageFile ? (
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
-                className="rounded-medium border"
+                className="aspect-video object-contain"
               />
             ) : (
               <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
@@ -174,6 +174,7 @@ function ImageFormDisplay({
                 <p>Failed to display image. Please make sure the file was uploaded.</p>
               </div>
             )}
+
             <button
               className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData ? 'hidden' : ''}`}
               onClick={handleReplaceImage}
@@ -212,7 +213,7 @@ function ImageFormDisplay({
         </div>
 
         <form onSubmit={handleSubmit} className="md:w-1/3">
-          <div className="flex flex-col gap-5 rounded-medium border p-5">
+          <div className="flex flex-col gap-5 rounded-medium border p-5 shadow-small">
             <TagInput
               label="Title"
               isTagInput={false}

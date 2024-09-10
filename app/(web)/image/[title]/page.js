@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import ImagePageContent from '@/app/components/ImagePageContent'
 
-import { getImages } from '../../[@username]/actions/images'
+import { getImages } from '../../[@username]/actions/imagesActions'
 
 export default function ImagePage({ params }) {
   const [relatedImages, setRelatedImages] = useState([])
