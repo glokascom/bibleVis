@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import { Image } from '@nextui-org/image'
 import { Switch } from '@nextui-org/react'
@@ -10,9 +11,11 @@ import { Switch } from '@nextui-org/react'
 import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
+import { deleteImage } from '../(web)/[@username]/actions/imagesActions'
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
-import { Modal } from './Modal'
+import SaveConfirmationModal from './SaveConfirmationModal'
+import { useToast } from './ToastProvider'
 
 function ImageFormDisplay({
   initialFormData,
@@ -26,7 +29,7 @@ function ImageFormDisplay({
   tagsOptions = [],
   isLoading = false,
 }) {
-  const [imageUrl, setImageUrl] = useState(null)
+  const [imageUrl, setImageUrl] = useState(initialFormData?.imagePath || '')
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(
@@ -38,15 +41,23 @@ function ImageFormDisplay({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
 
+  const router = useRouter()
+  const { success: showToastSuccess, error: showToastError } = useToast()
+
   const closeModal = () => {
     setIsSaveModalOpen(false)
     setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = (e) => {
-    handleSubmit(e)
-    closeModal()
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await handleSubmit(e)
+      closeModal()
+    } catch (error) {
+      console.error('Error uploading the image:', error)
+    }
   }
 
   useEffect(() => {
@@ -99,17 +110,20 @@ function ImageFormDisplay({
     } else {
       if (file) {
         setValidImage(file)
+        const url = URL.createObjectURL(file)
+        setImageUrl(url)
       }
     }
   }
 
-  const handleDelete = () => {
-    setValidImage(null)
-    setIsDeleteSuccess(true)
-
-    setTimeout(() => {
-      closeModal()
-    }, 2000)
+  const handleDeleteImage = async () => {
+    const result = await deleteImage(initialFormData.id)
+    if (result.error) {
+      showToastError(result.error)
+    } else {
+      showToastSuccess('Image deleted successfully')
+      router.push(`/@${initialFormData.username}`)
+    }
   }
 
   return (
@@ -162,11 +176,12 @@ function ImageFormDisplay({
       <div className="flex flex-col gap-7 md:flex-row md:gap-5">
         <div className="md:w-2/3">
           <div className="relative">
-            {imageFile ? (
+            {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
                 className="rounded-medium border"
+                layout="fill"
               />
             ) : (
               <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
@@ -286,35 +301,19 @@ function ImageFormDisplay({
             Cancel
           </p>
 
-          {isSaveModalOpen && (
-            <Modal closeModal={closeModal}>
-              <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-                <p>Are you sure you want to upload file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton
-                    type="submit"
-                    onClick={handleFormSubmit}
-                    className="w-1/2 bg-primary"
-                  >
-                    Save
-                  </BVButton>
-                </div>
-              </div>
-            </Modal>
-          )}
+          <SaveConfirmationModal
+            isSaveModalOpen={isSaveModalOpen}
+            closeModal={closeModal}
+            handleFormSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
         </form>
       </div>
 
       <DeleteConfirmationModal
         isDeleteModalOpen={isDeleteModalOpen}
         closeModal={closeModal}
-        handleDelete={handleDelete}
+        handleDelete={handleDeleteImage}
         isDeleteSuccess={isDeleteSuccess}
       />
     </div>
