@@ -1,3 +1,5 @@
+'use client'
+
 import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
@@ -6,22 +8,29 @@ import Download from '@/app/components/Download'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
-function ImagePageContent({ relatedImages }) {
+function ImagePageContent({ imageInfo, relatedImages }) {
   return (
     <>
       <div className="px-5">
         <div className="flex flex-col md:flex-row md:items-start">
           <div className="flex h-56 items-center justify-center rounded-medium bg-secondary-50 p-0 md:h-[45rem] md:w-3/4 md:p-2.5">
-            <p className="h-full w-full content-center rounded-medium bg-secondary-100 text-center">
-              Image Here
-            </p>
+            {imageInfo.imagePath ? (
+              <Image
+                src={imageInfo.imagePath}
+                alt={imageInfo.title}
+                className="h-full w-full rounded-medium object-cover"
+                classNames={{ img: 'w-full h-full object-cover' }}
+              />
+            ) : (
+              <p className="text-center">Image not available</p>
+            )}
           </div>
 
           <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
             <div className="flex flex-col gap-5 rounded-medium">
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <Download />
-                <Description />
+                <Description imageInfo={imageInfo} />
                 <CreatorDetails />
               </div>
 
@@ -39,7 +48,7 @@ function ImagePageContent({ relatedImages }) {
                   {relatedImages.map((image) => (
                     <Image
                       key={image.id}
-                      src={image.url}
+                      src={image.imagePath}
                       alt={image.title}
                       isZoomed
                       className="mt-5 md:mt-0"
@@ -59,7 +68,7 @@ function ImagePageContent({ relatedImages }) {
           {relatedImages.map((image) => (
             <Image
               key={image.id}
-              src={image.url}
+              src={image.imagePath}
               alt={image.title}
               isZoomed
               className="mt-5 md:mt-0"
