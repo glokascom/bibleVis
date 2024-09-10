@@ -62,7 +62,7 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload image. Статус: ' + response.status)
+        throw new Error('Failed to upload image. Status: ' + response.status)
       }
 
       await response.json()
