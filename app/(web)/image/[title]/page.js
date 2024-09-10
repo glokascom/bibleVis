@@ -1,14 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import Description from '@/app/components/Description'
-import Download from '@/app/components/Download'
-import TagList from '@/app/components/TagList'
+import ImagePageContent from '@/app/components/ImagePageContent'
+
+import { getImages } from '../../[@username]/actions/images'
 
 export default function ImagePage({ params }) {
+  const [relatedImages, setRelatedImages] = useState([])
+
   const { title } = params
   const router = useRouter()
   const parts = title ? title.split('-') : []
@@ -33,6 +35,13 @@ export default function ImagePage({ params }) {
         router.replace(`/image/${uuid}`)
       }
     }
+
+    const fetchImages = async () => {
+      const images = await getImages(1, 3)
+      setRelatedImages(images)
+    }
+
+    fetchImages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid, searchText])
 
@@ -44,35 +53,13 @@ export default function ImagePage({ params }) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <div>
+    <main className="mx-auto w-full max-w-[1806px] md:px-12">
+      <div className="px-5">
         <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
-        <p className="text-danger-500">Search Text: {searchText}</p>
-
-        <div className="flex flex-col gap-2.5 md:flex-row md:items-start">
-          <div className="flex h-56 items-center justify-center rounded-medium border md:h-[45rem] md:w-3/4">
-            Image Here
-          </div>
-
-          <div className="flex flex-col gap-5 md:w-1/4">
-            <div className="rounded-medium border p-5">
-              <Download />
-              <Description />
-              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-                Creator Details
-              </div>
-            </div>
-            <div className="rounded-medium border p-5">
-              <TagList />
-            </div>
-            <div className="rounded-medium border p-5">
-              <div className="rounded-medium border bg-danger-100 p-5 text-center text-danger-300">
-                More by Author Name / Related images
-              </div>
-            </div>
-          </div>
-        </div>
+        <p className="text-red-500">Search Text: {searchText}</p>
       </div>
+
+      <ImagePageContent relatedImages={relatedImages} />
     </main>
   )
 }
