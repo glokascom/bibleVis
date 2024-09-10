@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
-import { useRouter } from 'next/navigation' // Import useRouter for redirection
+import { useRouter } from 'next/navigation'
 
 import { Image } from '@nextui-org/image'
 import { Switch } from '@nextui-org/react'

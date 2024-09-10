@@ -168,12 +168,10 @@ export async function deleteImage(imageId: number): Promise<DeleteResponse> {
       .eq('id', imageId)
       .single()
 
-    // Handle error during fetching the image
     if (fetchError) {
       return { error: fetchError, data: null }
     }
 
-    // Check if the current user owns the image
     if (image.user_id !== userId) {
       return {
         error: {
@@ -183,29 +181,24 @@ export async function deleteImage(imageId: number): Promise<DeleteResponse> {
       }
     }
 
-    // Delete likes associated with the image
     const { error: deleteLikesError } = await supabaseService
       .from('likes')
       .delete()
       .eq('image_id', imageId)
 
-    // Handle error during deleting likes
     if (deleteLikesError) {
       return { error: deleteLikesError, data: null }
     }
 
-    // Delete the image itself
     const { error: deleteImageError } = await supabaseService
       .from('images')
       .delete()
       .eq('id', imageId)
 
-    // Handle error during deleting the image
     if (deleteImageError) {
       return { error: deleteImageError, data: null }
     }
 
-    // Successful deletion response
     return { error: null, data: { message: 'Image deleted successfully' } }
   } catch (error) {
     console.error('Error deleting image:', (error as Error).message)
