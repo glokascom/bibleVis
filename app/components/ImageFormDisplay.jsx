@@ -50,9 +50,14 @@ function ImageFormDisplay({
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = (e) => {
-    handleSubmit(e)
-    closeModal()
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await handleSubmit(e)
+      closeModal()
+    } catch (error) {
+      console.error('Error uploading the image:', error)
+    }
   }
 
   useEffect(() => {

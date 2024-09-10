@@ -13,13 +13,14 @@ function SaveConfirmationModal({
   return (
     <>
       {isSaveModalOpen && (
-        <Modal closeModal={closeModal}>
+        <Modal closeModal={isLoading ? () => {} : closeModal}>
           <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
             <p>Are you sure you want to upload file?</p>
             <div className="mt-12 flex justify-center gap-2">
               <BVButton
                 className="w-1/2 bg-secondary-50 text-inherit"
-                onClick={closeModal}
+                onClick={isLoading ? () => {} : closeModal}
+                isDisabled={isLoading}
               >
                 Cancel
               </BVButton>
@@ -28,6 +29,7 @@ function SaveConfirmationModal({
                 onClick={handleFormSubmit}
                 className="w-1/2 bg-primary"
                 isLoading={isLoading}
+                isDisabled={isLoading}
               >
                 {isLoading ? 'Saving...' : 'Save'}
               </BVButton>
