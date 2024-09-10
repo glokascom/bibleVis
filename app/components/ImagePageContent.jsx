@@ -35,11 +35,11 @@ function ImagePageContent({ imageInfo, relatedImages }) {
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
-                <SoftwareUsed />
+                <SoftwareUsed software={imageInfo.software} />
               </div>
 
               <div className="rounded-medium border bg-background p-5 shadow-small">
-                <TagList />
+                <TagList tags={imageInfo.tags} />
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">

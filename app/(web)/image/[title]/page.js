@@ -31,7 +31,7 @@ export default async function ImagePage({ params }) {
 
   const relatedImages = await getRandomImagesExcluding(uuid)
   console.log('Search Text:', searchText)
-  console.log('Related Images:', relatedImages)
+  // console.log('Related Images:', relatedImages)
 
   return (
     <main className="mx-auto w-full max-w-[1806px] md:px-12">
