@@ -32,6 +32,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
     software: [],
     tags: [],
   })
+  const [imageId, setImageId] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -63,7 +64,10 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
         throw new Error('Failed to upload image.')
       }
 
-      await response.json()
+      const {
+        data: { imageId },
+      } = await response.json()
+      setImageId(imageId)
       setIsSubmitted(true)
       setSubmittedImageUrl(URL.createObjectURL(validImage))
     } catch (error) {
@@ -125,7 +129,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           />
 
           <Link
-            href="/user/edit-image"
+            href={`/user/${imageId}`}
             className="absolute left-2.5 top-2.5 z-10 rounded-full bg-background p-3 md:left-5 md:top-5"
           >
             <Image

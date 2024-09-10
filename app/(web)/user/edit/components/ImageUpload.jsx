@@ -84,7 +84,6 @@ function ImageUpload({
             width={previewSize.width}
             height={previewSize.height}
             layout="responsive"
-            objectFit="contain"
             sizes="(max-width: 640px) 100vw, 50vw"
             className="rounded-medium"
           />
@@ -103,7 +102,7 @@ function ImageUpload({
             {requiredWidth} x {requiredHeight} pixels
           </div>
         )}
-        {error && <div className="text-red-500">{error}</div>}
+        {error && <div className="text-danger-500">{error}</div>}
       </div>
     </div>
   )

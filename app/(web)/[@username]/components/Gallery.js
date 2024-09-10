@@ -13,12 +13,23 @@ function Gallery({ userId, followUserId, initialImages }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
     setImages(initialImages)
   }, [initialImages])
+
+  useEffect(() => {
+    const initialize = async () => {
+      await loadMoreImages()
+      setMounted(true)
+    }
+
+    initialize()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const loadMoreImages = async () => {
     if (isLoadingRef.current || !hasMore) return
@@ -46,6 +57,8 @@ function Gallery({ userId, followUserId, initialImages }) {
 
     isLoadingRef.current = false
   }
+
+  if (!mounted) return null
 
   return (
     <>
