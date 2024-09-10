@@ -110,7 +110,11 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
               >
                 Cancel
               </BVButton>
-              <BVButton as={Link} href="/user" className="w-1/2 bg-danger">
+              <BVButton
+                as={Link}
+                href={`/@${initialFormData.username}`}
+                className="w-1/2 bg-danger"
+              >
                 Confirm
               </BVButton>
             </div>
