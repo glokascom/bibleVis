@@ -102,7 +102,7 @@ function ImageUpload({
             {requiredWidth} x {requiredHeight} pixels
           </div>
         )}
-        {error && <div className="text-red-500">{error}</div>}
+        {error && <div className="text-danger-500">{error}</div>}
       </div>
     </div>
   )

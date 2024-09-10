@@ -40,14 +40,14 @@ export default function ImagePage({ params }) {
   console.log('UUID:', uuid)
 
   if (!uuid) {
-    return <p className="text-red-500">Invalid URL format</p>
+    return <p className="text-danger-500">Invalid URL format</p>
   }
 
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
       <div>
         <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
-        <p className="text-red-500">Search Text: {searchText}</p>
+        <p className="text-danger-500">Search Text: {searchText}</p>
 
         <div className="flex flex-col gap-2.5 md:flex-row md:items-start">
           <div className="flex h-56 items-center justify-center rounded-medium border md:h-[45rem] md:w-3/4">
