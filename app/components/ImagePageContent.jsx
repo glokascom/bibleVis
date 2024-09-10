@@ -31,7 +31,7 @@ function ImagePageContent({ imageInfo, relatedImages }) {
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <Download />
                 <Description imageInfo={imageInfo} />
-                <CreatorDetails />
+                <CreatorDetails creator={imageInfo.users} />
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
