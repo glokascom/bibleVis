@@ -6,7 +6,10 @@ import Download from '@/app/components/Download'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
+import { checkIfSubscribed } from '../(web)/[@username]/actions/userActions'
+
 async function ImagePageContent({ imageInfo, relatedImages }) {
+  const isFollowed = await checkIfSubscribed(imageInfo.users.id)
   return (
     <>
       <div className="px-5">
@@ -29,7 +32,11 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <Download />
                 <Description imageInfo={imageInfo} />
-                <CreatorDetails creator={imageInfo.users} />
+                <CreatorDetails
+                  creator={imageInfo.users}
+                  followUserId={imageInfo.users.id}
+                  isFollowed={isFollowed}
+                />
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">

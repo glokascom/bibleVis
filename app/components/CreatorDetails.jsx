@@ -4,14 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 
+import { toggleSubscription } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 
-function CreatorDetails({ creator }) {
-  const [follow, setFollow] = useState(false)
+function CreatorDetails({ creator, followUserId, isFollowed }) {
+  const [follow, setFollow] = useState(isFollowed)
   const [isNarrow, setIsNarrow] = useState(false)
+  const [totalFollowers, setTotalFollowers] = useState(creator.total_followers || 0)
   const containerRef = useRef(null)
   const resizeObserverRef = useRef(null)
+
   useEffect(() => {
     const container = containerRef.current
 
@@ -38,7 +41,20 @@ function CreatorDetails({ creator }) {
     }
   }, [])
 
-  const toggleFollow = () => setFollow((prev) => !prev)
+  const handleToggleFollow = async () => {
+    try {
+      const result = await toggleSubscription(followUserId)
+      if (result === null) return
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
+      setFollow(result.isFollowed ?? false)
+      setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
+    } catch (error) {
+      console.error('Failed to toggle follow state:', error)
+    }
+  }
 
   return (
     <div
@@ -54,10 +70,12 @@ function CreatorDetails({ creator }) {
           src={creator.avatarUrl}
         />
         <div className="max-w-32">
-          <p className="truncate" title="Name creator_the_name_here_is_too_long">
+          <p className="truncate" title={creator.username}>
             {creator.username}
           </p>
-          <p className="mt-2.5 text-small text-secondary-400">22,465 followers</p>
+          <p className="mt-2.5 text-small text-secondary-400">
+            {totalFollowers} followers
+          </p>
         </div>
       </div>
 
@@ -65,7 +83,7 @@ function CreatorDetails({ creator }) {
         variant="light"
         color="background"
         className="rounded-medium px-4 text-large"
-        onClick={toggleFollow}
+        onClick={handleToggleFollow}
         startContent={
           <Image
             src={follow ? '/unfollow.svg' : '/follow.svg'}

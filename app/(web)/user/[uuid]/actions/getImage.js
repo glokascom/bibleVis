@@ -4,7 +4,7 @@ export async function getImageInfoById(imageId) {
   try {
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
-      .select('*, users(username,avatar_file_path)')
+      .select('*, users(id,username,avatar_file_path,total_followers)')
       .eq('id', imageId)
       .single()
 
