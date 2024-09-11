@@ -1,3 +1,4 @@
+import { checkIfLiked, toggleLike } from '../(web)/[@username]/actions/imagesActions'
 import CopyButton from './CopyButton'
 import LikesCounter from './LikesCounter'
 
@@ -8,17 +9,32 @@ const StatItem = ({ label, value }) => (
   </div>
 )
 
-function Description({ imageInfo }) {
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('en-US', options).format(date)
+}
+
+async function Description({ imageInfo }) {
   const statistics = [
-    { label: 'Views', value: '220,155' },
-    { label: 'Downloads', value: '142,642' },
-    { label: 'Resolution', value: '6016 x 4016' },
-    { label: 'Published date', value: 'August 5, 2017' },
+    { label: 'Views', value: imageInfo.total_views },
+    { label: 'Downloads', value: imageInfo.total_downloads },
+    {
+      label: 'Resolution',
+      value: `${imageInfo.file_sizes.original.width}x${imageInfo.file_sizes.original.height}`,
+    },
+    { label: 'Published date', value: formatDate(imageInfo.uploaded_at) }, // Форматируем дату
   ]
+
+  const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <LikesCounter />
+      <LikesCounter
+        total_likes={imageInfo.total_likes}
+        isLike={isLike}
+        toggleLike={toggleLike}
+      />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
         <p>{imageInfo.description}</p>
