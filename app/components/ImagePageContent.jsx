@@ -1,5 +1,3 @@
-'use client'
-
 import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
@@ -8,7 +6,7 @@ import Download from '@/app/components/Download'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
-function ImagePageContent({ imageInfo, relatedImages }) {
+async function ImagePageContent({ imageInfo, relatedImages }) {
   return (
     <>
       <div className="px-5">
