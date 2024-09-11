@@ -1,4 +1,4 @@
-import { checkIfLiked, toggleLike } from '../(web)/[@username]/actions/imagesActions'
+import { checkIfLiked } from '../(web)/[@username]/actions/imagesActions'
 import CopyButton from './CopyButton'
 import LikesCounter from './LikesCounter'
 
@@ -23,18 +23,14 @@ async function Description({ imageInfo }) {
       label: 'Resolution',
       value: `${imageInfo.file_sizes.original.width}x${imageInfo.file_sizes.original.height}`,
     },
-    { label: 'Published date', value: formatDate(imageInfo.uploaded_at) }, // Форматируем дату
+    { label: 'Published date', value: formatDate(imageInfo.uploaded_at) },
   ]
 
   const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <LikesCounter
-        total_likes={imageInfo.total_likes}
-        isLike={isLike}
-        toggleLike={toggleLike}
-      />
+      <LikesCounter imageInfo={imageInfo} isLike={isLike} />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
         <p>{imageInfo.description}</p>

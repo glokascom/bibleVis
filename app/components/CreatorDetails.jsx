@@ -12,7 +12,6 @@ function CreatorDetails({ creator }) {
   const [isNarrow, setIsNarrow] = useState(false)
   const containerRef = useRef(null)
   const resizeObserverRef = useRef(null)
-  console.log('container', creator)
   useEffect(() => {
     const container = containerRef.current
 
