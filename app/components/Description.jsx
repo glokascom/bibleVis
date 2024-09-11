@@ -1,4 +1,3 @@
-import { checkIfLiked } from '../(web)/[@username]/actions/imagesActions'
 import CopyButton from './CopyButton'
 import LikesCounter from './LikesCounter'
 
@@ -15,8 +14,9 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-async function Description({ imageInfo }) {
+function Description({ imageInfo, isLike }) {
   const statistics = [
+    //TODO: добавить механизм подсчета просмотров и скачиваний
     { label: 'Views', value: imageInfo.total_views },
     { label: 'Downloads', value: imageInfo.total_downloads },
     {
@@ -25,8 +25,6 @@ async function Description({ imageInfo }) {
     },
     { label: 'Published date', value: formatDate(imageInfo.uploaded_at) },
   ]
-
-  const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">

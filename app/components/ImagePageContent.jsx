@@ -1,3 +1,7 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+
 import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
@@ -6,10 +10,19 @@ import Download from '@/app/components/Download'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
-import { checkIfSubscribed } from '../(web)/[@username]/actions/userActions'
+function ImagePageContent({
+  imageInfo,
+  relatedImages,
+  isFollowed,
+  isLike,
+  isCurrentUser,
+}) {
+  const router = useRouter()
 
-async function ImagePageContent({ imageInfo, relatedImages }) {
-  const isFollowed = await checkIfSubscribed(imageInfo.users.id)
+  const handleImageClick = (imageId) => {
+    router.push(`/image/${imageId}`)
+  }
+
   return (
     <>
       <div className="px-5">
@@ -31,11 +44,12 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
             <div className="flex flex-col gap-5 rounded-medium">
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <Download />
-                <Description imageInfo={imageInfo} />
+                <Description imageInfo={imageInfo} isLike={isLike} />
                 <CreatorDetails
                   creator={imageInfo.users}
                   followUserId={imageInfo.users.id}
                   isFollowed={isFollowed}
+                  isCurrentUser={isCurrentUser}
                 />
               </div>
 
@@ -48,7 +62,7 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
-                <p className="font-bold">More by Author Name</p>
+                <p className="font-bold">More by {imageInfo.users.username}</p>
                 <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
                   {relatedImages.map((image) => (
                     <Image
@@ -56,8 +70,9 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
                       src={image.imagePath}
                       alt={image.title}
                       isZoomed
-                      className="mt-5 md:mt-0"
+                      className="mt-5 cursor-pointer md:mt-0"
                       classNames={{ img: 'md:aspect-square' }}
+                      onClick={() => handleImageClick(image.id)}
                     />
                   ))}
                 </div>
@@ -68,7 +83,7 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
       </div>
 
       <div className="mt-12 border-t px-5 py-10 md:hidden">
-        <p className="font-bold">More by Author Name</p>
+        <p className="font-bold">More by {imageInfo.users.username}</p>
         <div className="md:grid md:grid-cols-3 md:gap-2">
           {relatedImages.map((image) => (
             <Image
@@ -76,8 +91,9 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
               src={image.imagePath}
               alt={image.title}
               isZoomed
-              className="mt-5 md:mt-0"
+              className="mt-5 cursor-pointer md:mt-0"
               classNames={{ img: 'md:aspect-square' }}
+              onClick={() => handleImageClick(image.id)}
             />
           ))}
         </div>
