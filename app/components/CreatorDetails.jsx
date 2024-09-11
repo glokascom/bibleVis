@@ -5,12 +5,12 @@ import { Image } from '@nextui-org/image'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 
-function CreatorDetails() {
+function CreatorDetails({ creator }) {
   const [follow, setFollow] = useState(false)
   const [isNarrow, setIsNarrow] = useState(false)
   const containerRef = useRef(null)
   const resizeObserverRef = useRef(null)
-
+  console.log('container', creator)
   useEffect(() => {
     const container = containerRef.current
 
@@ -48,12 +48,13 @@ function CreatorDetails() {
         <BVAvatar
           as="button"
           className="transition-transform"
-          name="user.username"
+          name={creator.username}
           size="md"
+          src={creator.avatarUrl}
         />
         <div className="max-w-32">
           <p className="truncate" title="Name creator_the_name_here_is_too_long">
-            Name creator
+            {creator.username}
           </p>
           <p className="mt-2.5 text-small text-secondary-400">22,465 followers</p>
         </div>

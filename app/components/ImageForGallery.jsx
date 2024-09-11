@@ -69,7 +69,7 @@ function ImageForGallery({ image }) {
     >
       <BVLink
         className="absolute inset-0 h-full w-full group-hover:opacity-80"
-        href={`/image/${image.title}`}
+        href={`/image/${image.title}-${image.id}`}
       >
         <Image
           src={image.imagePath}

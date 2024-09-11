@@ -1,9 +1,11 @@
-'use client'
-
 import ImagePageContent from '@/app/components/ImagePageContent'
 
-export default function ImagePage({ params }) {
+import { getRandomImagesExcluding } from '../../[@username]/actions/imagesActions'
+import { getImageInfoById } from '../../user/[uuid]/actions/getImage'
+
+export default async function ImagePage({ params }) {
   const { title } = params
+
   const parts = title ? title.split('-') : []
   let uuid = ''
   let searchText = ''
@@ -16,21 +18,24 @@ export default function ImagePage({ params }) {
     searchText = ''
   }
 
-  console.log('Search Text:', searchText)
-  console.log('UUID:', uuid)
-
   if (!uuid) {
-    return <p className="text-danger-500">Invalid URL format</p>
+    return <div>Invalid ID</div>
   }
+
+  const { error, data: imageInfo } = await getImageInfoById(uuid)
+  console.log(imageInfo, 29)
+
+  if (error) {
+    return <div className="text-danger-500">{error}</div>
+  }
+
+  const relatedImages = await getRandomImagesExcluding(uuid)
+  console.log('Search Text:', searchText)
+  // console.log('Related Images:', relatedImages)
 
   return (
     <main className="mx-auto w-full max-w-[1806px] md:px-12">
-      <div className="px-5">
-        <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
-        <p className="text-red-500">Search Text: {searchText}</p>
-      </div>
-
-      <ImagePageContent relatedImages={relatedImages} />
+      <ImagePageContent imageInfo={imageInfo} relatedImages={relatedImages} />
     </main>
   )
 }
