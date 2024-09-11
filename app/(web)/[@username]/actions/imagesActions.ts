@@ -116,16 +116,24 @@ interface LikeResponse {
   data: object | null
 }
 
+export async function checkIfLiked(imageId: number) {
+  const { id: userId } = (await getUser()).user
+
+  const { data: existingLike, error: fetchError } = await supabaseService
+    .from('likes')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('image_id', imageId)
+    .maybeSingle()
+
+  return { existingLike, fetchError }
+}
+
 export async function toggleLike(imageId: number): Promise<LikeResponse> {
   try {
     const { id: userId } = (await getUser()).user
 
-    const { data: existingLike, error: fetchError } = await supabaseService
-      .from('likes')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('image_id', imageId)
-      .maybeSingle()
+    const { existingLike, fetchError } = await checkIfLiked(imageId)
 
     if (fetchError) return { error: fetchError, data: null }
 
