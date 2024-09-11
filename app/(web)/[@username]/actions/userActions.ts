@@ -31,15 +31,8 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (selectError) throw new Error('Error retrieving user data')
       if (!userData) throw new Error('User data not found')
-      //TODO:add trigger
       // Уменьшение числа подписчиков
       const newFollowersCount = userData.total_followers - 1
-      const { error: updateError } = await supabaseService
-        .from('users')
-        .update({ total_followers: newFollowersCount })
-        .eq('id', followingUuid)
-
-      if (updateError) throw new Error('Error decreasing follower count')
 
       return { isFollowed: false, totalFollowers: newFollowersCount }
     } else {
@@ -59,15 +52,7 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (selectError) throw new Error('Error retrieving user data')
       if (!userData) throw new Error('User data not found')
-      //TODO:add trigger
-      // Увеличение числа подписчиков
       const newFollowersCount = userData.total_followers + 1
-      const { error: updateError } = await supabaseService
-        .from('users')
-        .update({ total_followers: newFollowersCount })
-        .eq('id', followingUuid)
-
-      if (updateError) throw new Error('Error increasing follower count')
 
       return { isFollowed: true, totalFollowers: newFollowersCount }
     }
