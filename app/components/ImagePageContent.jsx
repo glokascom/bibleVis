@@ -14,13 +14,13 @@ async function ImagePageContent({ imageInfo, relatedImages }) {
     <>
       <div className="px-5">
         <div className="flex flex-col md:flex-row md:items-start">
-          <div className="flex h-56 items-center justify-center rounded-medium bg-secondary-50 p-0 md:h-[45rem] md:w-3/4 md:p-2.5">
+          <div className="rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
             {imageInfo.imagePath ? (
               <Image
                 src={imageInfo.imagePath}
                 alt={imageInfo.title}
-                className="h-full w-full rounded-medium object-cover"
-                classNames={{ img: 'w-full h-full object-cover' }}
+                className="aspect-video bg-secondary-50 object-contain"
+                classNames={{ img: 'rounded-medium' }}
               />
             ) : (
               <p className="text-center">Image not available</p>

@@ -121,11 +121,11 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   if (isSubmitted) {
     return (
       <div className="mx-auto mb-12 mt-11 flex max-w-3xl flex-col items-center justify-center text-center">
-        <div className="relative mb-36 md:mb-12">
+        <div className="relative mb-36 w-full rounded-medium bg-secondary-50 md:mb-12">
           <Image
             src={submittedImageUrl}
             alt="Uploaded image"
-            className="rounded-medium border shadow-large"
+            className="aspect-video object-contain shadow-large"
           />
 
           <Link
