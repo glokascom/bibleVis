@@ -72,13 +72,32 @@ export async function POST(
       )
     }
 
-    const sizesImages = {
-      small: { width: 720, height: Math.round((metadata.height / metadata.width) * 720) },
-      medium: {
-        width: 1920,
-        height: Math.round((metadata.height / metadata.width) * 1920),
-      },
-      original: { width: metadata.width, height: metadata.height },
+    let sizesImages: {
+      small: { width: number; height: number }
+      medium?: { width: number; height: number }
+      original: { width: number; height: number }
+    }
+
+    if (metadata.width > 1920) {
+      sizesImages = {
+        small: {
+          width: 720,
+          height: Math.round((metadata.height / metadata.width) * 720),
+        },
+        medium: {
+          width: 1920,
+          height: Math.round((metadata.height / metadata.width) * 1920),
+        },
+        original: { width: metadata.width, height: metadata.height },
+      }
+    } else {
+      sizesImages = {
+        small: {
+          width: 720,
+          height: Math.round((metadata.height / metadata.width) * 720),
+        },
+        original: { width: metadata.width, height: metadata.height },
+      }
     }
 
     const originalFilePath = await uploadOriginalImage(validImage)
