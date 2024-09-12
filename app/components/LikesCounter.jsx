@@ -10,13 +10,15 @@ import { BVButton } from './BVButton'
 function LikesCounter({ imageInfo, isLike }) {
   const [isLiked, setIsLiked] = useState(!!isLike)
   const [count, setCount] = useState(imageInfo.total_likes)
-
+  const [isLoading, setIsLoading] = useState(false)
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
     setCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
   }, [isLiked])
 
   const handleLikeClick = async () => {
+    if (isLoading) return
+    setIsLoading(true)
     try {
       handleToggleLike()
       const result = await toggleLikeAction(imageInfo.id)
@@ -27,6 +29,8 @@ function LikesCounter({ imageInfo, isLike }) {
       }
     } catch (error) {
       console.error('Failed to toggle like state:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -44,6 +48,7 @@ function LikesCounter({ imageInfo, isLike }) {
         color="background"
         className={commonButtonClasses}
         onClick={handleLikeClick}
+        disabled={isLoading}
         startContent={
           <Image
             src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}

@@ -14,6 +14,7 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
   const [follow, setFollow] = useState(isFollowed)
   const [isNarrow, setIsNarrow] = useState(false)
   const [totalFollowers, setTotalFollowers] = useState(creator.total_followers || 0)
+  const [isLoading, setIsLoading] = useState(false)
   const containerRef = useRef(null)
   const resizeObserverRef = useRef(null)
   const router = useRouter()
@@ -50,12 +51,13 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
   }, [])
 
   const handleToggleFollow = async () => {
-    try {
-      setFollow(result.isFollowed ?? false)
-      setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
+    if (isLoading) return
+    setIsLoading(true)
 
+    try {
       const result = await toggleSubscription(followUserId)
       if (result === null) return
+
       if (result.error) {
         throw new Error(result.error)
       } else {
@@ -64,6 +66,8 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
       }
     } catch (error) {
       console.error('Failed to toggle follow state:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -103,6 +107,7 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
           color="background"
           className="rounded-medium px-4 text-large"
           onClick={handleToggleFollow}
+          disabled={isLoading}
           startContent={
             <Image
               src={follow ? '/unfollow.svg' : '/follow.svg'}
