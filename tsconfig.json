@@ -36,7 +36,8 @@
     "**/*.js",
     "**/*.jsx",
     ".next/types/**/*.ts",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "vitest.config.mjs",
   ],
   "exclude": [
     "node_modules"
