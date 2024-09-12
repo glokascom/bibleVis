@@ -8,7 +8,7 @@ import { toggleLike as toggleLikeAction } from '../(web)/[@username]/actions/ima
 import { BVButton } from './BVButton'
 
 function LikesCounter({ imageInfo, isLike }) {
-  const [isLiked, setIsLiked] = useState(isLike || false)
+  const [isLiked, setIsLiked] = useState(!!isLike)
   const [count, setCount] = useState(imageInfo.total_likes)
 
   const handleToggleLike = useCallback(() => {
@@ -18,10 +18,11 @@ function LikesCounter({ imageInfo, isLike }) {
 
   const handleLikeClick = async () => {
     try {
+      handleToggleLike()
       const result = await toggleLikeAction(imageInfo.id)
       if (result.data) {
-        handleToggleLike()
       } else if (result.error) {
+        handleToggleLike()
         throw new Error(result.error)
       }
     } catch (error) {
