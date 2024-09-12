@@ -52,21 +52,25 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
 
   const handleToggleFollow = async () => {
     if (isLoading) return
+
+    const previousFollow = follow
+    const previousTotalFollowers = totalFollowers
+
+    setFollow(!follow)
+    setTotalFollowers(follow ? totalFollowers - 1 : totalFollowers + 1)
     setIsLoading(true)
 
     try {
+      const result = await toggleSubscription(followUserId)
+
+      if (result === null || result.error) {
+        setFollow(previousFollow)
+        setTotalFollowers(previousTotalFollowers)
+        throw new Error(result?.error || 'Failed to toggle subscription')
+      }
+
       setFollow(result.isFollowed ?? false)
       setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
-
-      const result = await toggleSubscription(followUserId)
-      if (result === null) return
-
-      if (result.error) {
-        throw new Error(result.error)
-      } else {
-        setFollow(result.isFollowed ?? false)
-        setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
-      }
     } catch (error) {
       console.error('Failed to toggle follow state:', error)
     } finally {
