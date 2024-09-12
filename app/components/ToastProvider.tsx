@@ -1,8 +1,7 @@
-'use client'
+import { createContext, ReactNode, useContext, useState } from 'react'
 
-import React, { createContext, ReactNode, useContext } from 'react'
-
-import { toast, ToastOptions } from 'react-hot-toast'
+import ReactDOM from 'react-dom'
+import { ToastOptions } from 'react-hot-toast'
 
 import CustomToast, { CustomToastProps } from './CustomToast'
 
@@ -23,12 +22,37 @@ export const useToast = () => {
 }
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [toasts, setToasts] = useState<
+    Array<{ id: string; message: string; type: CustomToastProps['type'] }>
+  >([])
+
+  const addToast = (
+    message: string,
+    type: CustomToastProps['type'],
+    options?: ToastOptions
+  ) => {
+    const id = Math.random().toString(36).substring(7)
+    setToasts((prev) => [...prev, { id, message, type }])
+
+    const customOptions: ToastOptions = {
+      ...options,
+      duration: 4000,
+      position: 'top-center',
+    }
+
+    setTimeout(() => removeToast(id), customOptions.duration)
+  }
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
+  }
+
   const showToast = (
     type: CustomToastProps['type'],
     message: string,
     options?: ToastOptions
   ) => {
-    toast.custom((t) => <CustomToast message={message} type={type} id={t.id} />, options)
+    addToast(message, type, options)
   }
 
   const success = (message: string, options?: ToastOptions) =>
@@ -41,6 +65,30 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <ToastContext.Provider value={{ success, error, neutral }}>
       {children}
+
+      {toasts.map((toast, index) => {
+        const topOffset = 7 + index * 5
+
+        return ReactDOM.createPortal(
+          <div
+            key={toast.id}
+            style={{
+              position: 'fixed',
+              top: `${topOffset}rem`,
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <CustomToast
+              message={toast.message}
+              type={toast.type}
+              id={toast.id}
+              onClose={() => removeToast(toast.id)}
+            />
+          </div>,
+          document.body
+        )
+      })}
     </ToastContext.Provider>
   )
 }
