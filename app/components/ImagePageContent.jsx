@@ -1,12 +1,9 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
-
 import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
 import Download from '@/app/components/Download'
+import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
@@ -17,12 +14,6 @@ function ImagePageContent({
   isLike,
   isCurrentUser,
 }) {
-  const router = useRouter()
-
-  const handleImageClick = (imageId) => {
-    router.push(`/image/${imageId}`)
-  }
-
   return (
     <>
       <div className="px-5">
@@ -64,20 +55,10 @@ function ImagePageContent({
               </div>
 
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
-                <p className="font-bold">More by {imageInfo.users.username}</p>
-                <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
-                  {relatedImages.map((image) => (
-                    <Image
-                      key={image.id}
-                      src={image.imagePath}
-                      alt={image.title}
-                      isZoomed
-                      className="mt-5 cursor-pointer md:mt-0"
-                      classNames={{ img: 'md:aspect-square w-full h-auto' }}
-                      onClick={() => handleImageClick(image.id)}
-                    />
-                  ))}
-                </div>
+                <RelatedImages
+                  relatedImages={relatedImages}
+                  username={imageInfo.users.username}
+                />
               </div>
             </div>
           </div>
@@ -85,20 +66,10 @@ function ImagePageContent({
       </div>
 
       <div className="mt-12 border-t px-5 py-10 md:hidden">
-        <p className="font-bold">More by {imageInfo.users.username}</p>
-        <div className="md:grid md:grid-cols-3 md:gap-2">
-          {relatedImages.map((image) => (
-            <Image
-              key={image.id}
-              src={image.imagePath}
-              alt={image.title}
-              isZoomed
-              className="mt-5 cursor-pointer md:mt-0"
-              classNames={{ img: 'md:aspect-square' }}
-              onClick={() => handleImageClick(image.id)}
-            />
-          ))}
-        </div>
+        <RelatedImages
+          relatedImages={relatedImages}
+          username={imageInfo.users.username}
+        />
       </div>
     </>
   )
