@@ -55,6 +55,9 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
     setIsLoading(true)
 
     try {
+      setFollow(result.isFollowed ?? false)
+      setTotalFollowers(result.isFollowed ? totalFollowers + 1 : totalFollowers - 1)
+
       const result = await toggleSubscription(followUserId)
       if (result === null) return
 
