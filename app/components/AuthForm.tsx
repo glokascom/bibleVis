@@ -75,7 +75,6 @@ function AuthForm() {
       errors.push({ field: 'email', message: 'Unsupported email format' })
     }
 
-    // Валидация username
     if (!/^[a-zA-Z0-9_]+$/.test(usernameSignup)) {
       errors.push({
         field: 'username',
@@ -91,7 +90,6 @@ function AuthForm() {
       })
     }
 
-    // Валидация пароля
     if (passwordSignup.length < 6) {
       errors.push({
         field: 'password',

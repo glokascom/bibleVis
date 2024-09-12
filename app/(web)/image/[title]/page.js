@@ -16,8 +16,8 @@ export default async function ImagePage({ params }) {
   let searchText = ''
 
   if (parts.length > 1) {
-    idImage = parts.pop() // забираем последний элемент как idImage
-    searchText = parts.join(' ') // оставшиеся части объединяем в строку
+    idImage = parts.pop()
+    searchText = parts.join(' ')
   } else {
     idImage = title
     searchText = ''

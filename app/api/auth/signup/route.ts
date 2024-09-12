@@ -32,13 +32,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const validationErrors: Record<string, string[]> = {}
 
-  // Валидация email
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     validationErrors.email = validationErrors.email || []
     validationErrors.email.push('Unsupported email format')
   }
 
-  // Валидация username
   if (!/^[a-zA-Z0-9_]+$/.test(username)) {
     validationErrors.username = validationErrors.username || []
     validationErrors.username.push(
@@ -51,7 +49,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     validationErrors.username.push('Username must be between 5 and 20 characters long.')
   }
 
-  // Валидация пароля
   if (password.length < 6) {
     validationErrors.password = validationErrors.password || []
     validationErrors.password.push('The password must be at least 6 characters')
@@ -79,7 +76,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ),
     }
     return jsonResponse(validationErrorResponse, 400)
-  } // Проверка на существование пользователя
+  }
   const supabase = createClient()
   const { data, error: dbError } = await supabase
     .from('users')
@@ -112,7 +109,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   }
 
-  // Регистрация пользователя
   const { error: signupError } = await supabase.auth.signUp({
     email,
     password,

@@ -26,7 +26,6 @@
         "./*"
       ]
     },
-    // custom config
    "checkJs": false,
    "target": "ESNext",
   },

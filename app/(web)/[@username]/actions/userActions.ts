@@ -13,7 +13,6 @@ export async function toggleSubscription(followingUuid: string) {
 
   try {
     if (isFollowed) {
-      // Удаление подписки
       const { error: deleteError } = await supabaseService
         .from('subscriptions')
         .delete()
@@ -22,7 +21,6 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (deleteError) throw new Error('Error deleting subscription')
 
-      // Получение текущего числа подписчиков
       const { data: userData, error: selectError } = await supabaseService
         .from('users')
         .select('total_followers')
@@ -31,19 +29,16 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (selectError) throw new Error('Error retrieving user data')
       if (!userData) throw new Error('User data not found')
-      // Уменьшение числа подписчиков
       const newFollowersCount = userData.total_followers - 1
 
       return { isFollowed: false, totalFollowers: newFollowersCount }
     } else {
-      // Создание подписки
       const { error: insertError } = await supabaseService
         .from('subscriptions')
         .insert([{ follower_id: followerUuid, following_id: followingUuid }])
 
       if (insertError) throw new Error('Error creating subscription')
 
-      // Получение текущего числа подписчиков
       const { data: userData, error: selectError } = await supabaseService
         .from('users')
         .select('total_followers')
