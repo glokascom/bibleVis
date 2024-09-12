@@ -36,8 +36,8 @@ interface ImageResponse {
 }
 
 export async function getUserImagesWithLikes(
-  userId: string,
   currentUserId: string,
+  userId: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> {
@@ -94,21 +94,22 @@ export async function getUserImagesWithLikes(
 }
 
 export const getImages = async (
-  userId: string,
   currentUserId: string,
+  userId: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> => {
-  const data = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
+  const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
   return data
 }
 
 export const loadNextPage = async (
   userId: string,
-  currentUserId: string,
   page: number
 ): Promise<ImageResponse> => {
-  return await getImages(userId, currentUserId, page)
+  const { id: currentUserId } = (await getUser()).user
+
+  return await getImages(currentUserId, userId, page)
 }
 
 interface LikeResponse {
