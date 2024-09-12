@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import { Image } from '@nextui-org/image'
 import { Switch } from '@nextui-org/react'
@@ -10,8 +11,11 @@ import { Switch } from '@nextui-org/react'
 import { BVButton } from '@/app/components/BVButton'
 import TagInput from '@/app/components/TagInput'
 
+import { deleteImage } from '../(web)/[@username]/actions/imagesActions'
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
-import { Modal } from './Modal'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
+import SaveConfirmationModal from './SaveConfirmationModal'
+import { useToast } from './ToastProvider'
 
 function ImageFormDisplay({
   initialFormData,
@@ -21,8 +25,11 @@ function ImageFormDisplay({
   handleCancel = () => {},
   handleSubmit = () => {},
   setValidImage = () => {},
+  softwareOptions = [],
+  tagsOptions = [],
+  isLoading = false,
 }) {
-  const [imageUrl, setImageUrl] = useState(null)
+  const [imageUrl, setImageUrl] = useState(initialFormData?.imagePath || '')
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [isAIGeneration, setIsAIGeneration] = useState(
@@ -34,36 +41,24 @@ function ImageFormDisplay({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
 
+  const router = useRouter()
+  const { success: showToastSuccess, error: showToastError } = useToast()
+
   const closeModal = () => {
     setIsSaveModalOpen(false)
     setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = (e) => {
-    handleSubmit(e)
-    closeModal()
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await handleSubmit(e)
+      closeModal()
+    } catch (error) {
+      console.error('Error uploading the image:', error)
+    }
   }
-
-  const initialSoftwareTags = [
-    'Leonardo',
-    'Playground.ai',
-    'DALL-E 2 by OpenAI',
-    'MidJourney',
-    'Stable Diffusion',
-    'Artbreeder',
-    'Deep Dream Generator',
-    'Runway ML',
-    'NightCafe Studio',
-    'Craiyon',
-    'DeepArt',
-    `Let's Enhance`,
-    'This Person Does Not Exist',
-    'Pix2Pix by TensorFlow',
-    'BigGAN by DeepMind',
-    'Artisto',
-    'Deep Dream by Google',
-  ]
 
   useEffect(() => {
     if (imageFile) {
@@ -115,17 +110,20 @@ function ImageFormDisplay({
     } else {
       if (file) {
         setValidImage(file)
+        const url = URL.createObjectURL(file)
+        setImageUrl(url)
       }
     }
   }
 
-  const handleDelete = () => {
-    setValidImage(null)
-    setIsDeleteSuccess(true)
-
-    setTimeout(() => {
-      closeModal()
-    }, 2000)
+  const handleDeleteImage = async () => {
+    const result = await deleteImage(initialFormData.id)
+    if (result.error) {
+      showToastError(result.error)
+    } else {
+      showToastSuccess('Image deleted successfully')
+      router.push(`/@${initialFormData.username}`)
+    }
   }
 
   return (
@@ -175,23 +173,27 @@ function ImageFormDisplay({
         </div>
       )}
 
-      <div className="flex flex-col gap-7 md:flex-row md:gap-5">
-        <div className="md:w-2/3">
-          <div className="relative">
-            {imageFile ? (
+      <div className="flex flex-col gap-7 md:flex-row md:items-start md:gap-2.5">
+        <div className="rounded-medium bg-secondary-50 md:w-2/3 md:p-2.5">
+          <div className="relative rounded-medium bg-secondary-50">
+            {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
-                className="rounded-medium border"
+                classNames={{
+                  img: 'w-full h-auto aspect-video object-contain',
+                }}
+                layout="fill"
               />
             ) : (
-              <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
+              <div className="flex aspect-video animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center">
                 <p className="text-mega">No Image</p>
                 <p>Failed to display image. Please make sure the file was uploaded.</p>
               </div>
             )}
+
             <button
-              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData ? 'hidden' : ''}`}
+              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData?.imagePath ? 'hidden' : ''}`}
               onClick={handleReplaceImage}
             >
               <Image
@@ -208,7 +210,7 @@ function ImageFormDisplay({
             </button>
           </div>
 
-          {!imageFile && (
+          {!imageUrl && (
             <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
               <p className="md:w-1/3">
                 <span className="font-bold">File Formats and Size:</span> Acceptable
@@ -228,7 +230,7 @@ function ImageFormDisplay({
         </div>
 
         <form onSubmit={handleSubmit} className="md:w-1/3">
-          <div className="flex flex-col gap-5 rounded-medium border p-5">
+          <div className="flex flex-col gap-5 rounded-medium border p-5 shadow-small">
             <TagInput
               label="Title"
               isTagInput={false}
@@ -269,13 +271,14 @@ function ImageFormDisplay({
               label="Software Used"
               showCounter={false}
               onBlur={handleInputBlur('software')}
-              initialTags={initialSoftwareTags}
+              initialTags={softwareOptions}
               allowAddOnEnter={false}
               initialValue={initialFormData?.software || []}
             />
             <TagInput
               label="Image tags"
               onBlur={handleInputBlur('tags')}
+              initialTags={tagsOptions}
               initialValue={initialFormData?.tags || []}
             />
 
@@ -289,7 +292,7 @@ function ImageFormDisplay({
 
           <BVButton
             onClick={() => setIsSaveModalOpen(true)}
-            isDisabled={!isFormFilled}
+            isDisabled={!isFormFilled || isLoading}
             className={`my-7 w-full ${initialFormData ? '' : 'bg-secondary-50 text-inherit'}`}
           >
             {initialFormData ? 'Save' : 'Publish'}
@@ -301,55 +304,21 @@ function ImageFormDisplay({
             Cancel
           </p>
 
-          {isSaveModalOpen && (
-            <Modal closeModal={closeModal}>
-              <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-                <p>Are you sure you need to save the file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton
-                    type="submit"
-                    onClick={handleFormSubmit}
-                    className="w-1/2 bg-primary"
-                  >
-                    Save
-                  </BVButton>
-                </div>
-              </div>
-            </Modal>
-          )}
+          <SaveConfirmationModal
+            isSaveModalOpen={isSaveModalOpen}
+            closeModal={closeModal}
+            handleFormSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
         </form>
       </div>
 
-      {isDeleteModalOpen && (
-        <Modal closeModal={closeModal}>
-          <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-            {isDeleteSuccess ? (
-              <p className="py-7">The image was successfully deleted</p>
-            ) : (
-              <>
-                <p>Are you sure to delete file?</p>
-                <div className="mt-12 flex justify-center gap-2">
-                  <BVButton
-                    className="w-1/2 bg-secondary-50 text-inherit"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </BVButton>
-                  <BVButton onClick={handleDelete} className="w-1/2 bg-danger">
-                    Delete
-                  </BVButton>
-                </div>
-              </>
-            )}
-          </div>
-        </Modal>
-      )}
+      <DeleteConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        closeModal={closeModal}
+        handleDelete={handleDeleteImage}
+        isDeleteSuccess={isDeleteSuccess}
+      />
     </div>
   )
 }

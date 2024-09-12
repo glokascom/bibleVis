@@ -56,7 +56,6 @@ export async function login(
       body: JSON.stringify(data),
     })
 
-    // Проверяем, успешен ли ответ
     if (!response.ok) {
       const errorResponse: ApiError = await response.json()
       return {
@@ -66,14 +65,12 @@ export async function login(
       }
     }
 
-    // Возвращаем успешный ответ
     const successResponse = await response.json()
     return {
       status: 'success',
       data: successResponse.data,
     }
   } catch {
-    // Обработка сетевых ошибок и других исключений
     return {
       status: 'error',
       message: 'An unknown error occurred.',
@@ -101,7 +98,6 @@ export async function signup(
       body: JSON.stringify(data),
     })
 
-    // Проверяем, успешен ли ответ
     if (!response.ok) {
       const errorResponse: ApiError = await response.json()
       return {
@@ -111,14 +107,12 @@ export async function signup(
       }
     }
 
-    // Возвращаем успешный ответ
     const successResponse = await response.json()
     return {
       status: 'success',
       data: successResponse.data,
     }
   } catch {
-    // Обработка сетевых ошибок и других исключений
     return {
       status: 'error',
       message: 'An unknown error occurred.',

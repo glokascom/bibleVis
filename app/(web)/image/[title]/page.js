@@ -1,61 +1,57 @@
-'use client'
+import { getUser } from '@/app/actions/getUser'
+import ImagePageContent from '@/app/components/ImagePageContent'
 
-import { useEffect } from 'react'
+import {
+  checkIfLiked,
+  getRandomImagesExcluding,
+} from '../../[@username]/actions/imagesActions'
+import { checkIfSubscribed } from '../../[@username]/actions/userActions'
+import { getImageInfoById } from '../../user/[uuid]/actions/getImage'
 
-import { useRouter } from 'next/navigation'
-
-export default function ImagePage({ params }) {
+export default async function ImagePage({ params }) {
   const { title } = params
-  const router = useRouter()
+
   const parts = title ? title.split('-') : []
-  let uuid = ''
+  let idImage = ''
   let searchText = ''
 
   if (parts.length > 1) {
-    uuid = parts.pop() // забираем последний элемент как uuid
-    searchText = parts.join(' ') // оставшиеся части объединяем в строку
+    idImage = parts.pop()
+    searchText = parts.join(' ')
   } else {
-    uuid = title
+    idImage = title
     searchText = ''
   }
-
-  useEffect(() => {
-    if (uuid) {
-      const formattedTitle = slugify(searchText)
-
-      if (formattedTitle) {
-        router.replace(`/image/${formattedTitle}-${uuid}`)
-      } else {
-        router.replace(`/image/${uuid}`)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uuid, searchText])
-
+  //TODO: добавить логику поиска
   console.log('Search Text:', searchText)
-  console.log('UUID:', uuid)
 
-  if (!uuid) {
-    return <p className="text-red-500">Invalid URL format</p>
+  if (!idImage) {
+    return <div>Invalid ID</div>
   }
 
+  const { error, data: imageInfo } = await getImageInfoById(idImage)
+
+  if (error) {
+    return <div className="text-danger-500">{error}</div>
+  }
+
+  const relatedImages = await getRandomImagesExcluding(imageInfo.users.id, idImage)
+  const isFollowed = await checkIfSubscribed(imageInfo.users.id)
+  const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
+
+  const data = await getUser()
+  const userInfo = data?.user
+  const username = imageInfo.users.username
+  const isCurrentUser = username === userInfo?.username ? true : false
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-      <div>
-        <h1 className="text-3xl font-bold text-blue-500 underline">UUID: {uuid}</h1>
-        <p className="text-red-500">Search Text: {searchText}</p>
-      </div>
+    <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
+      <ImagePageContent
+        imageInfo={imageInfo}
+        relatedImages={relatedImages}
+        isFollowed={isFollowed}
+        isLike={isLike}
+        isCurrentUser={isCurrentUser}
+      />
     </main>
   )
-}
-
-function slugify(text) {
-  return text
-    .toString()
-    .normalize('NFD') // разбиваем символы, если есть акценты
-    .replace(/[\u0300-\u036f]/g, '') // удаляем акценты
-    .replace(/[^a-zA-Z0-9\s-]/g, '') // удаляем спецсимволы
-    .trim() // удаляем пробелы с концов строки
-    .replace(/\s+/g, '-') // заменяем пробелы на тире
-    .toLowerCase() // приводим к нижнему регистру
 }

@@ -131,7 +131,7 @@ function Password({ userInfo }) {
           isRequired
         />
       </div>
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {errorMessage && <p className="text-danger-500">{errorMessage}</p>}
       {successMessage && <p className="text-green-500">{successMessage}</p>}
       <BVButton type="submit" disabled={loading}>
         {loading ? 'Saving...' : 'Save'}

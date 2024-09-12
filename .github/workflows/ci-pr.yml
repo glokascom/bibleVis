@@ -20,7 +20,7 @@ jobs:
       SUPABASE_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ secrets.STAGING_PROJECT_ID }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}  
-      GOOGLE_SECRET : ${{ secrets.GOOGLE_SECRET  }}  
+      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET  }}  
 
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,4 @@ jobs:
           version: latest
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: yes | supabase db reset --linked
-
-
+      - run: echo y | supabase db reset --linked

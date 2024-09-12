@@ -1,15 +1,11 @@
-import { toast } from 'react-hot-toast'
-
 export interface CustomToastProps {
   message: string
   type: 'success' | 'error' | 'neutral'
+  id: string
+  onClose: () => void
 }
 
-const CustomToast: React.FC<CustomToastProps & { id: string }> = ({
-  message,
-  type,
-  id,
-}) => {
+const CustomToast: React.FC<CustomToastProps> = ({ message, type, onClose }) => {
   let backgroundColor, backgroundIconColor
   switch (type) {
     case 'success':
@@ -34,12 +30,7 @@ const CustomToast: React.FC<CustomToastProps & { id: string }> = ({
       <div className="flex-grow border-l-1 border-background pl-2.5 font-sans text-sm font-medium text-background">
         {message}
       </div>
-      <div
-        className={`ml-4 p-1 ${backgroundIconColor} cursor-pointer`}
-        onClick={() => {
-          toast.remove(id)
-        }}
-      >
+      <div className={`ml-4 p-1 ${backgroundIconColor} cursor-pointer`} onClick={onClose}>
         <svg
           width="26"
           height="26"
