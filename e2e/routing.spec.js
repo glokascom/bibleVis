@@ -5,7 +5,7 @@ const pages = [
   //  '@username',
   'login',
   'forgot-password',
-  'image/{title}-{uuid}',
+  // 'image/{title}-{uuid}',
   //  'user/upload',
   //  'user/{uuid}',
   //  'user/edit',
