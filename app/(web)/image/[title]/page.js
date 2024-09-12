@@ -35,7 +35,7 @@ export default async function ImagePage({ params }) {
     return <div className="text-danger-500">{error}</div>
   }
 
-  const relatedImages = await getRandomImagesExcluding(idImage)
+  const relatedImages = await getRandomImagesExcluding(imageInfo.users.id, idImage)
   const isFollowed = await checkIfSubscribed(imageInfo.users.id)
   const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 

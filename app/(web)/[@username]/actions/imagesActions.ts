@@ -221,11 +221,11 @@ export async function deleteImage(imageId: number): Promise<DeleteResponse> {
 }
 
 export async function getRandomImagesExcluding(
+  userId: string,
   excludeImageId: number,
   numberOfImages: number = 3
 ): Promise<Image[]> {
   try {
-    const { id: userId } = (await getUser()).user
     const { data: images, error: fetchError } = await supabaseService
       .from('images')
       .select('*')
