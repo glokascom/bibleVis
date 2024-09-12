@@ -22,7 +22,7 @@ export async function getImageInfoById(imageId) {
 
     const updatedUsers = {
       ...image.users,
-      avatarUrl: avatarUrl,
+      avatarUrl,
     }
 
     const { data: tagsData, error: tagsError } = await supabaseService
