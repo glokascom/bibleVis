@@ -65,39 +65,30 @@ export async function POST(
     const imageBuffer = Buffer.from(await validImage.arrayBuffer())
     const metadata = await sharp(imageBuffer).metadata()
 
-    if (!metadata || !metadata.width || !metadata.height) {
+    if (!metadata.width || !metadata.height) {
       return NextResponse.json<ApiError>(
         { status: 'error', message: 'Invalid or unreadable image format' },
         { status: 400 }
       )
     }
 
-    let sizesImages: {
+    const smallWidth = 720
+    const mediumWidth = 1920
+
+    const calculateHeight = (width: number) =>
+      Math.round((metadata.height! / metadata.width!) * width)
+
+    const sizesImages: {
       small: { width: number; height: number }
       medium?: { width: number; height: number }
       original: { width: number; height: number }
+    } = {
+      small: { width: smallWidth, height: calculateHeight(smallWidth) },
+      original: { width: metadata.width, height: metadata.height },
     }
 
-    if (metadata.width > 1920) {
-      sizesImages = {
-        small: {
-          width: 720,
-          height: Math.round((metadata.height / metadata.width) * 720),
-        },
-        medium: {
-          width: 1920,
-          height: Math.round((metadata.height / metadata.width) * 1920),
-        },
-        original: { width: metadata.width, height: metadata.height },
-      }
-    } else {
-      sizesImages = {
-        small: {
-          width: 720,
-          height: Math.round((metadata.height / metadata.width) * 720),
-        },
-        original: { width: metadata.width, height: metadata.height },
-      }
+    if (metadata.width > mediumWidth) {
+      sizesImages.medium = { width: mediumWidth, height: calculateHeight(mediumWidth) }
     }
 
     const originalFilePath = await uploadOriginalImage(validImage)
