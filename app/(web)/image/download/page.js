@@ -10,7 +10,7 @@ const customLoader = ({ src }) => src
 const src = '4686d99d-32f7-4fe7-8df1-aa7bce0b5079/images/image_2024-09-05-093107.jpg'
 
 async function requestProcessedImage(src, width) {
-  const response = await fetch('/api/process-image', {
+  const response = await fetch('/api/download-image', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
