@@ -11,8 +11,8 @@ export default async function ImagePage({ params }) {
   let searchText = ''
 
   if (parts.length > 1) {
-    uuid = parts.pop() // забираем последний элемент как uuid
-    searchText = parts.join(' ') // оставшиеся части объединяем в строку
+    uuid = parts.pop()
+    searchText = parts.join(' ')
   } else {
     uuid = title
     searchText = ''
@@ -31,10 +31,9 @@ export default async function ImagePage({ params }) {
 
   const relatedImages = await getRandomImagesExcluding(uuid)
   console.log('Search Text:', searchText)
-  // console.log('Related Images:', relatedImages)
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] md:px-12">
+    <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
       <ImagePageContent imageInfo={imageInfo} relatedImages={relatedImages} />
     </main>
   )

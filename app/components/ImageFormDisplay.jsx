@@ -180,7 +180,9 @@ function ImageFormDisplay({
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
-                className="aspect-video object-contain"
+                classNames={{
+                  img: 'w-full h-auto aspect-video object-contain',
+                }}
                 layout="fill"
               />
             ) : (
