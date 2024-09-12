@@ -32,8 +32,10 @@ function ImagePageContent({
               <Image
                 src={imageInfo.imagePath}
                 alt={imageInfo.title}
-                className="aspect-video bg-secondary-50 object-contain"
-                classNames={{ img: 'rounded-medium' }}
+                className="w-full bg-secondary-50"
+                classNames={{
+                  img: 'w-full h-auto aspect-video object-contain',
+                }}
               />
             ) : (
               <p className="text-center">Image not available</p>
@@ -71,7 +73,7 @@ function ImagePageContent({
                       alt={image.title}
                       isZoomed
                       className="mt-5 cursor-pointer md:mt-0"
-                      classNames={{ img: 'md:aspect-square' }}
+                      classNames={{ img: 'md:aspect-square w-full h-auto' }}
                       onClick={() => handleImageClick(image.id)}
                     />
                   ))}

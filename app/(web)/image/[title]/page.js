@@ -44,7 +44,7 @@ export default async function ImagePage({ params }) {
   const username = imageInfo.users.username
   const isCurrentUser = username === userInfo?.username ? true : false
   return (
-    <main className="mx-auto w-full max-w-[1806px] md:px-12">
+    <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
       <ImagePageContent
         imageInfo={imageInfo}
         relatedImages={relatedImages}

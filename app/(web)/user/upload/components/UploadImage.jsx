@@ -125,7 +125,9 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           <Image
             src={submittedImageUrl}
             alt="Uploaded image"
-            className="aspect-video object-contain shadow-large"
+            classNames={{
+              img: 'w-full h-auto aspect-video object-contain shadow-large',
+            }}
           />
 
           <Link
