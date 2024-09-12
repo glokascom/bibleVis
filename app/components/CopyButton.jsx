@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 
 import Image from 'next/image'
@@ -10,7 +12,6 @@ function CopyButton({ textToCopy }) {
       navigator.clipboard
         .writeText(textToCopy)
         .then(() => {
-          console.log('Text copied to clipboard:', textToCopy)
           setIsCopied(true)
           setTimeout(() => setIsCopied(false), 2000)
         })

@@ -173,24 +173,27 @@ function ImageFormDisplay({
         </div>
       )}
 
-      <div className="flex flex-col gap-7 md:flex-row md:gap-5">
-        <div className="md:w-2/3">
-          <div className="relative">
+      <div className="flex flex-col gap-7 md:flex-row md:items-start md:gap-2.5">
+        <div className="rounded-medium bg-secondary-50 md:w-2/3 md:p-2.5">
+          <div className="relative rounded-medium bg-secondary-50">
             {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt="Uploaded image"
-                className="rounded-medium border"
+                classNames={{
+                  img: 'w-full h-auto aspect-video object-contain',
+                }}
                 layout="fill"
               />
             ) : (
-              <div className="flex h-64 animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center md:h-96">
+              <div className="flex aspect-video animate-pulse flex-col items-center justify-center text-balance rounded-medium bg-secondary-50 p-5 text-center">
                 <p className="text-mega">No Image</p>
                 <p>Failed to display image. Please make sure the file was uploaded.</p>
               </div>
             )}
+
             <button
-              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData ? 'hidden' : ''}`}
+              className={`absolute bottom-2.5 right-2.5 z-10 rounded-full border-white/50 bg-secondary-400/50 px-7 py-4 font-semibold text-white backdrop-blur-[25px] md:bottom-7 md:right-9 ${initialFormData?.imagePath ? 'hidden' : ''}`}
               onClick={handleReplaceImage}
             >
               <Image
@@ -207,7 +210,7 @@ function ImageFormDisplay({
             </button>
           </div>
 
-          {!imageFile && (
+          {!imageUrl && (
             <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
               <p className="md:w-1/3">
                 <span className="font-bold">File Formats and Size:</span> Acceptable
@@ -227,7 +230,7 @@ function ImageFormDisplay({
         </div>
 
         <form onSubmit={handleSubmit} className="md:w-1/3">
-          <div className="flex flex-col gap-5 rounded-medium border p-5">
+          <div className="flex flex-col gap-5 rounded-medium border p-5 shadow-small">
             <TagInput
               label="Title"
               isTagInput={false}

@@ -36,8 +36,8 @@ interface ImageResponse {
 }
 
 export async function getUserImagesWithLikes(
-  userId: string,
   currentUserId: string,
+  userId: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> {
@@ -94,21 +94,22 @@ export async function getUserImagesWithLikes(
 }
 
 export const getImages = async (
-  userId: string,
   currentUserId: string,
+  userId: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> => {
-  const data = await getUserImagesWithLikes(userId, currentUserId, page, pageSize)
+  const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
   return data
 }
 
 export const loadNextPage = async (
   userId: string,
-  currentUserId: string,
   page: number
 ): Promise<ImageResponse> => {
-  return await getImages(userId, currentUserId, page)
+  const { id: currentUserId } = (await getUser()).user
+
+  return await getImages(currentUserId, userId, page)
 }
 
 interface LikeResponse {
@@ -116,16 +117,24 @@ interface LikeResponse {
   data: object | null
 }
 
+export async function checkIfLiked(imageId: number) {
+  const { id: userId } = (await getUser()).user
+
+  const { data: existingLike, error: fetchError } = await supabaseService
+    .from('likes')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('image_id', imageId)
+    .maybeSingle()
+
+  return { existingLike, fetchError }
+}
+
 export async function toggleLike(imageId: number): Promise<LikeResponse> {
   try {
     const { id: userId } = (await getUser()).user
 
-    const { data: existingLike, error: fetchError } = await supabaseService
-      .from('likes')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('image_id', imageId)
-      .maybeSingle()
+    const { existingLike, fetchError } = await checkIfLiked(imageId)
 
     if (fetchError) return { error: fetchError, data: null }
 
@@ -208,5 +217,40 @@ export async function deleteImage(imageId: number): Promise<DeleteResponse> {
       } as PostgrestError,
       data: null,
     }
+  }
+}
+
+export async function getRandomImagesExcluding(
+  userId: string,
+  excludeImageId: number,
+  numberOfImages: number = 3
+): Promise<Image[]> {
+  try {
+    const { data: images, error: fetchError } = await supabaseService
+      .from('images')
+      .select('*')
+      .eq('user_id', userId)
+
+    if (fetchError) throw fetchError
+
+    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+    const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
+    const randomImages = shuffledImages.slice(0, numberOfImages)
+
+    const imagesWithPaths = randomImages.map((image) => {
+      const imagePath = image.original_file_path
+        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+        : null
+
+      return {
+        ...image,
+        imagePath,
+      }
+    })
+
+    return imagesWithPaths
+  } catch (error) {
+    console.error('Error fetching random images:', (error as Error).message)
+    return []
   }
 }

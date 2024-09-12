@@ -35,11 +35,7 @@ function Gallery({ userId, followUserId, initialImages }) {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPage(
-      userId,
-      followUserId,
-      page
-    )
+    const { images: newImages, totalCount } = await loadNextPage(followUserId, page)
 
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))

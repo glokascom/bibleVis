@@ -1,24 +1,19 @@
-function SoftwareUsed() {
-  const software = [
-    'Adobe Lightroom',
-    'Adobe Photoshop',
-    'Figma',
-    'CorelDRAW',
-    'Adobe illustrator',
-    'Canva',
-  ]
+function SoftwareUsed({ software = [] }) {
+  if (software.length === 0) {
+    return <p>No software information available.</p>
+  }
 
   return (
     <div className="text-small">
       <p className="pb-5 font-bold">Software Used</p>
 
       <div className="flex flex-wrap gap-2.5">
-        {software.map((soft, index) => (
+        {software.map((soft) => (
           <div
-            key={index}
+            key={soft.id}
             className="flex cursor-default items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5"
           >
-            <span>{soft}</span>
+            <span>{soft.name}</span>
           </div>
         ))}
       </div>

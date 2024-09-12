@@ -24,7 +24,6 @@ export async function middleware(req) {
         throw Error('Middleware error: Unauthorized user')
       }
     } catch {
-      // Если пользователь не аутентифицирован, то редиректим на страницу логина
       const redirectUrl = req.nextUrl.clone()
       redirectUrl.pathname = '/login'
       redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)

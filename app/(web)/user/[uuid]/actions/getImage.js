@@ -4,7 +4,7 @@ export async function getImageInfoById(imageId) {
   try {
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
-      .select('*, users(username)')
+      .select('*, users(id,username,avatar_file_path,total_followers)')
       .eq('id', imageId)
       .single()
 
@@ -15,6 +15,15 @@ export async function getImageInfoById(imageId) {
     const imagePath = image.original_file_path
       ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
       : null
+
+    const avatarUrl = image.users?.avatar_file_path
+      ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+      : null
+
+    const updatedUsers = {
+      ...image.users,
+      avatarUrl,
+    }
 
     const { data: tagsData, error: tagsError } = await supabaseService
       .from('image_tags')
@@ -55,6 +64,7 @@ export async function getImageInfoById(imageId) {
         tags: tags,
         software: software,
         imagePath: imagePath,
+        users: updatedUsers,
       },
     }
   } catch (error) {

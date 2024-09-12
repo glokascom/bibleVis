@@ -8,38 +8,35 @@ const StatItem = ({ label, value }) => (
   </div>
 )
 
-function Description() {
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('en-US', options).format(date)
+}
+
+function Description({ imageInfo, isLike }) {
   const statistics = [
-    { label: 'Views', value: '220,155' },
-    { label: 'Downloads', value: '142,642' },
-    { label: 'Resolution', value: '6016 x 4016' },
-    { label: 'Published date', value: 'August 5, 2017' },
+    //TODO: добавить механизм подсчета просмотров и скачиваний
+    { label: 'Views', value: imageInfo.total_views },
+    { label: 'Downloads', value: imageInfo.total_downloads },
+    {
+      label: 'Resolution',
+      value: `${imageInfo.file_sizes.original.width}x${imageInfo.file_sizes.original.height}`,
+    },
+    { label: 'Published date', value: formatDate(imageInfo.uploaded_at) },
   ]
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <LikesCounter />
-
+      <LikesCounter imageInfo={imageInfo} isLike={isLike} />
       <div className="flex flex-col gap-5">
-        <p className="text-large font-bold">Jonah is in the city</p>
-
-        <p>
-          Lorem description ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim
-          gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus
-          id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum
-          nibh.
-        </p>
-
+        <p className="text-large font-bold">{imageInfo.title}</p>
+        <p>{imageInfo.description}</p>
         <div className="flex">
           <p className="mr-4 font-bold">Prompt</p>
-          <CopyButton textToCopy="Lorem prompt ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum nibh." />
+          <CopyButton textToCopy={imageInfo.prompt} />
         </div>
-        <p>
-          Lorem prompt ipsum dolor sit amet consectetur. Ipsum cras porttitor a enim
-          gravida adipiscing et. Et et ornare urna tellus sagittis. Non vestibulum lectus
-          id enim. Laoreet tincidunt nulla nunc tincidunt et consequat accumsan bibendum
-          nibh.
-        </p>
+        <p>{imageInfo.prompt}</p>
       </div>
 
       <div className="flex flex-col gap-3">
