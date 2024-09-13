@@ -97,7 +97,7 @@ function ImageUpload({
           />
         )}
         <label>
-          <BVButton as="span" disabled={isLoading}>
+          <BVButton as="span" isDisabled={isLoading}>
             {isLoading ? 'Loading...' : buttonLabel}
           </BVButton>
           <input
