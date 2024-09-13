@@ -14,9 +14,16 @@ import {
   DropdownTrigger,
 } from '@nextui-org/react'
 
-function Download() {
+function Download({ imageInfo }) {
   const [dropdownWidth, setDropdownWidth] = useState(0)
   const buttonGroupRef = useRef(null)
+
+  const downloadImage = (size) => {
+    const fileSize = imageInfo.file_sizes[size] || imageInfo.file_sizes.original
+    const widthParam = fileSize ? `&width=${fileSize.width}` : ''
+    const downloadUrl = `/api/download-image?src=${encodeURIComponent(imageInfo.original_file_path)}${widthParam}`
+    window.location.href = downloadUrl
+  }
 
   useEffect(() => {
     const updateWidth = () => {
@@ -30,12 +37,24 @@ function Download() {
     return () => window.removeEventListener('resize', updateWidth)
   }, [])
 
+  const renderDropdownItems = () => {
+    return Object.keys(imageInfo.file_sizes).map((sizeKey) => {
+      const size = imageInfo.file_sizes[sizeKey]
+      return (
+        <DropdownItem key={sizeKey}>
+          {sizeKey.charAt(0).toUpperCase() + sizeKey.slice(1)} {size.width} x{' '}
+          {size.height}
+        </DropdownItem>
+      )
+    })
+  }
+
   return (
     <div>
       <ButtonGroup radius="full" fullWidth ref={buttonGroupRef}>
         <Button
           className="h-14 w-4/5 justify-start bg-primary pl-12 text-medium font-semibold text-white"
-          onClick={() => alert('original')}
+          onClick={() => downloadImage('original')}
         >
           <Image src="/download.svg" alt="Download" width={24} height={24} priority />
           <p>Download</p>
@@ -56,7 +75,7 @@ function Download() {
             aria-label="download options"
             variant="light"
             color="primary"
-            onAction={(key) => alert(key)}
+            onAction={(key) => downloadImage(key)}
             style={{ width: `${dropdownWidth}px`, maxWidth: '100%' }}
             classNames={{ list: 'divide-y-1 divide-secondary-100', base: 'px-5 py-2.5' }}
             itemClasses={{
@@ -64,9 +83,7 @@ function Download() {
               base: 'px-0 py-2.5 rounded-none',
             }}
           >
-            <DropdownItem key="small">Small 720 x 480</DropdownItem>
-            <DropdownItem key="medium">Medium 1920 x 1080</DropdownItem>
-            <DropdownItem key="original">Original 7952 x 5304</DropdownItem>
+            {renderDropdownItems()}
           </DropdownMenu>
         </Dropdown>
       </ButtonGroup>
