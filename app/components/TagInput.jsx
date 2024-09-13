@@ -34,6 +34,10 @@ export default function TagInput({
     onTagsChange({ allTags, selectedTags })
   }, [allTags, onTagsChange, selectedTags])
 
+  useEffect(() => {
+    setSelectedTags([])
+  }, [isAIGeneration])
+
   const handleBlur = () => {
     if (allowAddOnEnter && isTagInput && inputValue.trim()) {
       addTagsFromInput(inputValue)
@@ -104,7 +108,7 @@ export default function TagInput({
     } else {
       setSuggestions([])
     }
-  }, [isAIGeneration, inputValue, selectedTags, filterTagsByType])
+  }, [isAIGeneration, inputValue, selectedTags, filterTagsByType, updateSuggestions])
 
   const addTagsFromInput = (input) => {
     const tagsToAdd = input
