@@ -105,6 +105,7 @@ function ImageUpload({
             onChange={handleFileChange}
             accept="image/*"
             className="hidden"
+            disabled={isLoading}
           />
         </label>
         {requiredWidth && requiredHeight && (
