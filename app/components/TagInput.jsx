@@ -18,6 +18,7 @@ export default function TagInput({
   limitLettersAllTags = 250,
   onTagsChange = () => {},
   onBlur = () => {},
+  isAIGeneration = false,
 }) {
   const [inputValue, setInputValue] = useState(isTagInput ? '' : initialValue)
   const [selectedTags, setSelectedTags] = useState(isTagInput ? initialValue : [])
@@ -61,11 +62,21 @@ export default function TagInput({
     updateSuggestions(value, selectedTags)
   }
 
+  const filterTagsByType = useCallback(() => {
+    if (label === 'Software Used') {
+      return allTags.filter((tag) =>
+        isAIGeneration ? tag.type === 'ai' : tag.type === 'manual'
+      )
+    }
+    return allTags
+  }, [label, isAIGeneration, allTags])
+
   const updateSuggestions = useCallback(
     (value, currentSelectedTags) => {
-      const filteredTags = allTags.filter(
+      const filteredTags = filterTagsByType().filter(
         (tag) => !currentSelectedTags.some((t) => t.id === tag.id)
       )
+
       if (value) {
         setSuggestions(
           filteredTags
@@ -84,8 +95,16 @@ export default function TagInput({
         )
       }
     },
-    [allTags, suggestionCount]
+    [filterTagsByType, suggestionCount]
   )
+
+  useEffect(() => {
+    if (inputValue.trim()) {
+      updateSuggestions(inputValue, selectedTags)
+    } else {
+      setSuggestions([])
+    }
+  }, [isAIGeneration, inputValue, selectedTags, filterTagsByType])
 
   const addTagsFromInput = (input) => {
     const tagsToAdd = input

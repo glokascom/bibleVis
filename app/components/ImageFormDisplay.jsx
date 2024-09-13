@@ -274,6 +274,7 @@ function ImageFormDisplay({
               initialTags={softwareOptions}
               allowAddOnEnter={false}
               initialValue={initialFormData?.software || []}
+              isAIGeneration={isAIGeneration}
             />
             <TagInput
               label="Image tags"
