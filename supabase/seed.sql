@@ -24,23 +24,44 @@ BEGIN
 END $$;
 
 
-INSERT INTO public.softwares (name) VALUES
-        ('Leonardo'),
-        ('Playground.ai'),
-        ('DALL-E 2 by OpenAI'),
-        ('MidJourney'),
-        ('Stable Diffusion'),
-        ('Artbreeder'),
-        ('Deep Dream Generator'),
-        ('Runway ML'),
-        ('NightCafe Studio'),
-        ('Craiyon'),
-        ('DeepArt'),
-        ('Lets Enhance'),
-        ('This Person Does Not Exist'),
-        ('Pix2Pix by TensorFlow'),
-        ('BigGAN by DeepMind'),
-        ('Artisto'),
-        ('Deep Dream by Google');
+INSERT INTO public.softwares (name, type) VALUES
+    ('Leonardo', 'ai'),
+    ('Playground.ai', 'ai'),
+    ('DALL-E 2 by OpenAI', 'ai'),
+    ('MidJourney', 'ai'),
+    ('Stable Diffusion', 'ai'),
+    ('Artbreeder', 'ai'),
+    ('Deep Dream Generator', 'ai'),
+    ('Runway ML', 'ai'),
+    ('NightCafe Studio', 'ai'),
+    ('Craiyon', 'ai'),
+    ('DeepArt', 'ai'),
+    ('Lets Enhance', 'ai'),
+    ('This Person Does Not Exist', 'ai'),
+    ('Pix2Pix by TensorFlow', 'ai'),
+    ('BigGAN by DeepMind', 'ai'),
+    ('Artisto', 'ai'),
+    ('Deep Dream by Google', 'ai');
+
+INSERT INTO public.softwares (name, type) VALUES
+    ('Adobe Illustrator', 'manual'),
+    ('CorelDRAW', 'manual'),
+    ('Affinity Designer', 'manual'),
+    ('Procreate (iPad)', 'manual'),
+    ('Clip Studio Paint', 'manual'),
+    ('Sketch', 'manual'),
+    ('Inkscape', 'manual'),
+    ('Krita', 'manual'),
+    ('Adobe Photoshop', 'manual'),
+    ('GIMP', 'manual'),
+    ('Figma', 'manual'),
+    ('Blender', 'manual'),
+    ('Medibang Paint', 'manual'),
+    ('ArtRage', 'manual'),
+    ('Canva', 'manual'),
+    ('Vectr', 'manual'),
+    ('Autodesk Sketchbook', 'manual'),
+    ('Sculptris', 'manual');
+
 
 SELECT update_username_with_email();
