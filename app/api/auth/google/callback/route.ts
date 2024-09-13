@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 
       await supabaseService.from('users').update({ username }).eq('id', data.user.id)
 
-      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
+      const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
       if (isLocalEnv) {
         return NextResponse.redirect(`${origin}${next}`)

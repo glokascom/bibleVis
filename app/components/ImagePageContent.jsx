@@ -36,7 +36,7 @@ function ImagePageContent({
           <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
             <div className="flex flex-col gap-5 rounded-medium">
               <div className="rounded-medium border bg-background p-5 shadow-small">
-                <Download />
+                <Download imageInfo={imageInfo} />
                 <Description imageInfo={imageInfo} isLike={isLike} />
                 <CreatorDetails
                   creator={imageInfo.users}
