@@ -34,6 +34,10 @@ export default function TagInput({
   }, [allTags, onTagsChange, selectedTags])
 
   const handleBlur = () => {
+    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
+      addTagsFromInput(inputValue)
+    }
+
     onBlur({
       value: isTagInput ? selectedTags : inputValue,
       allTags,
@@ -82,6 +86,23 @@ export default function TagInput({
     },
     [allTags, suggestionCount]
   )
+
+  const addTagsFromInput = (input) => {
+    const tagsToAdd = input
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+
+    setSelectedTags((prevSelectedTags) => {
+      const newTags = tagsToAdd
+        .filter((tag) => !prevSelectedTags.some((t) => t.name === tag))
+        .map((tag) => ({ id: generateId(), name: tag }))
+      const updatedTags = [...prevSelectedTags, ...newTags]
+      return updatedTags
+    })
+
+    setInputValue('')
+  }
 
   const addTag = (tag) => {
     const totalChars =
@@ -142,7 +163,7 @@ export default function TagInput({
 
     if (e.key === 'Enter' && inputValue.trim()) {
       if (allowAddOnEnter) {
-        addTag({ name: inputValue.trim() })
+        addTagsFromInput(inputValue)
       }
       e.preventDefault()
     } else if (e.key === 'Backspace' && inputValue === '') {
