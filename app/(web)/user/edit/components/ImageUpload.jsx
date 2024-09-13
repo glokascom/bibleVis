@@ -17,22 +17,26 @@ function ImageUpload({
   userInfo,
 }) {
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
     setError(null)
+    setIsLoading(true)
 
     const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png']
     if (!validImageTypes.includes(file.type)) {
       setError('Invalid file type. Please upload an image.')
+      setIsLoading(false)
       return
     }
 
     const maxFileSizeMB = 2
     if (file.size > maxFileSizeMB * 1024 * 1024) {
       setError(`Max file size is ${maxFileSizeMB}MB`)
+      setIsLoading(false)
       return
     }
 
@@ -48,6 +52,7 @@ function ImageUpload({
       ) {
         setError(`Image must be ${requiredWidth} x ${requiredHeight} pixels.`)
         URL.revokeObjectURL(objectUrl)
+        setIsLoading(false)
         return
       }
 
@@ -61,12 +66,15 @@ function ImageUpload({
         }
       } catch (err) {
         setError(err.message)
+      } finally {
+        setIsLoading(false)
         URL.revokeObjectURL(objectUrl)
       }
     }
 
     img.onerror = () => {
       setError('Failed to load image.')
+      setIsLoading(false)
       URL.revokeObjectURL(objectUrl)
     }
   }
@@ -89,7 +97,9 @@ function ImageUpload({
           />
         )}
         <label>
-          <BVButton as="span">{buttonLabel}</BVButton>
+          <BVButton as="span" disabled={isLoading}>
+            {isLoading ? 'Loading...' : buttonLabel}
+          </BVButton>
           <input
             type="file"
             onChange={handleFileChange}
