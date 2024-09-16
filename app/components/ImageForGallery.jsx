@@ -15,7 +15,7 @@ import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
-function ImageForGallery({ image }) {
+function ImageForGallery({ image, onDelete }) {
   const [optimisticState, toggleOptimisticState] = useOptimistic(
     image.liked_by_current_user,
     (prevLiked, newValue) => newValue
@@ -47,6 +47,7 @@ function ImageForGallery({ image }) {
       setTimeout(() => {
         setIsDeleteModalOpen(false)
         setIsDeleteSuccess(false)
+        onDelete(image.id)
       }, 2000)
     }
   }

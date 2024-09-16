@@ -14,11 +14,12 @@ function Gallery({ userId, followUserId, initialImages }) {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState(0)
+  const [totalImages, setTotalImages] = useState(initialImages.length)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
     setImages(initialImages)
+    setTotalImages(initialImages.length)
   }, [initialImages])
 
   useEffect(() => {
@@ -28,7 +29,6 @@ function Gallery({ userId, followUserId, initialImages }) {
     }
 
     initialize()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadMoreImages = async () => {
@@ -44,7 +44,6 @@ function Gallery({ userId, followUserId, initialImages }) {
     })
 
     setTotalImages(totalCount)
-
     setPage((prevPage) => prevPage + 1)
 
     if (newImages.length < 10) {
@@ -54,12 +53,26 @@ function Gallery({ userId, followUserId, initialImages }) {
     isLoadingRef.current = false
   }
 
+  const handleImageDelete = async (deletedImageId) => {
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((img) => img.id !== deletedImageId)
+      return updatedImages
+    })
+
+    setTotalImages((prevTotal) => prevTotal - 1)
+
+    setPage(1)
+    setHasMore(true)
+    setImages([])
+    await loadMoreImages()
+  }
+
   if (!mounted) return null
 
   return (
     <>
       <div className="mb-4 flex items-center">
-        <h3 className="mr-4 font-sans text-5xl text-secondary">Gallary</h3>
+        <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
         <span className="mt-6 font-sans text-base text-secondary">Images</span>
         <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
       </div>
@@ -74,7 +87,11 @@ function Gallery({ userId, followUserId, initialImages }) {
           <Masonry gutter="10px">
             {images.map((image) => (
               <div key={image.id}>
-                <ImageForGallery userId={userId} image={image} />
+                <ImageForGallery
+                  userId={userId}
+                  image={image}
+                  onDelete={handleImageDelete}
+                />
               </div>
             ))}
           </Masonry>
