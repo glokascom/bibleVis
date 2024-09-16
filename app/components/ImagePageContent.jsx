@@ -13,12 +13,15 @@ function ImagePageContent({
   isFollowed,
   isLike,
   isCurrentUser,
+  onPrevImage,
+  onNextImage,
+  isModal = false,
 }) {
   return (
     <>
-      <div className="px-5">
+      <div className={`${isModal ? 'h-[90vh] w-[90vw]' : 'px-5'}`}>
         <div className="flex flex-col md:flex-row md:items-start">
-          <div className="rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
+          <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
             {imageInfo.imagePath ? (
               <Image
                 src={imageInfo.imagePath}
@@ -30,6 +33,22 @@ function ImagePageContent({
               />
             ) : (
               <p className="text-center">Image not available</p>
+            )}
+            {isModal && (
+              <>
+                <button
+                  onClick={onPrevImage}
+                  className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-background"
+                >
+                  <Image src="/polygon.svg" alt="prew image" />
+                </button>
+                <button
+                  onClick={onNextImage}
+                  className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-background"
+                >
+                  <Image src="/polygon.svg" alt="next image" />
+                </button>
+              </>
             )}
           </div>
 
@@ -46,9 +65,11 @@ function ImagePageContent({
                 />
               </div>
 
-              <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
-                <SoftwareUsed software={imageInfo.software} />
-              </div>
+              {!isModal && (
+                <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
+                  <SoftwareUsed software={imageInfo.software} />
+                </div>
+              )}
 
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <TagList tags={imageInfo.tags} />

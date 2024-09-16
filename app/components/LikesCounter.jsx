@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 
@@ -15,6 +15,11 @@ function LikesCounter({ imageInfo, isLike }) {
     setIsLiked((prevIsLiked) => !prevIsLiked)
     setCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
   }, [isLiked])
+
+  useEffect(() => {
+    setIsLiked(isLike)
+    setCount(imageInfo.total_likes)
+  }, [isLike, imageInfo.total_likes])
 
   const handleLikeClick = async () => {
     if (isLoading) return

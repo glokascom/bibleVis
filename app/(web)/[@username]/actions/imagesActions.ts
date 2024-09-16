@@ -118,7 +118,12 @@ interface LikeResponse {
 }
 
 export async function checkIfLiked(imageId: number) {
-  const { id: userId } = (await getUser()).user
+  const userResponse = await getUser()
+  if (!userResponse || !userResponse.user) {
+    return { existingLike: null, fetchError: new Error('User not authenticated') }
+  }
+
+  const userId = userResponse.user.id
 
   const { data: existingLike, error: fetchError } = await supabaseService
     .from('likes')
@@ -252,5 +257,53 @@ export async function getRandomImagesExcluding(
   } catch (error) {
     console.error('Error fetching random images:', (error as Error).message)
     return []
+  }
+}
+
+export interface ExtendedImage extends Image {
+  fullInfo: {
+    imageInfo: Image
+    relatedImages: Image[]
+    isLike: boolean
+    isFollowed: boolean
+    isCurrentUser: boolean
+  }
+}
+
+interface ExtendedImageResponse {
+  images: ExtendedImage[]
+  totalCount: number
+}
+
+export const loadNextPageExtended = async (
+  userId: string,
+  page: number
+): Promise<ExtendedImageResponse> => {
+  const { id: currentUserId } = (await getUser()).user
+  const { images, totalCount } = await getImages(currentUserId, userId, page)
+
+  const extendedImages = await Promise.all(
+    images.map(async (image) => {
+      const [relatedImages, { existingLike }] = await Promise.all([
+        getRandomImagesExcluding(userId, image.id),
+        checkIfLiked(image.id),
+      ])
+
+      return {
+        ...image,
+        fullInfo: {
+          imageInfo: image,
+          relatedImages,
+          isLike: !!existingLike,
+          isFollowed: false,
+          isCurrentUser: currentUserId === image.user_id,
+        },
+      }
+    })
+  )
+
+  return {
+    images: extendedImages,
+    totalCount,
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useOptimistic, useState } from 'react'
+import { useOptimistic, useState, useTransition } from 'react'
 
 import {
   Dropdown,
@@ -14,26 +14,28 @@ import { updateGallery } from '../(web)/[@username]/actions/updateGallery'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
+import ImagePageContent from './ImagePageContent'
+import { Modal } from './Modal'
 
-function ImageForGallery({ image }) {
-  const [optimisticState, toggleOptimisticState] = useOptimistic(
-    image.liked_by_current_user,
-    (prevLiked, newValue) => newValue
-  )
+function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
+  const [isLiked, setIsLiked] = useOptimistic(fullInfo.isLike)
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
-
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
   const handleToggleLike = async () => {
-    toggleOptimisticState(!optimisticState)
-    const result = await updateGallery('toggleLike', image.id)
-    if (result.error) {
-      console.error('Error toggling like:', result.error)
-      toggleOptimisticState(optimisticState)
-    }
+    startTransition(async () => {
+      setIsLiked(!isLiked)
+      const result = await updateGallery('toggleLike', image.id)
+      if (result.error) {
+        console.error('Error toggling like:', result.error)
+        setIsLiked(isLiked)
+      }
+    })
   }
-
-  const is_current_user_image = image.isOwnedByCurrentUser
 
   const handleDeleteImage = async () => {
     const result = await updateGallery('deleteImage', image.id)
@@ -51,14 +53,18 @@ function ImageForGallery({ image }) {
     }
   }
 
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true)
-  }
-
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
     setDeleteError(null)
+  }
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))
+  }
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))
   }
 
   return (
@@ -67,9 +73,9 @@ function ImageForGallery({ image }) {
         image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
       } overflow-hidden`}
     >
-      <BVLink
-        className="absolute inset-0 h-full w-full group-hover:opacity-80"
-        href={`/image/${image.title}-${image.id}`}
+      <div
+        className="absolute inset-0 h-full w-full cursor-pointer group-hover:opacity-80"
+        onClick={() => setIsImageModalOpen(true)}
       >
         <Image
           src={image.imagePath}
@@ -77,7 +83,7 @@ function ImageForGallery({ image }) {
           removeWrapper={true}
           className="h-full w-full object-cover"
         />
-      </BVLink>
+      </div>
       <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="ml-12 group-hover:opacity-80">{image.title}</div>
         <BVLink className="flex items-center gap-2" href={`/@${image.users.username}`}>
@@ -88,15 +94,17 @@ function ImageForGallery({ image }) {
         </BVLink>
       </div>
       <div
-        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${optimisticState ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
         onClick={handleToggleLike}
       >
         <Image
-          src={optimisticState ? '/heart-filled.svg' : '/heart-empty.svg'}
+          src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
           alt="heart"
+          radius="none"
+          className={isPending ? 'opacity-50' : ''}
         />
       </div>
-      {is_current_user_image && (
+      {fullInfo.isCurrentUser && (
         <Dropdown
           className="bg-secondary-50"
           classNames={{
@@ -124,7 +132,7 @@ function ImageForGallery({ image }) {
             <DropdownItem key="edit">
               <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
             </DropdownItem>
-            <DropdownItem key="delete" onClick={openDeleteModal}>
+            <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
               Delete
             </DropdownItem>
           </DropdownMenu>
@@ -137,6 +145,27 @@ function ImageForGallery({ image }) {
         isDeleteSuccess={isDeleteSuccess}
         deleteError={deleteError}
       />
+
+      {isImageModalOpen && (
+        <Modal
+          showCloseButton={true}
+          closeModal={() => {
+            setIsImageModalOpen(false)
+            setCurrentImageIndex(currentIndex)
+          }}
+        >
+          <ImagePageContent
+            isModal={true}
+            imageInfo={allImages[currentImageIndex].fullInfo.imageInfo}
+            relatedImages={allImages[currentImageIndex].fullInfo.relatedImages}
+            isFollowed={allImages[currentImageIndex].fullInfo.isFollowed}
+            isLike={allImages[currentImageIndex].fullInfo.isLike}
+            isCurrentUser={allImages[currentImageIndex].fullInfo.isCurrentUser}
+            onPrevImage={handlePrevImage}
+            onNextImage={handleNextImage}
+          />
+        </Modal>
+      )}
     </div>
   )
 }
