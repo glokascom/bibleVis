@@ -9,18 +9,18 @@ import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPage } from '../actions/imagesActions'
 
-function Gallery({ userId, followUserId, initialImages }) {
+function Gallery({ userId, followUserId, initialImages, totalCount }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState(initialImages.length)
+  const [totalImages, setTotalImages] = useState(totalCount)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
     setImages(initialImages)
-    setTotalImages(initialImages.length)
-  }, [initialImages])
+    setTotalImages(totalCount)
+  }, [initialImages, totalCount])
 
   useEffect(() => {
     const initialize = async () => {
@@ -53,6 +53,13 @@ function Gallery({ userId, followUserId, initialImages }) {
     isLoadingRef.current = false
   }
 
+  const resetAndReloadImages = async () => {
+    setPage(1)
+    setHasMore(true)
+    setImages([])
+    await loadMoreImages()
+  }
+
   const handleImageDelete = async (deletedImageId) => {
     setImages((prevImages) => {
       const updatedImages = prevImages.filter((img) => img.id !== deletedImageId)
@@ -61,10 +68,7 @@ function Gallery({ userId, followUserId, initialImages }) {
 
     setTotalImages((prevTotal) => prevTotal - 1)
 
-    setPage(1)
-    setHasMore(true)
-    setImages([])
-    await loadMoreImages()
+    await resetAndReloadImages()
   }
 
   if (!mounted) return null

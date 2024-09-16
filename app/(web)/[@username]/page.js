@@ -24,7 +24,7 @@ export default async function UserDetail({ params }) {
 
   const isFollowed = userInfo ? await checkIfSubscribed(followUserInfo.id) : false
 
-  const { images: newImages } = await loadNextPage(followUserInfo.id)
+  const { images: newImages, totalCount } = await loadNextPage(followUserInfo.id)
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
       <div className="mb-12 mt-2.5 flex max-h-[400px] flex-col items-stretch gap-7 px-4 md:mt-9 md:flex-row md:gap-[10px] md:px-0">
@@ -44,6 +44,7 @@ export default async function UserDetail({ params }) {
         userId={userInfo.id}
         followUserId={followUserInfo.id}
         initialImages={newImages}
+        totalCount={totalCount}
       />
     </main>
   )

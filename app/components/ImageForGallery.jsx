@@ -1,6 +1,6 @@
 'use client'
 
-import { useOptimistic, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   Dropdown,
@@ -10,33 +10,45 @@ import {
 } from '@nextui-org/dropdown'
 import { Image } from '@nextui-org/image'
 
-import { updateGallery } from '../(web)/[@username]/actions/updateGallery'
+import {
+  deleteImage,
+  toggleLike as toggleLikeAction,
+} from '../(web)/[@username]/actions/imagesActions'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
 function ImageForGallery({ image, onDelete }) {
-  const [optimisticState, toggleOptimisticState] = useOptimistic(
-    image.liked_by_current_user,
-    (prevLiked, newValue) => newValue
-  )
+  const [isLiked, setIsLiked] = useState(!!image.liked_by_current_user)
+  const [isLoading, setIsLoading] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
 
-  const handleToggleLike = async () => {
-    toggleOptimisticState(!optimisticState)
-    const result = await updateGallery('toggleLike', image.id)
-    if (result.error) {
-      console.error('Error toggling like:', result.error)
-      toggleOptimisticState(optimisticState)
+  const handleToggleLike = useCallback(() => {
+    setIsLiked((prevIsLiked) => !prevIsLiked)
+    setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
+  }, [isLiked])
+
+  const handleLikeClick = async () => {
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      handleToggleLike()
+      const result = await toggleLikeAction(image.id)
+      if (result.error) {
+        handleToggleLike()
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error('Failed to toggle like state:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const is_current_user_image = image.isOwnedByCurrentUser
-
   const handleDeleteImage = async () => {
-    const result = await updateGallery('deleteImage', image.id)
+    const result = await deleteImage(image.id)
 
     if (result.error) {
       setDeleteError(result.error)
@@ -48,7 +60,7 @@ function ImageForGallery({ image, onDelete }) {
         setIsDeleteModalOpen(false)
         setIsDeleteSuccess(false)
         onDelete(image.id)
-      }, 2000)
+      }, 1000)
     }
   }
 
@@ -61,6 +73,8 @@ function ImageForGallery({ image, onDelete }) {
     setIsDeleteSuccess(false)
     setDeleteError(null)
   }
+
+  const is_current_user_image = image.isOwnedByCurrentUser
 
   return (
     <div
@@ -89,13 +103,11 @@ function ImageForGallery({ image, onDelete }) {
         </BVLink>
       </div>
       <div
-        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${optimisticState ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-        onClick={handleToggleLike}
+        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+        onClick={handleLikeClick}
+        disabled={isLoading}
       >
-        <Image
-          src={optimisticState ? '/heart-filled.svg' : '/heart-empty.svg'}
-          alt="heart"
-        />
+        <Image src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'} alt="heart" />
       </div>
       {is_current_user_image && (
         <Dropdown
