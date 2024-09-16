@@ -14,7 +14,7 @@ import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/components/ToastProvider'
 
-export default function UploadImage({ user, softwareOptions, tagsOptions }) {
+export default function UploadImage({ user, softwareOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
@@ -33,6 +33,24 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
     tags: [],
   })
   const [imageId, setImageId] = useState(null)
+  const [tagsOptions, setTagsOptions] = useState([])
+
+  useEffect(() => {
+    fetchTags()
+  }, [imageId])
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch('/api/tags')
+      if (!response.ok) {
+        throw new Error('Failed to fetch tags.')
+      }
+      const { tags } = await response.json()
+      setTagsOptions(tags)
+    } catch (error) {
+      setError(error.message)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -173,6 +191,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
               })
               setError(null)
               setIsSubmitted(false)
+              fetchTags()
             }}
             className="w-1/2"
           >

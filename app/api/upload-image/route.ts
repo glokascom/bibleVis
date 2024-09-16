@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import sharp from 'sharp'
@@ -287,6 +288,7 @@ export async function PUT(
         { status: 500 }
       )
     }
+    revalidatePath('/', 'layout')
 
     return NextResponse.json<ApiSuccess<{ imageId: string }>>({
       status: 'success',
