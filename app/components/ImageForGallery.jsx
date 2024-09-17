@@ -1,6 +1,8 @@
 'use client'
 
-import { useOptimistic, useState, useTransition } from 'react'
+import { useOptimistic, useRef, useState, useTransition } from 'react'
+
+import { usePathname } from 'next/navigation'
 
 import {
   Dropdown,
@@ -19,13 +21,16 @@ import { Modal } from './Modal'
 
 function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
   const [isLiked, setIsLiked] = useOptimistic(fullInfo.isLike)
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
+
+  const pathname = usePathname()
+  const originalPathname = useRef(pathname)
+
   const handleToggleLike = async () => {
     startTransition(async () => {
       setIsLiked(!isLiked)
@@ -60,11 +65,32 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
   }
 
   const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))
+    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
+    setCurrentImageIndex(newIndex)
+    updateUrl(allImages[newIndex].id)
   }
 
   const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))
+    const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
+    setCurrentImageIndex(newIndex)
+    updateUrl(allImages[newIndex].id)
+  }
+
+  const updateUrl = (imageId) => {
+    const newUrl = `/image/${imageId}`
+    window.history.pushState(null, '', newUrl)
+  }
+
+  const openImageModal = () => {
+    setIsImageModalOpen(true)
+    originalPathname.current = pathname
+    updateUrl(image.id)
+  }
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false)
+    setCurrentImageIndex(currentIndex)
+    window.history.pushState(null, '', originalPathname.current)
   }
 
   return (
@@ -75,7 +101,7 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
     >
       <div
         className="absolute inset-0 h-full w-full cursor-pointer group-hover:opacity-80"
-        onClick={() => setIsImageModalOpen(true)}
+        onClick={openImageModal}
       >
         <Image
           src={image.imagePath}
@@ -145,15 +171,8 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
         isDeleteSuccess={isDeleteSuccess}
         deleteError={deleteError}
       />
-
       {isImageModalOpen && (
-        <Modal
-          showCloseButton={true}
-          closeModal={() => {
-            setIsImageModalOpen(false)
-            setCurrentImageIndex(currentIndex)
-          }}
-        >
+        <Modal showCloseButton={true} closeModal={closeImageModal}>
           <ImagePageContent
             isModal={true}
             imageInfo={allImages[currentImageIndex].fullInfo.imageInfo}
