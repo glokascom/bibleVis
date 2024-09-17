@@ -24,12 +24,12 @@ function SaveConfirmationModal({
               >
                 Cancel
               </BVButton>
+
               <BVButton
                 type="submit"
                 onClick={handleFormSubmit}
                 className="w-1/2 bg-primary"
                 isLoading={isLoading}
-                isDisabled={isLoading}
               >
                 {isLoading ? 'Saving...' : 'Save'}
               </BVButton>
