@@ -2,12 +2,11 @@ name: CI-PR
 
 on:
   pull_request:
-     types:
+    types:
       - opened
       - reopened
       - synchronize
-      - closed
-     branches:
+    branches:
       - develop
   workflow_dispatch:
 
@@ -20,7 +19,7 @@ jobs:
       SUPABASE_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ secrets.STAGING_PROJECT_ID }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}  
-      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET  }}  
+      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +29,13 @@ jobs:
           version: latest
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: echo y | supabase db reset --linked
+
+      - run: |
+          if supabase db diff; then
+            echo "New migrations detected. Resetting the database..."
+            echo y | supabase db reset --linked
+          else
+            echo "No new migrations."
+          fi
+
+    
