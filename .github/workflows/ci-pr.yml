@@ -31,11 +31,10 @@ jobs:
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
 
       - run: |
-          if supabase db diff; then
+          echo "Checking for new migrations..."
+          if git diff --name-only HEAD^ HEAD | grep -q "supabase/migrations"; then
             echo "New migrations detected. Resetting the database..."
             echo y | supabase db reset --linked
           else
-            echo "No new migrations."
+            echo "No new migrations detected."
           fi
-
-    
