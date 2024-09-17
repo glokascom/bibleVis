@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { supabaseService } from '@/app/supabase/service'
 
 async function getAllTags() {
-  const { data: tags, error } = await supabaseService.from('tags').select('*')
+  const { data: tags, error } = await supabaseService.from('tags').select('id,name')
   if (error) {
     throw new Error('Failed to fetch current tags')
   }
