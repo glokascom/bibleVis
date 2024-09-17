@@ -27,7 +27,6 @@ function ImageForGallery({ image, onDelete }) {
 
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
-    setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
   }, [isLiked])
 
   const handleLikeClick = async () => {
