@@ -130,10 +130,18 @@ export default function TagInput({
 
     setSelectedTags((prevSelectedTags) => {
       const newTags = tagsToAdd
-        .filter((tag) => !prevSelectedTags.some((t) => t.name === tag))
-        .map((tag) => ({ id: generateId(), name: tag }))
-      const updatedTags = [...prevSelectedTags, ...newTags]
-      return updatedTags
+        .filter(
+          (tag) =>
+            !prevSelectedTags.some((t) => t.name.toLowerCase() === tag.toLowerCase())
+        )
+        .map((tag) => {
+          const existingTag = allTags.find(
+            (t) => t.name.toLowerCase() === tag.toLowerCase()
+          )
+          return existingTag ? existingTag : { id: generateId(), name: tag }
+        })
+
+      return [...prevSelectedTags, ...newTags]
     })
 
     setInputValue('')
@@ -150,11 +158,11 @@ export default function TagInput({
       return
     }
 
-    if (!tag.id) {
-      tag.id = generateId()
-    }
+    const existingTag = selectedTags.find(
+      (t) => t.name.toLowerCase() === tag.name.toLowerCase()
+    )
 
-    if (!selectedTags.some((t) => t.id === tag.id)) {
+    if (!existingTag) {
       const newSelectedTags = [...selectedTags, tag]
       setSelectedTags(newSelectedTags)
       setAllTags((prevTags) =>
