@@ -14,7 +14,9 @@ import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/components/ToastProvider'
 
-export default function UploadImage({ user, softwareOptions }) {
+import { updateLayot } from '../actions/getSoftwares'
+
+export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
   const [validImage, setValidImage] = useState(null)
@@ -33,25 +35,19 @@ export default function UploadImage({ user, softwareOptions }) {
     tags: [],
   })
   const [imageId, setImageId] = useState(null)
-  const [tagsOptions, setTagsOptions] = useState([])
 
   useEffect(() => {
-    fetchTags()
-  }, [imageId])
-
-  const fetchTags = async () => {
-    try {
-      const response = await fetch('/api/tags')
-      if (!response.ok) {
-        throw new Error('Failed to fetch tags.')
+    const updateTagsOnChange = async () => {
+      if (imageId) {
+        try {
+          await updateLayot()
+        } catch (error) {
+          console.error('Error updating tags:', error)
+        }
       }
-      const { tags } = await response.json()
-      setTagsOptions(tags)
-    } catch (error) {
-      setError(error.message)
     }
-  }
-
+    updateTagsOnChange()
+  }, [imageId])
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -191,7 +187,6 @@ export default function UploadImage({ user, softwareOptions }) {
               })
               setError(null)
               setIsSubmitted(false)
-              fetchTags()
             }}
             className="w-1/2"
           >
