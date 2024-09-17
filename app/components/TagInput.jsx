@@ -38,16 +38,24 @@ export default function TagInput({
     setSelectedTags([])
   }, [isAIGeneration])
 
-  const handleBlur = () => {
-    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
-      addTagsFromInput(inputValue)
-    }
-
+  useEffect(() => {
     onBlur({
       value: isTagInput ? selectedTags : inputValue,
       allTags,
       selectedTags,
     })
+  }, [selectedTags, isTagInput, inputValue, allTags, onBlur])
+
+  const handleBlur = () => {
+    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
+      addTagsFromInput(inputValue)
+    } else {
+      onBlur({
+        value: isTagInput ? selectedTags : inputValue,
+        allTags,
+        selectedTags,
+      })
+    }
   }
 
   const scrollToBottom = () => {
