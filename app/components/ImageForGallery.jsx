@@ -24,6 +24,7 @@ function ImageForGallery({ image, onDelete }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
@@ -90,58 +91,70 @@ function ImageForGallery({ image, onDelete }) {
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
+          onLoad={() => setIsImageLoaded(true)}
         />
       </BVLink>
-      <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="ml-12 group-hover:opacity-80">{image.title}</div>
-        <BVLink className="flex items-center gap-2" href={`/@${image.users.username}`}>
-          <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
-          <div className="text-large font-bold text-background">
-            @{image.users.username}
+
+      {isImageLoaded && (
+        <>
+          <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="ml-12 group-hover:opacity-80">{image.title}</div>
+            <BVLink
+              className="flex items-center gap-2"
+              href={`/@${image.users.username}`}
+            >
+              <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
+              <div className="text-large font-bold text-background">
+                @{image.users.username}
+              </div>
+            </BVLink>
           </div>
-        </BVLink>
-      </div>
-      <div
-        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-        onClick={handleLikeClick}
-        disabled={isLoading}
-      >
-        <Image src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'} alt="heart" />
-      </div>
-      {is_current_user_image && (
-        <Dropdown
-          className="bg-secondary-50"
-          classNames={{
-            content: 'py-1 px-2 shadow-none',
-          }}
-          placement="right-start"
-        >
-          <DropdownTrigger>
-            <div className="absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3">
-              <Image src="/pencil.svg" alt="edit" className="rounded-none" />
-            </div>
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-label="Image Actions"
-            closeOnSelect={false}
-            variant="light"
-            as={`div`}
-            color="primary"
-            classNames={{ list: 'divide-y-1 divide-secondary-100' }}
-            itemClasses={{
-              title: 'font-[600] text-medium',
-              base: 'py-2.5 rounded-none',
-            }}
+
+          <div
+            className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+            onClick={handleLikeClick}
+            disabled={isLoading}
           >
-            <DropdownItem key="edit">
-              <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
-            </DropdownItem>
-            <DropdownItem key="delete" onClick={openDeleteModal}>
-              Delete
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+            <Image src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'} alt="heart" />
+          </div>
+
+          {is_current_user_image && (
+            <Dropdown
+              className="bg-secondary-50"
+              classNames={{
+                content: 'py-1 px-2 shadow-none',
+              }}
+              placement="right-start"
+            >
+              <DropdownTrigger>
+                <div className="absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3">
+                  <Image src="/pencil.svg" alt="edit" className="rounded-none" />
+                </div>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Image Actions"
+                closeOnSelect={false}
+                variant="light"
+                as={`div`}
+                color="primary"
+                classNames={{ list: 'divide-y-1 divide-secondary-100' }}
+                itemClasses={{
+                  title: 'font-[600] text-medium',
+                  base: 'py-2.5 rounded-none',
+                }}
+              >
+                <DropdownItem key="edit">
+                  <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
+                </DropdownItem>
+                <DropdownItem key="delete" onClick={openDeleteModal}>
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )}
+        </>
       )}
+
       <DeleteConfirmationModal
         isDeleteModalOpen={isDeleteModalOpen}
         closeModal={closeDeleteModal}
