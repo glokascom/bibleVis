@@ -141,7 +141,7 @@ export async function toggleLike(imageId: number): Promise<LikeResponse> {
 
     const { existingLike, fetchError } = await checkIfLiked(imageId)
 
-    if (fetchError) return { error: fetchError, data: null }
+    if (fetchError) return { error: fetchError as PostgrestError, data: null }
 
     if (existingLike) {
       const { error: deleteError } = await supabaseService
@@ -163,7 +163,7 @@ export async function toggleLike(imageId: number): Promise<LikeResponse> {
     }
   } catch (error) {
     console.error('Error toggling like:', (error as Error).message)
-    return { error: error as PostgrestError, data: null }
+    return { error: null, data: null }
   }
 }
 
