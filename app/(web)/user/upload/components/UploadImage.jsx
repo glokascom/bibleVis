@@ -16,6 +16,7 @@ import { useToast } from '@/app/components/ToastProvider'
 
 import { updateLayot } from '../actions/getSoftwares'
 
+//test
 export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
