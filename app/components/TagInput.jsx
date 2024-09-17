@@ -58,12 +58,24 @@ export default function TagInput({
 
   const handleInputChange = (e) => {
     const value = e.target.value
-    if (!isTagInput && value.length <= limitLettersAllTags) {
-      setInputValue(value)
-    } else if (isTagInput) {
-      setInputValue(value)
+
+    if (value.endsWith(',')) {
+      const trimmedValue = value.slice(0, -1).trim()
+
+      if (trimmedValue) {
+        addTagsFromInput(trimmedValue)
+      }
+
+      setInputValue('')
+    } else {
+      if (!isTagInput && value.length <= limitLettersAllTags) {
+        setInputValue(value)
+      } else if (isTagInput) {
+        setInputValue(value)
+      }
+
+      updateSuggestions(value, selectedTags)
     }
-    updateSuggestions(value, selectedTags)
   }
 
   const filterTagsByType = useCallback(() => {
