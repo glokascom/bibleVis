@@ -32,9 +32,18 @@ jobs:
 
       - run: |
           echo "Checking for new migrations..."
-          if git diff --name-only HEAD^ HEAD | grep -q "supabase/migrations"; then
-            echo "New migrations detected. Resetting the database..."
-            echo y | supabase db reset --linked
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            if git diff --name-only HEAD^ HEAD | grep -q "supabase/migrations"; then
+              echo "New migrations detected. Resetting the database..."
+              echo y | supabase db reset --linked
+            else
+              echo "No new migrations detected."
+            fi
           else
-            echo "No new migrations detected."
+            if ls supabase/migrations/* >/dev/null 2>&1; then
+              echo "Migrations detected in initial commit. Resetting the database..."
+              echo y | supabase db reset --linked
+            else
+              echo "No migrations in initial commit."
+            fi
           fi
