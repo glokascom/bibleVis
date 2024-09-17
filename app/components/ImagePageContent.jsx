@@ -41,7 +41,7 @@ function ImagePageContent({
                 onClick={onPrevImage}
                 className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
               >
-                <Image src="/polygon.svg" alt="prew image" />
+                <Image src="/polygon.svg" alt="previous image" />
               </button>
               <button
                 onClick={onNextImage}
@@ -58,7 +58,7 @@ function ImagePageContent({
             onClick={onPrevImage}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
           >
-            <Image src="/polygon.svg" alt="prew image" />
+            <Image src="/polygon.svg" alt="previous image" />
           </button>
           <button
             onClick={onNextImage}
