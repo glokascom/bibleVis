@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
+import { useToast } from '@/app/components/ToastProvider'
 
 import { updateUsername } from '../actions/updateUsername'
 
@@ -11,6 +12,7 @@ function UsernameEdit({ userInfo }) {
   const [username, setUsername] = useState(userInfo.username)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { success, error: toastError } = useToast()
 
   const handleSave = async (e) => {
     e.preventDefault()
@@ -19,11 +21,16 @@ function UsernameEdit({ userInfo }) {
     try {
       const { error } = await updateUsername(username)
       if (error) {
-        throw new Error(error)
+        setError(error)
+        toastError(error)
+      } else {
+        success('Username updated successfully!')
       }
-      alert('Username updated successfully!')
-    } catch (err) {
-      setError(err.message || 'An error occurred while updating the username.')
+    } catch (error) {
+      const errorMessage = 'An unexpected error occurred. Please try again later.'
+      console.error('Error updating username:', error)
+      setError(errorMessage)
+      toastError(errorMessage)
     } finally {
       setLoading(false)
     }

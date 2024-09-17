@@ -21,7 +21,7 @@ async function processImage(src, width) {
   }
 
   const resizedBuffer = await sharp(Buffer.from(buffer))
-    .resize(width)
+    .resize({ width: Number(width) })
     .jpeg({ quality: 80 })
     .toBuffer()
 
@@ -31,13 +31,35 @@ async function processImage(src, width) {
 export async function POST(request) {
   try {
     const { src, width } = await request.json()
-
     const resizedBuffer = await processImage(src, width)
 
     return new Response(resizedBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
         'Content-Disposition': `inline; filename="${width ? `processed_${width}` : 'original'}.jpg"`,
+      },
+    })
+  } catch (error) {
+    console.error('Error processing image:', error.message)
+    return NextResponse.json(
+      { error: `Failed to process image: ${error.message}` },
+      { status: 500 }
+    )
+  }
+}
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const src = searchParams.get('src')
+  const width = searchParams.get('width')
+
+  try {
+    const resizedBuffer = await processImage(src, width)
+
+    return new Response(resizedBuffer, {
+      headers: {
+        'Content-Type': 'image/jpeg',
+        'Content-Disposition': `attachment; filename="${width ? `image_${width}` : 'image_original'}.jpg"`,
       },
     })
   } catch (error) {
