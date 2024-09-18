@@ -110,7 +110,6 @@ function Gallery({ userId, followUserId, initialImages }) {
                 <ImageForGallery
                   userId={userId}
                   image={image}
-                  fullInfo={image.fullInfo}
                   allImages={images}
                   currentIndex={index}
                   onDelete={handleImageDelete}

@@ -13,17 +13,18 @@ import {
 import { Image } from '@nextui-org/image'
 
 import {
+  checkIfLiked,
   deleteImage,
+  getLikeCountForImage,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
-import { updateLayot } from '../(web)/user/upload/actions/getSoftwares'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 import ImagePageContent from './ImagePageContent'
 import { Modal } from './Modal'
 
-function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex }) {
+function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
   const [isLiked, setIsLiked] = useState(!!image.liked_by_current_user)
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -38,7 +39,12 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
 
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
-  }, [])
+
+    const imageIndex = allImages.findIndex((img) => img.id === image.id)
+    if (imageIndex !== -1) {
+      allImages[imageIndex].fullInfo.isLike = !isLiked
+    }
+  }, [isLiked, allImages, image.id])
 
   const handleLikeClick = async () => {
     if (isLoading) return
@@ -50,7 +56,8 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
         handleToggleLike()
         throw new Error(result.error)
       }
-      await updateLayot()
+      const imageIndex = allImages.findIndex((img) => img.id === image.id)
+      allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
     } catch (error) {
       console.error('Failed to toggle like state:', error)
     } finally {
@@ -104,10 +111,17 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
     updateUrl(image.id)
   }
 
-  const closeImageModal = () => {
+  const closeImageModal = async () => {
     setIsImageModalOpen(false)
     setCurrentImageIndex(currentIndex)
     window.history.pushState(null, '', originalPathname.current)
+
+    const { existingLike } = await checkIfLiked(image.id)
+    setIsLiked(!!existingLike)
+
+    const imageIndex = allImages.findIndex((img) => img.id === image.id)
+    allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
+    allImages[currentImageIndex].fullInfo.isLike = !!existingLike
   }
 
   return (
@@ -143,7 +157,7 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
               </div>
             </BVLink>
           </div>
-          <div
+          <button
             className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
             onClick={handleLikeClick}
             disabled={isLoading}
@@ -153,8 +167,8 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
               alt="heart"
               radius="none"
             />
-          </div>
-          {fullInfo.isCurrentUser && (
+          </button>
+          {image.fullInfo.isCurrentUser && (
             <Dropdown
               className="bg-secondary-50"
               classNames={{
@@ -163,15 +177,15 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
               placement="right-start"
             >
               <DropdownTrigger>
-                <div className="absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3">
+                <button className="absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3">
                   <Image src="/pencil.svg" alt="edit" className="rounded-none" />
-                </div>
+                </button>
               </DropdownTrigger>
               <DropdownMenu
                 aria-label="Image Actions"
                 closeOnSelect={false}
                 variant="light"
-                as={`div`}
+                as="div"
                 color="primary"
                 classNames={{ list: 'divide-y-1 divide-secondary-100' }}
                 itemClasses={{
@@ -202,10 +216,11 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
         <Modal showCloseButton={true} closeModal={closeImageModal}>
           <ImagePageContent
             isModal={true}
-            imageInfo={allImages[currentImageIndex].fullInfo.imageInfo}
+            imageInfo={allImages[currentImageIndex]}
             relatedImages={allImages[currentImageIndex].fullInfo.relatedImages}
             isFollowed={allImages[currentImageIndex].fullInfo.isFollowed}
             isLike={allImages[currentImageIndex].fullInfo.isLike}
+            totalLikes={allImages[currentImageIndex].totalLikes}
             isCurrentUser={allImages[currentImageIndex].fullInfo.isCurrentUser}
             onPrevImage={handlePrevImage}
             onNextImage={handleNextImage}

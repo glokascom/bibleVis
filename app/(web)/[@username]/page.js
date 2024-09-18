@@ -40,9 +40,7 @@ export default async function UserDetail({ params }) {
       ])
 
       return {
-        ...image,
         fullInfo: {
-          imageInfo: image,
           relatedImages,
           isLike: !!existingLike,
           isFollowed,
