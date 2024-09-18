@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
 
@@ -18,6 +18,31 @@ function ImageUpload({
 }) {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [parentWidth, setParentWidth] = useState(0)
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setParentWidth(entry.contentRect.width)
+      }
+    })
+
+    resizeObserver.observe(containerRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
+  const getButtonText = () => {
+    console.log(parentWidth)
+    if (parentWidth < 200) return 'Upload'
+    if (parentWidth < 280) return 'Upload Image'
+    return buttonLabel
+  }
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
@@ -80,25 +105,30 @@ function ImageUpload({
   }
 
   return (
-    <div>
+    <div className="mx-auto w-full max-w-sm">
       <div className="mb-2.5 font-bold">{label}</div>
-      <div className="flex flex-col items-center gap-5 rounded-small bg-secondary-50 px-4 py-7">
+      <div
+        ref={containerRef}
+        className="flex flex-col items-center gap-5 rounded-small bg-secondary-50 px-4 py-7"
+      >
         {isAvatar ? (
           <BVAvatar size="xxl" src={userInfo.avatarUrl} />
         ) : (
-          <Image
-            src={userInfo.coverUrl}
-            alt="preview"
-            width={previewSize.width}
-            height={previewSize.height}
-            layout="responsive"
-            sizes="(max-width: 640px) 100vw, 50vw"
-            className="rounded-medium"
-          />
+          <div className="w-full max-w-xs">
+            <Image
+              src={userInfo.coverUrl}
+              alt="preview"
+              width={previewSize.width}
+              height={previewSize.height}
+              layout="responsive"
+              sizes="(max-width: 640px) 100vw, 50vw"
+              className="rounded-medium"
+            />
+          </div>
         )}
-        <label>
-          <BVButton as="span" isLoading={isLoading}>
-            {isLoading ? 'Loading...' : buttonLabel}
+        <label className="w-full max-w-xs">
+          <BVButton as="span" isLoading={isLoading} className="w-full justify-center">
+            {getButtonText()}
           </BVButton>
           <input
             type="file"
@@ -109,11 +139,11 @@ function ImageUpload({
           />
         </label>
         {requiredWidth && requiredHeight && (
-          <div className="text-small">
+          <div className="text-center text-small">
             {requiredWidth} x {requiredHeight} pixels
           </div>
         )}
-        {error && <div className="text-danger-500">{error}</div>}
+        {error && <div className="text-center text-danger-500">{error}</div>}
       </div>
     </div>
   )

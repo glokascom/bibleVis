@@ -77,6 +77,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               top: `${topOffset}rem`,
               left: '50%',
               transform: 'translateX(-50%)',
+              zIndex: 50,
             }}
           >
             <CustomToast

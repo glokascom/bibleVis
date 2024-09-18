@@ -16,6 +16,7 @@ const DeleteConfirmationModal = ({
     setIsLoading(true)
     await handleDelete()
     setIsLoading(false)
+    closeModal()
   }
 
   return (
@@ -40,9 +41,9 @@ const DeleteConfirmationModal = ({
                   <BVButton
                     onClick={handleDeleteClick}
                     className="w-1/2 bg-danger"
-                    disabled={isLoading}
+                    isLoading={isLoading}
                   >
-                    {isLoading ? 'Deleting...' : 'Delete'}{' '}
+                    Delete
                   </BVButton>
                 </div>
               </>
