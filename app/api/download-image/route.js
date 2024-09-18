@@ -48,12 +48,47 @@ export async function POST(request) {
   }
 }
 
+async function incrementDownloads(src) {
+  try {
+    const { data, error: fetchError } = await supabaseService
+      .from('images')
+      .select('total_downloads')
+      .eq('original_file_path', src)
+      .single()
+
+    if (fetchError || !data) {
+      throw new Error('Failed to fetch total downloads')
+    }
+
+    const currentDownloads = data.total_downloads
+
+    const { error: updateError } = await supabaseService
+      .from('images')
+      .update({ total_downloads: currentDownloads + 1 })
+      .eq('original_file_path', src)
+
+    if (updateError) {
+      throw new Error('Failed to update total downloads')
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error incrementing downloads:', error.message)
+    return false
+  }
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const src = searchParams.get('src')
   const width = searchParams.get('width')
 
   try {
+    const success = await incrementDownloads(src)
+    if (!success) {
+      throw new Error('Failed to increment downloads')
+    }
+
     const resizedBuffer = await processImage(src, width)
 
     return new Response(resizedBuffer, {
