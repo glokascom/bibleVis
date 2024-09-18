@@ -16,6 +16,7 @@ import {
   deleteImage,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
+import { updateLayot } from '../(web)/user/upload/actions/getSoftwares'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
@@ -30,7 +31,7 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
   const [deleteError, setDeleteError] = useState(null)
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
-  const [isImageLoaded, setIsImageLoaded] = useState(false) // состояние для отслеживания загрузки изображения
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const pathname = usePathname()
   const originalPathname = useRef(pathname)
@@ -45,11 +46,11 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
     try {
       handleToggleLike()
       const result = await toggleLikeAction(image.id)
-      console.log(result)
       if (result.error) {
-        handleToggleLike() // Отмена лайка в случае ошибки
+        handleToggleLike()
         throw new Error(result.error)
       }
+      await updateLayot()
     } catch (error) {
       console.error('Failed to toggle like state:', error)
     } finally {
@@ -124,11 +125,11 @@ function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex })
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
-          onLoad={() => setIsImageLoaded(true)} // устанавливаем флаг при загрузке изображения
+          onLoad={() => setIsImageLoaded(true)}
         />
       </div>
 
-      {isImageLoaded && ( // отображаем контент только после загрузки изображения
+      {isImageLoaded && (
         <>
           <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <div className="ml-12 group-hover:opacity-80">{image.title}</div>
