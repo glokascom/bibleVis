@@ -2,25 +2,38 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import dynamic from 'next/dynamic'
+
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 
 import ImageForGallery from '@/app/components/ImageForGallery'
 
-import { loadNextPage } from '../actions/imagesActions'
+import { loadNextPageExtended } from '../actions/imagesActions'
 
-function Gallery({ userId, followUserId, initialImages, totalCount }) {
+const ResponsiveMasonry = dynamic(
+  () => import('react-responsive-masonry').then((mod) => mod.ResponsiveMasonry),
+  {
+    ssr: false,
+  }
+)
+const Masonry = dynamic(
+  () => import('react-responsive-masonry').then((mod) => mod.default),
+  {
+    ssr: false,
+  }
+)
+
+function Gallery({ userId, followUserId, initialImages }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState(totalCount)
+  const [totalImages, setTotalImages] = useState()
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
     setImages(initialImages)
-    setTotalImages(totalCount)
-  }, [initialImages, totalCount])
+  }, [initialImages])
 
   useEffect(() => {
     const initialize = async () => {
@@ -35,7 +48,10 @@ function Gallery({ userId, followUserId, initialImages, totalCount }) {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPage(followUserId, page)
+    const { images: newImages, totalCount } = await loadNextPageExtended(
+      followUserId,
+      page
+    )
 
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
@@ -89,11 +105,14 @@ function Gallery({ userId, followUserId, initialImages, totalCount }) {
       >
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 640: 3, 1280: 4 }}>
           <Masonry gutter="10px">
-            {images.map((image) => (
+            {images.map((image, index) => (
               <div key={image.id}>
                 <ImageForGallery
                   userId={userId}
                   image={image}
+                  fullInfo={image.fullInfo}
+                  allImages={images}
+                  currentIndex={index}
                   onDelete={handleImageDelete}
                 />
               </div>

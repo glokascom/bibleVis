@@ -14,7 +14,7 @@ function RelatedImages({ relatedImages, username }) {
   return (
     <>
       <p className="font-bold">More by {username}</p>
-      <div className="mt-5 md:grid md:grid-cols-3 md:gap-2">
+      <div className="grid grid-cols-3 gap-2 md:mt-5">
         {relatedImages.map((image) => (
           <Image
             key={image.id}
@@ -22,7 +22,7 @@ function RelatedImages({ relatedImages, username }) {
             alt={image.title}
             isZoomed
             className="mt-5 cursor-pointer md:mt-0"
-            classNames={{ img: 'md:aspect-square w-full h-auto' }}
+            classNames={{ img: 'aspect-square w-full h-auto' }}
             onClick={() => handleImageClick(image.id)}
           />
         ))}

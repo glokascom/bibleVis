@@ -1,6 +1,8 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
+
+import { usePathname } from 'next/navigation'
 
 import {
   Dropdown,
@@ -17,18 +19,25 @@ import {
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
+import ImagePageContent from './ImagePageContent'
+import { Modal } from './Modal'
 
-function ImageForGallery({ image, onDelete }) {
+function ImageForGallery({ image, onDelete, fullInfo, allImages, currentIndex }) {
   const [isLiked, setIsLiked] = useState(!!image.liked_by_current_user)
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
+  const [isImageLoaded, setIsImageLoaded] = useState(false) // состояние для отслеживания загрузки изображения
+
+  const pathname = usePathname()
+  const originalPathname = useRef(pathname)
 
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)
-  }, [isLiked])
+  }, [])
 
   const handleLikeClick = async () => {
     if (isLoading) return
@@ -36,8 +45,9 @@ function ImageForGallery({ image, onDelete }) {
     try {
       handleToggleLike()
       const result = await toggleLikeAction(image.id)
+      console.log(result)
       if (result.error) {
-        handleToggleLike()
+        handleToggleLike() // Отмена лайка в случае ошибки
         throw new Error(result.error)
       }
     } catch (error) {
@@ -64,17 +74,40 @@ function ImageForGallery({ image, onDelete }) {
     }
   }
 
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true)
-  }
-
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
     setDeleteError(null)
   }
 
-  const is_current_user_image = image.isOwnedByCurrentUser
+  const handlePrevImage = () => {
+    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
+    setCurrentImageIndex(newIndex)
+    updateUrl(allImages[newIndex].id)
+  }
+
+  const handleNextImage = () => {
+    const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
+    setCurrentImageIndex(newIndex)
+    updateUrl(allImages[newIndex].id)
+  }
+
+  const updateUrl = (imageId) => {
+    const newUrl = `/image/${imageId}`
+    window.history.pushState(null, '', newUrl)
+  }
+
+  const openImageModal = () => {
+    setIsImageModalOpen(true)
+    originalPathname.current = pathname
+    updateUrl(image.id)
+  }
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false)
+    setCurrentImageIndex(currentIndex)
+    window.history.pushState(null, '', originalPathname.current)
+  }
 
   return (
     <div
@@ -82,20 +115,20 @@ function ImageForGallery({ image, onDelete }) {
         image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
       } overflow-hidden`}
     >
-      <BVLink
-        className="absolute inset-0 h-full w-full group-hover:opacity-80"
-        href={`/image/${image.title}-${image.id}`}
+      <div
+        className="absolute inset-0 h-full w-full cursor-pointer group-hover:opacity-80"
+        onClick={openImageModal}
       >
         <Image
           src={image.imagePath}
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
-          onLoad={() => setIsImageLoaded(true)}
+          onLoad={() => setIsImageLoaded(true)} // устанавливаем флаг при загрузке изображения
         />
-      </BVLink>
+      </div>
 
-      {isImageLoaded && (
+      {isImageLoaded && ( // отображаем контент только после загрузки изображения
         <>
           <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <div className="ml-12 group-hover:opacity-80">{image.title}</div>
@@ -109,16 +142,18 @@ function ImageForGallery({ image, onDelete }) {
               </div>
             </BVLink>
           </div>
-
           <div
             className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
             onClick={handleLikeClick}
             disabled={isLoading}
           >
-            <Image src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'} alt="heart" />
+            <Image
+              src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
+              alt="heart"
+              radius="none"
+            />
           </div>
-
-          {is_current_user_image && (
+          {fullInfo.isCurrentUser && (
             <Dropdown
               className="bg-secondary-50"
               classNames={{
@@ -146,7 +181,7 @@ function ImageForGallery({ image, onDelete }) {
                 <DropdownItem key="edit">
                   <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
                 </DropdownItem>
-                <DropdownItem key="delete" onClick={openDeleteModal}>
+                <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
                   Delete
                 </DropdownItem>
               </DropdownMenu>
@@ -162,6 +197,20 @@ function ImageForGallery({ image, onDelete }) {
         isDeleteSuccess={isDeleteSuccess}
         deleteError={deleteError}
       />
+      {isImageModalOpen && (
+        <Modal showCloseButton={true} closeModal={closeImageModal}>
+          <ImagePageContent
+            isModal={true}
+            imageInfo={allImages[currentImageIndex].fullInfo.imageInfo}
+            relatedImages={allImages[currentImageIndex].fullInfo.relatedImages}
+            isFollowed={allImages[currentImageIndex].fullInfo.isFollowed}
+            isLike={allImages[currentImageIndex].fullInfo.isLike}
+            isCurrentUser={allImages[currentImageIndex].fullInfo.isCurrentUser}
+            onPrevImage={handlePrevImage}
+            onNextImage={handleNextImage}
+          />
+        </Modal>
+      )}
     </div>
   )
 }

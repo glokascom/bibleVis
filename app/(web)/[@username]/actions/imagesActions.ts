@@ -118,7 +118,12 @@ interface LikeResponse {
 }
 
 export async function checkIfLiked(imageId: number) {
-  const { id: userId } = (await getUser()).user
+  const userResponse = await getUser()
+  if (!userResponse || !userResponse.user) {
+    return { existingLike: null, fetchError: new Error('User not authenticated') }
+  }
+
+  const userId = userResponse.user.id
 
   const { data: existingLike, error: fetchError } = await supabaseService
     .from('likes')
@@ -136,7 +141,7 @@ export async function toggleLike(imageId: number): Promise<LikeResponse> {
 
     const { existingLike, fetchError } = await checkIfLiked(imageId)
 
-    if (fetchError) return { error: fetchError, data: null }
+    if (fetchError) return { error: fetchError as PostgrestError, data: null }
 
     if (existingLike) {
       const { error: deleteError } = await supabaseService
@@ -158,7 +163,7 @@ export async function toggleLike(imageId: number): Promise<LikeResponse> {
     }
   } catch (error) {
     console.error('Error toggling like:', (error as Error).message)
-    return { error: error as PostgrestError, data: null }
+    return { error: null, data: null }
   }
 }
 
@@ -252,5 +257,59 @@ export async function getRandomImagesExcluding(
   } catch (error) {
     console.error('Error fetching random images:', (error as Error).message)
     return []
+  }
+}
+
+export interface ExtendedImage extends Image {
+  fullInfo: {
+    imageInfo: Image
+    relatedImages: Image[]
+    isLike: boolean
+    isFollowed: boolean
+    isCurrentUser: boolean
+  }
+}
+
+interface ExtendedImageResponse {
+  images: ExtendedImage[]
+  totalCount: number
+}
+
+export const loadNextPageExtended = async (
+  userId: string,
+  page: number
+): Promise<ExtendedImageResponse> => {
+  const currentUser = await getUser()
+
+  if (!currentUser || !currentUser.user) {
+    throw new Error('Пользователь не найден или не авторизован.')
+  }
+
+  const { id: currentUserId } = currentUser.user
+  const { images, totalCount } = await getImages(currentUserId, userId, page)
+
+  const extendedImages = await Promise.all(
+    images.map(async (image) => {
+      const [relatedImages, { existingLike }] = await Promise.all([
+        getRandomImagesExcluding(userId, image.id),
+        checkIfLiked(image.id),
+      ])
+
+      return {
+        ...image,
+        fullInfo: {
+          imageInfo: image,
+          relatedImages,
+          isLike: !!existingLike,
+          isFollowed: false,
+          isCurrentUser: currentUserId === image.user_id,
+        },
+      }
+    })
+  )
+
+  return {
+    images: extendedImages,
+    totalCount,
   }
 }
