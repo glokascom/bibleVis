@@ -12,9 +12,16 @@ import { Tab, Tabs } from '@nextui-org/tabs'
 import { ApiResponse, errorField } from '@/app/types/api'
 
 import { login, signup } from '../actions/actionsSupabase'
+import { useAuth } from './AuthContext'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+
+type User = {
+  id: string
+  email: string
+  name: string
+}
 
 function AuthForm() {
   const [isSignupVisible, setIsSignupVisible] = useState(false)
@@ -36,7 +43,7 @@ function AuthForm() {
   })
   const [emailLogin, setEmailLogin] = useState('')
   const [passwordLogin, setPasswordLogin] = useState('')
-
+  const { setUser } = useAuth()
   const [emailSignup, setEmailSignup] = useState('')
   const [passwordSignup, setPasswordSignup] = useState('')
   const [usernameSignup, setUsernameSignup] = useState('')
@@ -134,6 +141,7 @@ function AuthForm() {
         push('/')
       }
     } catch (error) {
+      console.error(error)
       setSignupErrors({ message: 'Something went wrong. Please try again.', fields: [] })
     } finally {
       setLoading(false)
@@ -165,9 +173,12 @@ function AuthForm() {
       if (response.status === 'error') {
         setLoginErrors({ message: response.message, fields: response?.errors || [] })
       } else {
+        const user = response.data as User
+        setUser(user)
         push('/')
       }
     } catch (error) {
+      console.error(error)
       setLoginErrors({ message: 'Something went wrong. Please try again.', fields: [] })
     } finally {
       setLoading(false)

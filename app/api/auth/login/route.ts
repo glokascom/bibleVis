@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { getUser } from '@/app/actions/getUser'
 import { createClient } from '@/app/supabase/server'
 import { ApiError, ApiResponse } from '@/app/types/api'
 
 import { jsonResponse } from '../../response'
+
+type SuccessResponse = {
+  message: string
+  user: object
+}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const { email, password } = await request.json()
@@ -39,9 +45,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return jsonResponse(errorResponse, 401)
   }
 
-  const successResponse: ApiResponse<{ message: string }> = {
+  const { user } = await getUser()
+
+  const successResponse: ApiResponse<SuccessResponse> = {
     status: 'success',
-    data: { message: 'Login successful' },
+    data: { message: 'Login successful', user },
   }
   return jsonResponse(successResponse, 200)
 }
