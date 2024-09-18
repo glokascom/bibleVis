@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Button } from '@nextui-org/button'
+import { Button, ButtonProps } from '@nextui-org/button'
 import { extendVariants } from '@nextui-org/system'
+import { VariantProps } from '@nextui-org/theme'
 
 const CustomSpinner = () => (
   <svg
@@ -93,22 +94,60 @@ const ExtendedButton = extendVariants(Button, {
   ],
 })
 
-const BVButton = React.forwardRef((props, ref) => {
-  const { children, isLoading, startIcon, endIcon, ...otherProps } = props
+type PolymorphicRef<C extends React.ElementType> = React.ComponentPropsWithRef<C>['ref']
 
-  return (
-    <ExtendedButton
-      ref={ref}
-      startContent={startIcon}
-      endContent={endIcon}
-      spinner={<CustomSpinner />}
-      isLoading={isLoading}
-      {...otherProps}
-    >
-      {children}
-    </ExtendedButton>
-  )
-})
+type AsProp<C extends React.ElementType> = {
+  as?: C
+}
+
+type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P)
+
+type PolymorphicComponentProp<
+  C extends React.ElementType,
+  Props = object,
+> = React.PropsWithChildren<Props & AsProp<C>> &
+  Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>
+
+type PolymorphicComponentPropWithRef<
+  C extends React.ElementType,
+  Props = object,
+> = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> }
+
+type BVButtonProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
+  C,
+  ButtonProps &
+    VariantProps<typeof ExtendedButton> & {
+      startIcon?: React.ReactNode
+      endIcon?: React.ReactNode
+    }
+>
+
+interface BVButtonComponent
+  extends React.ForwardRefExoticComponent<BVButtonProps<React.ElementType>> {
+  displayName?: string
+}
+
+const BVButton = React.forwardRef(
+  <C extends React.ElementType = 'button'>(
+    { as, children, isLoading, startIcon, endIcon, ...otherProps }: BVButtonProps<C>,
+    ref?: PolymorphicRef<C>
+  ) => {
+    const Component = as || 'button'
+    return (
+      <ExtendedButton
+        as={Component}
+        ref={ref}
+        startContent={startIcon}
+        endContent={endIcon}
+        spinner={<CustomSpinner />}
+        isLoading={isLoading}
+        {...otherProps}
+      >
+        {children}
+      </ExtendedButton>
+    )
+  }
+) as BVButtonComponent
 
 BVButton.displayName = 'BVButton'
 

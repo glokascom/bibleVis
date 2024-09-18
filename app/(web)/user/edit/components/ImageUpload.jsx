@@ -38,7 +38,6 @@ function ImageUpload({
   }, [])
 
   const getButtonText = () => {
-    console.log(parentWidth)
     if (parentWidth < 200) return 'Upload'
     if (parentWidth < 280) return 'Upload Image'
     return buttonLabel

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 import { BVAvatar } from '@/app/components/BVAvatar'
-import { BVButton } from '@/app/components/BVButton'
+import BVButton from '@/app/components/BVButton'
 import { UserInfoProps } from '@/app/types/subscription'
 
 import { toggleSubscription } from '../actions/userActions'
