@@ -38,16 +38,24 @@ export default function TagInput({
     setSelectedTags([])
   }, [isAIGeneration])
 
-  const handleBlur = () => {
-    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
-      addTagsFromInput(inputValue)
-    }
-
+  useEffect(() => {
     onBlur({
       value: isTagInput ? selectedTags : inputValue,
       allTags,
       selectedTags,
     })
+  }, [selectedTags, isTagInput, inputValue, allTags, onBlur])
+
+  const handleBlur = () => {
+    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
+      addTagsFromInput(inputValue)
+    } else {
+      onBlur({
+        value: isTagInput ? selectedTags : inputValue,
+        allTags,
+        selectedTags,
+      })
+    }
   }
 
   const scrollToBottom = () => {
@@ -58,12 +66,24 @@ export default function TagInput({
 
   const handleInputChange = (e) => {
     const value = e.target.value
-    if (!isTagInput && value.length <= limitLettersAllTags) {
-      setInputValue(value)
-    } else if (isTagInput) {
-      setInputValue(value)
+
+    if (value.endsWith(',')) {
+      const trimmedValue = value.slice(0, -1).trim()
+
+      if (trimmedValue) {
+        addTagsFromInput(trimmedValue)
+      }
+
+      setInputValue('')
+    } else {
+      if (!isTagInput && value.length <= limitLettersAllTags) {
+        setInputValue(value)
+      } else if (isTagInput) {
+        setInputValue(value)
+      }
+
+      updateSuggestions(value, selectedTags)
     }
-    updateSuggestions(value, selectedTags)
   }
 
   const filterTagsByType = useCallback(() => {
@@ -118,10 +138,18 @@ export default function TagInput({
 
     setSelectedTags((prevSelectedTags) => {
       const newTags = tagsToAdd
-        .filter((tag) => !prevSelectedTags.some((t) => t.name === tag))
-        .map((tag) => ({ id: generateId(), name: tag }))
-      const updatedTags = [...prevSelectedTags, ...newTags]
-      return updatedTags
+        .filter(
+          (tag) =>
+            !prevSelectedTags.some((t) => t.name.toLowerCase() === tag.toLowerCase())
+        )
+        .map((tag) => {
+          const existingTag = allTags.find(
+            (t) => t.name.toLowerCase() === tag.toLowerCase()
+          )
+          return existingTag ? existingTag : { id: generateId(), name: tag }
+        })
+
+      return [...prevSelectedTags, ...newTags]
     })
 
     setInputValue('')
@@ -138,11 +166,11 @@ export default function TagInput({
       return
     }
 
-    if (!tag.id) {
-      tag.id = generateId()
-    }
+    const existingTag = selectedTags.find(
+      (t) => t.name.toLowerCase() === tag.name.toLowerCase()
+    )
 
-    if (!selectedTags.some((t) => t.id === tag.id)) {
+    if (!existingTag) {
       const newSelectedTags = [...selectedTags, tag]
       setSelectedTags(newSelectedTags)
       setAllTags((prevTags) =>

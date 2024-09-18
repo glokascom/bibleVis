@@ -121,7 +121,6 @@ export async function addImageTag(imageId, tagId) {
 
 export async function tagImage(imageId, tagName) {
   const tagId = await addTagIfNotExists(tagName)
-
   if (!tagId) {
     console.error('Couldnt get or create a tag.')
     return null

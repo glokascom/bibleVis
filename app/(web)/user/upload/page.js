@@ -6,6 +6,7 @@ import UploadImage from './components/UploadImage'
 export default async function EditUser() {
   const softwareOptions = (await getDataFromTable('softwares')).data
   const tagsOptions = (await getDataFromTable('tags')).data
+
   const user = (await getUser()).user
   return (
     <>

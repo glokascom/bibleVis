@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -23,12 +23,26 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ followUserId, initialImages }) {
+function Gallery({ userId, followUserId, initialImages }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
-  const [totalImages, setTotalImages] = useState(initialImages.length)
+  const [mounted, setMounted] = useState(false)
+  const [totalImages, setTotalImages] = useState()
   const isLoadingRef = useRef(false)
+
+  useEffect(() => {
+    setImages(initialImages)
+  }, [initialImages])
+
+  useEffect(() => {
+    const initialize = async () => {
+      await loadMoreImages()
+      setMounted(true)
+    }
+
+    initialize()
+  }, [])
 
   const loadMoreImages = async () => {
     if (isLoadingRef.current || !hasMore) return
@@ -55,6 +69,26 @@ function Gallery({ followUserId, initialImages }) {
     isLoadingRef.current = false
   }
 
+  const resetAndReloadImages = async () => {
+    setPage(1)
+    setHasMore(true)
+    setImages([])
+    await loadMoreImages()
+  }
+
+  const handleImageDelete = async (deletedImageId) => {
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((img) => img.id !== deletedImageId)
+      return updatedImages
+    })
+
+    setTotalImages((prevTotal) => prevTotal - 1)
+
+    await resetAndReloadImages()
+  }
+
+  if (!mounted) return null
+
   return (
     <>
       <div className="mb-4 flex items-center">
@@ -74,10 +108,11 @@ function Gallery({ followUserId, initialImages }) {
             {images.map((image, index) => (
               <div key={image.id}>
                 <ImageForGallery
+                  userId={userId}
                   image={image}
-                  fullInfo={image.fullInfo}
                   allImages={images}
                   currentIndex={index}
+                  onDelete={handleImageDelete}
                 />
               </div>
             ))}

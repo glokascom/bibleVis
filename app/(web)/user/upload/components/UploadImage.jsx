@@ -14,6 +14,8 @@ import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/components/ToastProvider'
 
+import { updateLayot } from '../actions/getSoftwares'
+
 export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
@@ -34,6 +36,18 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   })
   const [imageId, setImageId] = useState(null)
 
+  useEffect(() => {
+    const updateTagsOnChange = async () => {
+      if (imageId) {
+        try {
+          await updateLayot()
+        } catch (error) {
+          console.error('Error updating tags:', error)
+        }
+      }
+    }
+    updateTagsOnChange()
+  }, [imageId])
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -146,7 +160,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           </Link>
         </div>
 
-        <BVAvatar size="md" />
+        <BVAvatar size="md" src={user.avatarUrl} />
 
         <p className="pb-7 pt-5 text-large font-semibold md:pb-12 md:pt-6">
           {`Great, ${user.username || 'User'}! Your image has been uploaded successfully`}
