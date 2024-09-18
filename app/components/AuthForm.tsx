@@ -418,7 +418,7 @@ function AuthForm() {
                   <p className="my-4 text-small text-danger">{loginErrors.message}</p>
                 )}
                 <BVButton fullWidth onClick={handleLogin}>
-                  Join
+                  Log in
                 </BVButton>
                 <BVLink
                   as={Link}
