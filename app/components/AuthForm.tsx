@@ -42,7 +42,7 @@ function AuthForm() {
   const [passwordSignup, setPasswordSignup] = useState('')
   const [usernameSignup, setUsernameSignup] = useState('')
 
-  const { push } = useRouter()
+  const { push, refresh } = useRouter()
 
   const toggleSignupVisibility = () => {
     setIsSignupVisible((prev) => !prev)
@@ -132,6 +132,7 @@ function AuthForm() {
       })
     } else {
       push(searchParams.get('redirectedFrom') ?? '/')
+      refresh()
     }
   }
 
@@ -161,6 +162,7 @@ function AuthForm() {
       })
     } else {
       push(searchParams.get('redirectedFrom') ?? '/')
+      refresh()
     }
   }
   return (
