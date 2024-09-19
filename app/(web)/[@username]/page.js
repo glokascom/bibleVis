@@ -40,9 +40,7 @@ export default async function UserDetail({ params }) {
       ])
 
       return {
-        ...image,
         fullInfo: {
-          imageInfo: image,
           relatedImages,
           isLike: !!existingLike,
           isFollowed,
@@ -67,11 +65,7 @@ export default async function UserDetail({ params }) {
           />
         </div>
       </div>
-      <Gallery
-        userId={userInfo.id}
-        followUserId={followUserInfo.id}
-        initialImages={extendedImages}
-      />
+      <Gallery followUserId={followUserInfo.id} initialImages={extendedImages} />
     </main>
   )
 }
