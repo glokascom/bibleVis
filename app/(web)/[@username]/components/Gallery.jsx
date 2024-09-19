@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import ImageForGallery from '@/app/components/ImageForGallery'
 
-import { loadNextPageExtended } from '../actions/imagesActions'
+import { loadNextPage } from '../actions/imagesActions'
 
 const ResponsiveMasonry = dynamic(
   () => import('react-responsive-masonry').then((mod) => mod.ResponsiveMasonry),
@@ -23,36 +23,23 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ followUserId, initialImages }) {
-  const [images, setImages] = useState(initialImages)
+function Gallery({ profileUserId }) {
+  const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
-  const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState()
+  const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
-    setImages(initialImages)
-  }, [initialImages])
-
-  useEffect(() => {
-    const initialize = async () => {
-      await loadMoreImages()
-      setMounted(true)
-    }
-
-    initialize()
+    loadMoreImages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const loadMoreImages = async () => {
+  const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPageExtended(
-      followUserId,
-      page
-    )
-
+    const { images: newImages, totalCount } = await loadNextPage(profileUserId, page)
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
@@ -67,27 +54,7 @@ function Gallery({ followUserId, initialImages }) {
     }
 
     isLoadingRef.current = false
-  }
-
-  const resetAndReloadImages = async () => {
-    setPage(1)
-    setHasMore(true)
-    setImages([])
-    await loadMoreImages()
-  }
-
-  const handleImageDelete = async (deletedImageId) => {
-    setImages((prevImages) => {
-      const updatedImages = prevImages.filter((img) => img.id !== deletedImageId)
-      return updatedImages
-    })
-
-    setTotalImages((prevTotal) => prevTotal - 1)
-
-    await resetAndReloadImages()
-  }
-
-  if (!mounted) return null
+  }, [profileUserId, page, hasMore])
 
   return (
     <>
@@ -109,9 +76,9 @@ function Gallery({ followUserId, initialImages }) {
               <div key={image.id}>
                 <ImageForGallery
                   image={image}
+                  fullInfo={image.fullInfo}
                   allImages={images}
                   currentIndex={index}
-                  onDelete={handleImageDelete}
                 />
               </div>
             ))}
