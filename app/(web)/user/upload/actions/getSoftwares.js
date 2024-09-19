@@ -2,11 +2,13 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/server'
 
 export async function getDataFromTable(tableName) {
   try {
-    const { data, error } = await supabaseService
+    const supabase = createClient()
+
+    const { data, error } = await supabase
       .from(tableName)
       .select('*')
       .order('name', { ascending: true })
@@ -21,7 +23,7 @@ export async function getDataFromTable(tableName) {
   }
 }
 
-export async function updateLayot() {
+export async function updateLayout() {
   try {
     revalidatePath('/', 'layout')
     return { error: null }
