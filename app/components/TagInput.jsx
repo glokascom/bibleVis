@@ -70,21 +70,14 @@ export default function TagInput({
 
     if (value.endsWith(',')) {
       const trimmedValue = value.slice(0, -1).trim()
-
-      if (trimmedValue) {
-        addTagsFromInput(trimmedValue)
-      }
-
+      if (trimmedValue) addTagsFromInput(trimmedValue)
       setInputValue('')
-    } else {
-      if (!isTagInput && value.length <= limitLettersAllTags) {
-        setInputValue(value)
-      } else if (isTagInput) {
-        setInputValue(value)
-      }
-
-      updateSuggestions(value, selectedTags)
+      return
     }
+    if (isTagInput || value.length <= limitLettersAllTags) {
+      setInputValue(value)
+    }
+    updateSuggestions(value, selectedTags)
   }
 
   const filterTagsByType = useCallback(() => {

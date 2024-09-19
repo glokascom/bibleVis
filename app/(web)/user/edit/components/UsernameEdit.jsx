@@ -10,18 +10,15 @@ import { updateUsername } from '../actions/updateUsername'
 
 function UsernameEdit({ userInfo }) {
   const [username, setUsername] = useState(userInfo.username)
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { success, error: toastError } = useToast()
 
   const handleSave = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError('')
     try {
       const { error } = await updateUsername(username)
       if (error) {
-        setError(error)
         toastError(error)
       } else {
         success('Username updated successfully!')
@@ -29,7 +26,6 @@ function UsernameEdit({ userInfo }) {
     } catch (error) {
       const errorMessage = 'An unexpected error occurred. Please try again later.'
       console.error('Error updating username:', error)
-      setError(errorMessage)
       toastError(errorMessage)
     } finally {
       setLoading(false)
@@ -46,7 +42,6 @@ function UsernameEdit({ userInfo }) {
           variant="bordered"
           size="sm"
           isRequired
-          errorMessage={error}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
