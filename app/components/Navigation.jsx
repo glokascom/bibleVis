@@ -191,7 +191,11 @@ function Navigation({ user }) {
           ) : (
             <>
               <NavbarItem>
-                <BVButton as={Link} href="/login" className="hidden md:block">
+                <BVButton
+                  as={Link}
+                  href={`/login?redirectedFrom=${pathname}`}
+                  className="hidden md:block"
+                >
                   Log in
                 </BVButton>
               </NavbarItem>
@@ -251,7 +255,7 @@ function Navigation({ user }) {
                       License
                     </DropdownItem>
                     <DropdownItem key="login" className="text-primary">
-                      <Link href="/login">Log in</Link>
+                      <Link href={`/login?redirectedFrom=${pathname}`}>Log in</Link>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

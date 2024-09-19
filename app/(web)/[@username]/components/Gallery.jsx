@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import ImageForGallery from '@/app/components/ImageForGallery'
 
-import { loadNextPageExtended } from '../actions/imagesActions'
+import { loadNextPage } from '../actions/imagesActions'
 
 const ResponsiveMasonry = dynamic(
   () => import('react-responsive-masonry').then((mod) => mod.ResponsiveMasonry),
@@ -23,22 +23,23 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ followUserId, initialImages }) {
-  const [images, setImages] = useState(initialImages)
+function Gallery({ profileUserId }) {
+  const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
-  const [totalImages, setTotalImages] = useState(initialImages.length)
+  const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
 
-  const loadMoreImages = async () => {
+  useEffect(() => {
+    loadMoreImages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPageExtended(
-      followUserId,
-      page
-    )
-
+    const { images: newImages, totalCount } = await loadNextPage(profileUserId, page)
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
@@ -53,7 +54,7 @@ function Gallery({ followUserId, initialImages }) {
     }
 
     isLoadingRef.current = false
-  }
+  }, [profileUserId, page, hasMore])
 
   return (
     <>

@@ -36,10 +36,10 @@ interface ImageResponse {
 }
 
 export async function getUserImagesWithLikes(
-  currentUserId: string,
   userId: string,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
+  currentUserId: string | null = null
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
@@ -61,15 +61,16 @@ export async function getUserImagesWithLikes(
 
     if (error) throw error
     if (!images || images.length === 0) return { images: [], totalCount: totalCount || 0 }
+    let likedImages = new Set()
+    if (currentUserId) {
+      const { data: likes, error: likesError } = await supabaseService
+        .from('likes')
+        .select('image_id')
+        .eq('user_id', currentUserId)
 
-    const { data: likes, error: likesError } = await supabaseService
-      .from('likes')
-      .select('image_id')
-      .eq('user_id', currentUserId)
-
-    if (likesError) throw likesError
-
-    const likedImages = new Set(likes?.map((like) => like.image_id))
+      if (likesError) throw likesError
+      likedImages = new Set(likes?.map((like) => like.image_id))
+    }
 
     const imagesWithLikes = images.map((image) => {
       const imagePath = image.original_file_path
@@ -91,25 +92,6 @@ export async function getUserImagesWithLikes(
     console.error('Error fetching user images:', (error as Error).message)
     return { images: [], totalCount: 0 }
   }
-}
-
-export const getImages = async (
-  currentUserId: string,
-  userId: string,
-  page: number = 1,
-  pageSize: number = 10
-): Promise<ImageResponse> => {
-  const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
-  return data
-}
-
-export const loadNextPage = async (
-  userId: string,
-  page: number
-): Promise<ImageResponse> => {
-  const { id: currentUserId } = (await getUser()).user
-
-  return await getImages(currentUserId, userId, page)
 }
 
 interface LikeResponse {
@@ -275,12 +257,18 @@ interface ExtendedImageResponse {
   totalCount: number
 }
 
-export const loadNextPageExtended = async (
+export const loadNextPage = async (
   userId: string,
-  page: number
+  page: number,
+  pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
-  const { id: currentUserId } = (await getUser()).user
-  const { images, totalCount } = await getImages(currentUserId, userId, page)
+  const { user: currentUser } = await getUser()
+  const { images, totalCount } = await getUserImagesWithLikes(
+    userId,
+    page,
+    pageSize,
+    currentUser?.id
+  )
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
@@ -296,7 +284,7 @@ export const loadNextPageExtended = async (
           relatedImages,
           isLike: !!existingLike,
           isFollowed: false,
-          isCurrentUser: currentUserId === image.user_id,
+          isCurrentUser: currentUser?.id === image.user_id,
         },
       }
     })
