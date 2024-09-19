@@ -2,7 +2,20 @@ import { Filter } from 'bad-words'
 
 const filter = new Filter()
 
-const prohibitedBiblicalNames = ['Jesus', 'Moses', 'God', 'Lord']
+const prohibitedBiblicalNames = [
+  'Jesus',
+  'Moses',
+  'God',
+  'Lord',
+  'admin',
+  'manager',
+  'user',
+  'superuser',
+  'superadmin',
+  'support',
+  'tech',
+  'operator',
+]
 
 export const validateLength = (username) => {
   if (username.length < 5 || username.length > 20) {
@@ -23,10 +36,6 @@ export const validateCharacters = (username) => {
 
   if (username.endsWith('_') || username.endsWith('-')) {
     return 'Username cannot end with an underscore or hyphen.'
-  }
-
-  if (/\s/.test(username)) {
-    return 'Username cannot contain spaces or other whitespace characters.'
   }
 
   return null
