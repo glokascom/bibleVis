@@ -1,69 +1,9 @@
 import React from 'react'
 
 import { Button, ButtonProps } from '@nextui-org/button'
+import { Image } from '@nextui-org/react'
 import { extendVariants } from '@nextui-org/system'
 import { VariantProps } from '@nextui-org/theme'
-
-const CustomSpinner = () => (
-  <svg
-    viewBox="-25 -25 100 100"
-    preserveAspectRatio="xMidYMid meet"
-    width="24"
-    height="24"
-  >
-    <circle fill="currentColor" stroke="none" cx="6" cy="25" r="8">
-      <animateTransform
-        attributeName="transform"
-        dur="1s"
-        type="translate"
-        values="0 15 ; 0 -15; 0 15"
-        repeatCount="indefinite"
-        begin="0.1"
-      />
-      <animate
-        attributeName="opacity"
-        dur="1s"
-        values="0;1;0"
-        repeatCount="indefinite"
-        begin="0.1"
-      />
-    </circle>
-    <circle fill="currentColor" stroke="none" cx="30" cy="25" r="8">
-      <animateTransform
-        attributeName="transform"
-        dur="1s"
-        type="translate"
-        values="0 10 ; 0 -10; 0 10"
-        repeatCount="indefinite"
-        begin="0.2"
-      />
-      <animate
-        attributeName="opacity"
-        dur="1s"
-        values="0;1;0"
-        repeatCount="indefinite"
-        begin="0.2"
-      />
-    </circle>
-    <circle fill="currentColor" stroke="none" cx="54" cy="25" r="8">
-      <animateTransform
-        attributeName="transform"
-        dur="1s"
-        type="translate"
-        values="0 5 ; 0 -5; 0 5"
-        repeatCount="indefinite"
-        begin="0.3"
-      />
-      <animate
-        attributeName="opacity"
-        dur="1s"
-        values="0;1;0"
-        repeatCount="indefinite"
-        begin="0.3"
-      />
-    </circle>
-  </svg>
-)
 
 const ExtendedButton = extendVariants(Button, {
   variants: {
@@ -119,6 +59,7 @@ type BVButtonProps<C extends React.ElementType> = PolymorphicComponentPropWithRe
     VariantProps<typeof ExtendedButton> & {
       startIcon?: React.ReactNode
       endIcon?: React.ReactNode
+      isLoading?: boolean
     }
 >
 
@@ -139,7 +80,16 @@ const BVButton = React.forwardRef(
         ref={ref}
         startContent={startIcon}
         endContent={endIcon}
-        spinner={<CustomSpinner />}
+        spinner={
+          <Image
+            removeWrapper
+            height={24}
+            width={24}
+            src="/spinner.svg"
+            alt="Loading spinner"
+            radius="none"
+          />
+        }
         isLoading={isLoading}
         {...otherProps}
       >
