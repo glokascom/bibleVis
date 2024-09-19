@@ -305,7 +305,7 @@ export const loadNextPageExtended = async (
   const currentUser = await getUser()
 
   if (!currentUser || !currentUser.user) {
-    throw new Error('Пользователь не найден или не авторизован.')
+    throw new Error('The user has not been found or is not logged in.')
   }
 
   const { id: currentUserId } = currentUser.user
