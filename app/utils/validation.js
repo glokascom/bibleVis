@@ -16,6 +16,19 @@ export const validateCharacters = (username) => {
   if (!validUsernameRegex.test(username)) {
     return 'Only letters A-Z, a-z, numbers, underscores, or hyphens are allowed. Username must start with a letter and cannot contain spaces or consecutive special characters.'
   }
+
+  if (/__|--|_-|-_/.test(username)) {
+    return 'Username cannot contain consecutive underscores or hyphens, or combinations of them.'
+  }
+
+  if (username.endsWith('_') || username.endsWith('-')) {
+    return 'Username cannot end with an underscore or hyphen.'
+  }
+
+  if (/\s/.test(username)) {
+    return 'Username cannot contain spaces or other whitespace characters.'
+  }
+
   return null
 }
 
@@ -55,15 +68,14 @@ export const validateEmail = (email) => {
 export const validateUsername = (username) => {
   const errors = []
 
-  if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-    errors.push(
-      'Only letters A-Z, a-z, numbers or underscore please (no spaces or special characters).'
-    )
-  }
+  const lengthError = validateLength(username)
+  if (lengthError) errors.push(lengthError)
 
-  if (username.length < 5 || username.length > 20) {
-    errors.push('Username must be between 5 and 20 characters long.')
-  }
+  const charactersError = validateCharacters(username)
+  if (charactersError) errors.push(charactersError)
+
+  const contentError = validateContent(username)
+  if (contentError) errors.push(contentError)
 
   return errors.length ? errors : null
 }
