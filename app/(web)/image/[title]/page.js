@@ -39,10 +39,10 @@ export default async function ImagePage({ params }) {
   const isFollowed = await checkIfSubscribed(imageInfo.users.id)
   const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
-  const data = await getUser()
-  const userInfo = data?.user
+  const { user, isAuthenticated } = await getUser(true)
   const username = imageInfo.users.username
-  const isCurrentUser = username === userInfo?.username ? true : false
+
+  const isCurrentUser = username === user?.username ? true : false
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
       <ImagePageContent
@@ -51,6 +51,7 @@ export default async function ImagePage({ params }) {
         isFollowed={isFollowed}
         isLike={isLike}
         isCurrentUser={isCurrentUser}
+        isAuthenticated={isAuthenticated}
       />
     </main>
   )

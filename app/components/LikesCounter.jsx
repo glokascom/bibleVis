@@ -7,14 +7,17 @@ import { Image } from '@nextui-org/image'
 import { toggleLike as toggleLikeAction } from '../(web)/[@username]/actions/imagesActions'
 import { BVButton } from './BVButton'
 
-function LikesCounter({ imageInfo, isLike }) {
+function LikesCounter({ imageInfo, isLike, isAuthenticated }) {
   const [isLiked, setIsLiked] = useState(!!isLike)
   const [count, setCount] = useState(imageInfo.total_likes)
   const [isLoading, setIsLoading] = useState(false)
+
   const handleToggleLike = useCallback(() => {
+    if (!isAuthenticated) return
+
     setIsLiked((prevIsLiked) => !prevIsLiked)
     setCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1))
-  }, [isLiked])
+  }, [isAuthenticated, isLiked])
 
   useEffect(() => {
     setIsLiked(isLike)
@@ -22,8 +25,10 @@ function LikesCounter({ imageInfo, isLike }) {
   }, [isLike, imageInfo.total_likes])
 
   const handleLikeClick = async () => {
-    if (isLoading) return
+    if (isLoading || !isAuthenticated) return
+
     setIsLoading(true)
+
     try {
       handleToggleLike()
       const result = await toggleLikeAction(imageInfo.id)
@@ -53,7 +58,7 @@ function LikesCounter({ imageInfo, isLike }) {
         color="background"
         className={commonButtonClasses}
         onClick={handleLikeClick}
-        disabled={isLoading}
+        disabled={isLoading || !isAuthenticated}
         startContent={
           <Image
             src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}

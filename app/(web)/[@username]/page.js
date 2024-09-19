@@ -15,10 +15,9 @@ import UserInfo from './components/UserInfo'
 
 export default async function UserDetail({ params }) {
   const username = decodeURIComponent(params['@username']).replace('@', '')
-  const data = await getUser()
-  const userInfo = data?.user
+  const { user, isAuthenticated } = await getUser(true)
 
-  const isCurrentUser = username === userInfo?.username
+  const isCurrentUser = username === user.username
   const followUserInfo = await getUserInfoByUsername(username)
 
   if (!followUserInfo) {
@@ -26,9 +25,9 @@ export default async function UserDetail({ params }) {
     return null
   }
 
-  const isFollowed = userInfo ? await checkIfSubscribed(followUserInfo.id) : false
+  const isFollowed = user ? await checkIfSubscribed(followUserInfo.id) : false
 
-  const { images: newImages } = await loadNextPageExtended(followUserInfo.id, 1)
+  const { images: newImages } = await loadNextPageExtended(1, followUserInfo.id)
 
   const extendedImages = await Promise.all(
     newImages.map(async (image) => {
@@ -46,7 +45,7 @@ export default async function UserDetail({ params }) {
           relatedImages,
           isLike: !!existingLike,
           isFollowed,
-          isCurrentUser: userInfo.id === image.user_id,
+          isCurrentUser: user.id === image.user_id,
         },
       }
     })
@@ -61,16 +60,17 @@ export default async function UserDetail({ params }) {
         <div className="w-full flex-initial md:flex-[1_0_0]">
           <UserInfo
             isCurrentUser={isCurrentUser}
-            userInfo={userInfo}
+            userInfo={user}
             followUserInfo={followUserInfo}
             initialIsFollowed={isFollowed}
           />
         </div>
       </div>
       <Gallery
-        userId={userInfo.id}
+        userId={user.id}
         followUserId={followUserInfo.id}
         initialImages={extendedImages}
+        isAuthenticated={isAuthenticated}
       />
     </main>
   )

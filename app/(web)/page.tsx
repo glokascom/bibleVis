@@ -1,5 +1,7 @@
+import { getUser } from '../actions/getUser'
 import HeroBlock from '../components/HeroBlock'
-import NotificationButtons from '../components/NotificationButtons'
+import { loadNextPageExtended } from './[@username]/actions/imagesActions'
+import Gallery from './[@username]/components/Gallery'
 
 interface PageProps {
   params: {
@@ -7,15 +9,20 @@ interface PageProps {
   }
 }
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<PageProps> = async () => {
+  const { user, isAuthenticated } = await getUser(true)
+  const { images: initialImages } = await loadNextPageExtended(1)
+
   return (
     <>
       <HeroBlock />
       <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-        <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
-          <h1 className="text-3xl">MAIN PAGE</h1>
-          <NotificationButtons />
-        </div>
+        <Gallery
+          followUserId={user?.id}
+          initialImages={initialImages}
+          isMainPage={true}
+          isAuthenticated={isAuthenticated}
+        />
       </main>
     </>
   )

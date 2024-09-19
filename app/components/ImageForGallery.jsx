@@ -19,7 +19,7 @@ import DeleteConfirmationModal from './DeleteConfirmationModal'
 import ImagePageContent from './ImagePageContent'
 import { Modal } from './Modal'
 
-function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
+function ImageForGallery({ image, fullInfo, allImages, currentIndex, isAuthenticated }) {
   const [isLiked, setIsLiked] = useOptimistic(fullInfo.isLike)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
@@ -32,6 +32,8 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
   const originalPathname = useRef(pathname)
 
   const handleToggleLike = async () => {
+    if (!isAuthenticated) return
+
     startTransition(async () => {
       setIsLiked(!isLiked)
       const result = await updateGallery('toggleLike', image.id)
@@ -119,17 +121,21 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
           </div>
         </BVLink>
       </div>
-      <div
-        className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-        onClick={handleToggleLike}
-      >
-        <Image
-          src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
-          alt="heart"
-          radius="none"
-          className={isPending ? 'opacity-50' : ''}
-        />
-      </div>
+
+      {isAuthenticated && (
+        <div
+          className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+          onClick={handleToggleLike}
+        >
+          <Image
+            src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
+            alt="heart"
+            radius="none"
+            className={isPending ? 'opacity-50' : ''}
+          />
+        </div>
+      )}
+
       {fullInfo.isCurrentUser && (
         <Dropdown
           className="bg-secondary-50"
@@ -182,6 +188,7 @@ function ImageForGallery({ image, fullInfo, allImages, currentIndex }) {
             isCurrentUser={allImages[currentImageIndex].fullInfo.isCurrentUser}
             onPrevImage={handlePrevImage}
             onNextImage={handleNextImage}
+            isAuthenticated={isAuthenticated}
           />
         </Modal>
       )}

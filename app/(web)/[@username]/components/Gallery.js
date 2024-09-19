@@ -23,7 +23,7 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ followUserId, initialImages }) {
+function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = false }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -35,8 +35,8 @@ function Gallery({ followUserId, initialImages }) {
 
     isLoadingRef.current = true
     const { images: newImages, totalCount } = await loadNextPageExtended(
-      followUserId,
-      page
+      page,
+      followUserId
     )
 
     setImages((prevImages) => {
@@ -58,9 +58,15 @@ function Gallery({ followUserId, initialImages }) {
   return (
     <>
       <div className="mb-4 flex items-center">
-        <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
-        <span className="mt-6 font-sans text-base text-secondary">Images</span>
-        <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
+        {isMainPage ? (
+          <div>Main Page</div>
+        ) : (
+          <>
+            <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
+            <span className="mt-6 font-sans text-base text-secondary">Images</span>
+            <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
+          </>
+        )}
       </div>
       <InfiniteScroll
         dataLength={images.length}
@@ -78,6 +84,7 @@ function Gallery({ followUserId, initialImages }) {
                   fullInfo={image.fullInfo}
                   allImages={images}
                   currentIndex={index}
+                  isAuthenticated={isAuthenticated}
                 />
               </div>
             ))}

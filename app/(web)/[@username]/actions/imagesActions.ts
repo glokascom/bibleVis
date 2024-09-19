@@ -36,8 +36,8 @@ interface ImageResponse {
 }
 
 export async function getUserImagesWithLikes(
-  currentUserId: string,
-  userId: string,
+  currentUserId: string | null,
+  userId?: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> {
@@ -45,38 +45,40 @@ export async function getUserImagesWithLikes(
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
 
-    const { count: totalCount, error: countError } = await supabaseService
+    let query = supabaseService
       .from('images')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
+      .select('*, users(username)', { count: 'exact' })
 
-    if (countError) throw countError
+    if (userId) {
+      query = query.eq('user_id', userId)
+    }
 
-    const { data: images, error } = await supabaseService
-      .from('images')
-      .select('*, users(username)')
-      .eq('user_id', userId)
-      .range(rangeStart, rangeEnd)
-      .order('uploaded_at', { ascending: false })
+    const {
+      data: images,
+      count,
+      error,
+    } = await query.range(rangeStart, rangeEnd).order('uploaded_at', { ascending: false })
 
     if (error) throw error
-    if (!images || images.length === 0) return { images: [], totalCount: totalCount || 0 }
+    if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
 
-    const { data: likes, error: likesError } = await supabaseService
-      .from('likes')
-      .select('image_id')
-      .eq('user_id', currentUserId)
+    let likedImages = new Set()
+    if (currentUserId) {
+      const { data: likes, error: likesError } = await supabaseService
+        .from('likes')
+        .select('image_id')
+        .eq('user_id', currentUserId)
 
-    if (likesError) throw likesError
-
-    const likedImages = new Set(likes?.map((like) => like.image_id))
+      if (likesError) throw likesError
+      likedImages = new Set(likes?.map((like) => like.image_id))
+    }
 
     const imagesWithLikes = images.map((image) => {
       const imagePath = image.original_file_path
         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
         : null
 
-      const isOwnedByCurrentUser = image.user_id === currentUserId
+      const isOwnedByCurrentUser = currentUserId ? image.user_id === currentUserId : false
 
       return {
         ...image,
@@ -86,7 +88,7 @@ export async function getUserImagesWithLikes(
       }
     })
 
-    return { images: imagesWithLikes, totalCount: totalCount || 0 }
+    return { images: imagesWithLikes, totalCount: count || 0 }
   } catch (error) {
     console.error('Error fetching user images:', (error as Error).message)
     return { images: [], totalCount: 0 }
@@ -95,12 +97,17 @@ export async function getUserImagesWithLikes(
 
 export const getImages = async (
   currentUserId: string,
-  userId: string,
+  userId?: string,
   page: number = 1,
   pageSize: number = 10
 ): Promise<ImageResponse> => {
-  const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
-  return data
+  try {
+    const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
+    return data
+  } catch (error) {
+    console.error('Error in getImages:', (error as Error).message)
+    return { images: [], totalCount: 0 }
+  }
 }
 
 export const loadNextPage = async (
@@ -276,17 +283,21 @@ interface ExtendedImageResponse {
 }
 
 export const loadNextPageExtended = async (
-  userId: string,
-  page: number
+  page: number,
+  userId?: string
 ): Promise<ExtendedImageResponse> => {
-  const { id: currentUserId } = (await getUser()).user
+  const { user, isAuthenticated } = await getUser(true)
+  const currentUserId = isAuthenticated ? user?.id : null
+
   const { images, totalCount } = await getImages(currentUserId, userId, page)
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
       const [relatedImages, { existingLike }] = await Promise.all([
-        getRandomImagesExcluding(userId, image.id),
-        checkIfLiked(image.id),
+        getRandomImagesExcluding(image.user_id, image.id),
+        isAuthenticated
+          ? checkIfLiked(image.id)
+          : { existingLike: null, fetchError: null },
       ])
 
       return {

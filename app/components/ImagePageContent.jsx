@@ -15,6 +15,7 @@ function ImagePageContent({
   isCurrentUser,
   onPrevImage,
   onNextImage,
+  isAuthenticated,
   isModal = false,
 }) {
   return (
@@ -72,7 +73,11 @@ function ImagePageContent({
           <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
             <div className="rounded-medium border bg-background p-5 shadow-small">
               <Download imageInfo={imageInfo} />
-              <Description imageInfo={imageInfo} isLike={isLike} />
+              <Description
+                imageInfo={imageInfo}
+                isLike={isLike}
+                isAuthenticated={isAuthenticated}
+              />
               <CreatorDetails
                 creator={imageInfo.users}
                 followUserId={imageInfo.users.id}
