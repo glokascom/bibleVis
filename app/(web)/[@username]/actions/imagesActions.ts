@@ -54,10 +54,10 @@ export async function getLikeCountForImage(imageId: number): Promise<number> {
 }
 
 export async function getUserImagesWithLikes(
+  currentUserId: string,
   userId: string,
   page: number = 1,
-  pageSize: number = 10,
-  currentUserId: string | null = null
+  pageSize: number = 10
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
@@ -79,37 +79,60 @@ export async function getUserImagesWithLikes(
 
     if (error) throw error
     if (!images || images.length === 0) return { images: [], totalCount: totalCount || 0 }
-    let likedImages = new Set()
-    if (currentUserId) {
-      const { data: likes, error: likesError } = await supabaseService
-        .from('likes')
-        .select('image_id')
-        .eq('user_id', currentUserId)
 
-      if (likesError) throw likesError
-      likedImages = new Set(likes?.map((like) => like.image_id))
-    }
+    const { data: likes, error: likesError } = await supabaseService
+      .from('likes')
+      .select('image_id')
+      .eq('user_id', currentUserId)
 
-    const imagesWithLikes = images.map((image) => {
-      const imagePath = image.original_file_path
-        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
-        : null
+    if (likesError) throw likesError
 
-      const isOwnedByCurrentUser = image.user_id === currentUserId
+    const likedImages = new Set(likes?.map((like) => like.image_id))
 
-      return {
-        ...image,
-        liked_by_current_user: likedImages.has(image.id),
-        imagePath,
-        isOwnedByCurrentUser,
-      }
-    })
+    const imagesWithLikes = await Promise.all(
+      images.map(async (image) => {
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
+
+        const isOwnedByCurrentUser = image.user_id === currentUserId
+
+        const total_likes = await getLikeCountForImage(image.id)
+
+        return {
+          ...image,
+          liked_by_current_user: likedImages.has(image.id),
+          imagePath,
+          isOwnedByCurrentUser,
+          total_likes,
+        }
+      })
+    )
 
     return { images: imagesWithLikes, totalCount: totalCount || 0 }
   } catch (error) {
     console.error('Error fetching user images:', (error as Error).message)
     return { images: [], totalCount: 0 }
   }
+}
+
+export const getImages = async (
+  currentUserId: string,
+  userId: string,
+  page: number = 1,
+  pageSize: number = 10
+): Promise<ImageResponse> => {
+  const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
+  return data
+}
+
+export const loadNextPage = async (
+  userId: string,
+  page: number
+): Promise<ImageResponse> => {
+  const { id: currentUserId } = (await getUser()).user
+
+  return await getImages(currentUserId, userId, page)
 }
 
 interface LikeResponse {
@@ -275,18 +298,14 @@ interface ExtendedImageResponse {
   totalCount: number
 }
 
-export const loadNextPage = async (
+export const loadNextPageExtended = async (
   userId: string,
-  page: number,
-  pageSize: number = 10
+  page: number
 ): Promise<ExtendedImageResponse> => {
-  const { user: currentUser } = await getUser()
-  const { images, totalCount } = await getUserImagesWithLikes(
-    userId,
-    page,
-    pageSize,
-    currentUser?.id
-  )
+  const currentUser = await getUser()
+
+  const { id: currentUserId } = currentUser.user
+  const { images, totalCount } = await getImages(currentUserId, userId, page)
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
@@ -302,7 +321,7 @@ export const loadNextPage = async (
           relatedImages,
           isLike: !!existingLike,
           isFollowed: false,
-          isCurrentUser: currentUser?.id === image.user_id,
+          isCurrentUser: currentUserId === image.user_id,
         },
       }
     })
