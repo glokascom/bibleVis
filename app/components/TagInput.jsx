@@ -26,18 +26,19 @@ export default function TagInput({
   const [allTags, setAllTags] = useState(initialTags)
   const tagsContainerRef = useRef(null)
   const inputRef = useRef(null)
-
+  const initialAIGeneration = useRef(isAIGeneration)
   const totalChars =
     selectedTags.reduce((acc, t) => acc + t.name.length, 0) + inputValue.length
 
   useEffect(() => {
     onTagsChange({ allTags, selectedTags })
   }, [allTags, onTagsChange, selectedTags])
-
   useEffect(() => {
-    setSelectedTags([])
-  }, [isAIGeneration])
-
+    if (initialAIGeneration.current !== isAIGeneration) {
+      setSelectedTags([])
+      setAllTags(initialTags)
+    }
+  }, [isAIGeneration, initialTags])
   useEffect(() => {
     onBlur({
       value: isTagInput ? selectedTags : inputValue,
