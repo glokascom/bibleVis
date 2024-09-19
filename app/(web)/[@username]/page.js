@@ -65,11 +65,7 @@ export default async function UserDetail({ params }) {
           />
         </div>
       </div>
-      <Gallery
-        userId={userInfo.id}
-        followUserId={followUserInfo.id}
-        initialImages={extendedImages}
-      />
+      <Gallery followUserId={followUserInfo.id} initialImages={extendedImages} />
     </main>
   )
 }

@@ -23,7 +23,7 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ userId, followUserId, initialImages }) {
+function Gallery({ followUserId, initialImages }) {
   const [images, setImages] = useState(initialImages)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -108,7 +108,6 @@ function Gallery({ userId, followUserId, initialImages }) {
             {images.map((image, index) => (
               <div key={image.id}>
                 <ImageForGallery
-                  userId={userId}
                   image={image}
                   allImages={images}
                   currentIndex={index}
