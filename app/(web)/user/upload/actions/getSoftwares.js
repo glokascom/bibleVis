@@ -26,8 +26,15 @@ export async function updateLayot() {
     revalidatePath('/', 'layout')
     return { error: null }
   } catch (error) {
-    console.log(27)
+    return { error: error.message }
+  }
+}
 
+export async function updateUploadImage() {
+  try {
+    revalidatePath('/upload-image', 'layout')
+    return { error: null }
+  } catch (error) {
     return { error: error.message }
   }
 }

@@ -14,7 +14,7 @@ import ImageUploadDragDrop from '@/app/components/ImageUploadDragDrop'
 import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/components/ToastProvider'
 
-import { updateLayot } from '../actions/getSoftwares'
+import { updateUploadImage } from '../actions/getSoftwares'
 
 export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   const [error, setError] = useState(null)
@@ -40,7 +40,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
     const updateTagsOnChange = async () => {
       if (imageId) {
         try {
-          await updateLayot()
+          await updateUploadImage()
         } catch (error) {
           console.error('Error updating tags:', error)
         }
