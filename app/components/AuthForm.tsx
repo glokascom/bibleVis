@@ -330,7 +330,7 @@ function AuthForm() {
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
                 <BVButton fullWidth onClick={handleSignup} isLoading={loading}>
-                  {loading ? 'Loading' : 'Join'}
+                  {'Join'}
                 </BVButton>
               </Tab>
               <Tab key="log-in" title="Log in">
@@ -439,7 +439,7 @@ function AuthForm() {
                   <p className="my-4 text-small text-danger">{loginErrors.message}</p>
                 )}
                 <BVButton fullWidth onClick={handleLogin} isLoading={loading}>
-                  {loading ? 'Loading' : ' Log in'}
+                  {'Log in'}
                 </BVButton>
                 <BVLink
                   as={Link}
