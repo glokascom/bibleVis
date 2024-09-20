@@ -14,7 +14,7 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-function Description({ imageInfo, isLike, isAuthenticated }) {
+function Description({ imageInfo, isLike, isAuthenticated, totalLikes }) {
   const statistics = [
     //TODO: добавить механизм подсчета просмотров и скачиваний
     { label: 'Views', value: imageInfo.total_views },
@@ -32,6 +32,7 @@ function Description({ imageInfo, isLike, isAuthenticated }) {
         imageInfo={imageInfo}
         isLike={isLike}
         isAuthenticated={isAuthenticated}
+        totalLikes={totalLikes}
       />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>

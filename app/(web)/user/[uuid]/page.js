@@ -1,4 +1,4 @@
-import { getDataFromTable } from '../upload/actions/getSoftwares'
+import { getSoftwares, getTags } from '../upload/actions/getSoftwares'
 import { getImageInfoById } from './actions/getImage'
 import EditImage from './components/EditImage'
 
@@ -12,8 +12,8 @@ export default async function Page({ params }) {
     return <div className="text-danger-500">{error}</div>
   }
 
-  const softwareOptions = (await getDataFromTable('softwares')).data
-  const tagsOptions = (await getDataFromTable('tags')).data
+  const softwareOptions = (await getSoftwares()).data
+  const tagsOptions = (await getTags()).data
 
   return (
     <EditImage

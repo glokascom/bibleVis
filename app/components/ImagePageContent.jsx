@@ -12,6 +12,7 @@ function ImagePageContent({
   relatedImages,
   isFollowed,
   isLike,
+  totalLikes,
   isCurrentUser,
   onPrevImage,
   onNextImage,
@@ -77,6 +78,7 @@ function ImagePageContent({
                 imageInfo={imageInfo}
                 isLike={isLike}
                 isAuthenticated={isAuthenticated}
+                totalLikes={totalLikes}
               />
               <CreatorDetails
                 creator={imageInfo.users}
