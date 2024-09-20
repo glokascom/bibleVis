@@ -1,3 +1,7 @@
+'use client'
+
+import { useState } from 'react'
+
 import { Image } from '@nextui-org/image'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
@@ -18,6 +22,10 @@ function ImagePageContent({
   onNextImage,
   isModal = false,
 }) {
+  const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
+  const incrementDownloads = () => {
+    setTotalDownloads(totalDownloads + 1)
+  }
   return (
     <div
       className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}
@@ -72,9 +80,10 @@ function ImagePageContent({
         <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
           <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
             <div className="rounded-medium border bg-background p-5 shadow-small">
-              <Download imageInfo={imageInfo} />
+              <Download imageInfo={imageInfo} onDownload={incrementDownloads} />
               <Description
                 imageInfo={imageInfo}
+                totalDownloads={totalDownloads}
                 isLike={isLike}
                 totalLikes={totalLikes}
               />

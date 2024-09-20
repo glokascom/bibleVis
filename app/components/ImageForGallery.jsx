@@ -15,7 +15,9 @@ import { Image } from '@nextui-org/image'
 import {
   checkIfLiked,
   deleteImage,
+  getImageStats,
   getLikeCountForImage,
+  incrementImageViews,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
 import { BVAvatar } from './BVAvatar'
@@ -105,10 +107,17 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
     window.history.pushState(null, '', newUrl)
   }
 
-  const openImageModal = () => {
+  const openImageModal = async () => {
     setIsImageModalOpen(true)
     originalPathname.current = pathname
     updateUrl(image.id)
+
+    const imageIndex = allImages.findIndex((img) => img.id === image.id)
+
+    allImages[imageIndex].total_views += 1
+    if (!(await incrementImageViews(image.id))) {
+      allImages[imageIndex].total_views -= 1
+    }
   }
 
   const closeImageModal = async () => {
@@ -121,7 +130,11 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
 
     const imageIndex = allImages.findIndex((img) => img.id === image.id)
     allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
-    allImages[currentImageIndex].fullInfo.isLike = !!existingLike
+    allImages[imageIndex].fullInfo.isLike = !!existingLike
+
+    const { totalViews, totalDownloads } = await getImageStats(image.id)
+    allImages[imageIndex].total_views = totalViews
+    allImages[imageIndex].total_downloads = totalDownloads
   }
 
   return (

@@ -53,6 +53,58 @@ export async function getLikeCountForImage(imageId: number): Promise<number> {
   }
 }
 
+export async function getImageStats(imageId: number) {
+  try {
+    const { data, error } = await supabaseService
+      .from('images')
+      .select('total_views, total_downloads')
+      .eq('id', imageId)
+      .single()
+
+    if (error) {
+      throw new Error(`Error fetching image stats: ${error.message}`)
+    }
+
+    return {
+      totalViews: data?.total_views || 0,
+      totalDownloads: data?.total_downloads || 0,
+    }
+  } catch (error) {
+    console.error('Error fetching image stats:', error)
+    return null
+  }
+}
+
+export async function incrementImageViews(imageId: number) {
+  try {
+    const { data, error } = await supabaseService
+      .from('images')
+      .select('total_views')
+      .eq('id', imageId)
+      .single()
+
+    if (error) {
+      throw new Error(`Error fetching image views: ${error.message}`)
+    }
+
+    const currentViews = data?.total_views || 0
+
+    const { error: updateError } = await supabaseService
+      .from('images')
+      .update({ total_views: currentViews + 1 })
+      .eq('id', imageId)
+
+    if (updateError) {
+      throw new Error(`Error updating image views: ${updateError.message}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error incrementing image views:', error)
+    return false
+  }
+}
+
 export async function getUserImagesWithLikes(
   currentUserId: string,
   userId: string,

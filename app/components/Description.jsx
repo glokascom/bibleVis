@@ -14,11 +14,10 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-function Description({ imageInfo, isLike, totalLikes }) {
+function Description({ imageInfo, totalDownloads, isLike, totalLikes }) {
   const statistics = [
-    //TODO: добавить механизм подсчета просмотров и скачиваний
     { label: 'Views', value: imageInfo.total_views },
-    { label: 'Downloads', value: imageInfo.total_downloads },
+    { label: 'Downloads', value: totalDownloads },
     {
       label: 'Resolution',
       value: `${imageInfo.file_sizes.original.width}x${imageInfo.file_sizes.original.height}`,
