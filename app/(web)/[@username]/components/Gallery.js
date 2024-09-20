@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import { BVButton } from '@/app/components/BVButton'
 import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPageExtended } from '../actions/imagesActions'
@@ -57,9 +58,11 @@ function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = fa
 
   return (
     <>
-      <div className="mb-4 flex items-center">
+      <div className="mb-5 mt-10 flex items-center">
         {isMainPage ? (
-          <div>Main Page</div>
+          <BVButton color="secondary" isDisabled>
+            Photos
+          </BVButton>
         ) : (
           <>
             <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
@@ -75,7 +78,7 @@ function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = fa
         loader={<h4>Loading...</h4>}
         endMessage={<p>No more images</p>}
       >
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 640: 3, 1280: 4 }}>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 640: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.id}>
