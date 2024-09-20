@@ -134,7 +134,7 @@ function AuthForm() {
           fields: response?.errors || [],
         })
       } else {
-        push(searchParams.get('redirectedFrom') ?? '/success-sign-up')
+        push('/success-sign-up')
         refresh()
       }
     } catch (error) {
