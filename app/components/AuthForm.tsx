@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
@@ -12,18 +12,12 @@ import { Tab, Tabs } from '@nextui-org/tabs'
 import { ApiResponse, errorField } from '@/app/types/api'
 
 import { login, signup } from '../actions/actionsSupabase'
-import { useAuth } from './AuthContext'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 
-type User = {
-  id: string
-  email: string
-  name: string
-}
-
 function AuthForm() {
+  const searchParams = useSearchParams()
   const [isSignupVisible, setIsSignupVisible] = useState(false)
   const [isLoginVisible, setIsLoginVisible] = useState(false)
 
@@ -43,13 +37,13 @@ function AuthForm() {
   })
   const [emailLogin, setEmailLogin] = useState('')
   const [passwordLogin, setPasswordLogin] = useState('')
-  const { setUser } = useAuth()
+
   const [emailSignup, setEmailSignup] = useState('')
   const [passwordSignup, setPasswordSignup] = useState('')
   const [usernameSignup, setUsernameSignup] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const { push } = useRouter()
+  const { push, refresh } = useRouter()
 
   const toggleSignupVisibility = () => {
     setIsSignupVisible((prev) => !prev)
@@ -126,7 +120,6 @@ function AuthForm() {
       })
       return
     }
-
     setLoading(true)
     try {
       const response: ApiResponse<unknown> = await signup(
@@ -136,9 +129,13 @@ function AuthForm() {
       )
 
       if (response.status === 'error') {
-        setSignupErrors({ message: response.message, fields: response?.errors || [] })
+        setSignupErrors({
+          message: response.message,
+          fields: response?.errors || [],
+        })
       } else {
-        push('/success-sign-up')
+        push(searchParams.get('redirectedFrom') ?? '/success-sign-up')
+        refresh()
       }
     } catch (error) {
       console.error(error)
@@ -171,11 +168,13 @@ function AuthForm() {
       const response: ApiResponse<unknown> = await login(emailLogin, passwordLogin)
 
       if (response.status === 'error') {
-        setLoginErrors({ message: response.message, fields: response?.errors || [] })
+        setLoginErrors({
+          message: response.message,
+          fields: response?.errors || [],
+        })
       } else {
-        const user = response.data as User
-        setUser(user)
-        push('/')
+        push(searchParams.get('redirectedFrom') ?? '/')
+        refresh()
       }
     } catch (error) {
       console.error(error)

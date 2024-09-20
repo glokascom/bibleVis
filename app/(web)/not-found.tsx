@@ -18,7 +18,7 @@ export default function NotFound() {
       <div className="mt-8">
         <Link
           href="/"
-          className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+          className="box-border h-auto w-full min-w-20 select-none appearance-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-primary px-7 py-4 text-medium font-[600] text-white outline-none tap-highlight-transparent transition-transform-colors-opacity hover:opacity-hover motion-reduce:transition-none"
         >
           Go back to Home
         </Link>
