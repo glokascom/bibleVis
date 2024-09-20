@@ -194,7 +194,12 @@ function AuthForm() {
                   className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
                   fullWidth
                   radius="full"
-                  onClick={() => push('/api/auth/google')}
+                  onClick={() =>
+                    push(
+                      '/api/auth/google?redirectedFrom=' +
+                        searchParams.get('redirectedFrom')
+                    )
+                  }
                 >
                   <Image
                     src="/google.svg"
