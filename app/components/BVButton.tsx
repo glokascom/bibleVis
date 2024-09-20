@@ -34,25 +34,37 @@ const ExtendedButton = extendVariants(Button, {
   ],
 })
 
-type PolymorphicRef<C extends React.ElementType> = React.ComponentPropsWithRef<C>['ref']
+// Полиморфный реф: получение правильного типа рефа для указанного компонента
+type PolymorphicRef<C extends React.ElementType> = React.Ref<
+  C extends keyof JSX.IntrinsicElements
+    ? JSX.IntrinsicElements[C] extends React.ComponentPropsWithRef<C>
+      ? JSX.IntrinsicElements[C]['ref']
+      : never
+    : never
+>
 
+// Проп `as` для полиморфного компонента
 type AsProp<C extends React.ElementType> = {
   as?: C
 }
 
+// Пропсы, которые нужно исключить
 type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P)
 
+// Полиморфные пропсы для компонента без рефа
 type PolymorphicComponentProp<
   C extends React.ElementType,
   Props = object,
 > = React.PropsWithChildren<Props & AsProp<C>> &
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>
 
+// Полиморфные пропсы для компонента с рефом
 type PolymorphicComponentPropWithRef<
   C extends React.ElementType,
   Props = object,
 > = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> }
 
+// Пропсы для кнопки BVButton
 type BVButtonProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
   C,
   ButtonProps &
@@ -63,11 +75,13 @@ type BVButtonProps<C extends React.ElementType> = PolymorphicComponentPropWithRe
     }
 >
 
+// Интерфейс компонента BVButton с рефом
 interface BVButtonComponent
   extends React.ForwardRefExoticComponent<BVButtonProps<React.ElementType>> {
   displayName?: string
 }
 
+// Реализация компонента BVButton с использованием forwardRef
 const BVButton = React.forwardRef(
   <C extends React.ElementType = 'button'>(
     { as, children, isLoading, startIcon, endIcon, ...otherProps }: BVButtonProps<C>,
