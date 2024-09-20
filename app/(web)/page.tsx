@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 const Page: React.FC<PageProps> = async () => {
-  const { user, isAuthenticated } = await getUser(true)
+  const { user } = await getUser()
   const { images: initialImages } = await loadNextPageExtended(1)
 
   return (
@@ -21,7 +21,7 @@ const Page: React.FC<PageProps> = async () => {
           followUserId={user?.id}
           initialImages={initialImages}
           isMainPage={true}
-          isAuthenticated={isAuthenticated}
+          isAuthenticated={!!user}
         />
       </main>
     </>

@@ -35,14 +35,15 @@ export default async function ImagePage({ params }) {
     return <div className="text-danger-500">{error}</div>
   }
 
+  const { user } = await getUser()
+
   const relatedImages = await getRandomImagesExcluding(imageInfo.users.id, idImage)
   const isFollowed = await checkIfSubscribed(imageInfo.users.id)
   const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
-  const { user, isAuthenticated } = await getUser(true)
   const username = imageInfo.users.username
+  const isCurrentUser = user?.username === username
 
-  const isCurrentUser = username === user?.username ? true : false
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
       <ImagePageContent
@@ -51,7 +52,7 @@ export default async function ImagePage({ params }) {
         isFollowed={isFollowed}
         isLike={isLike}
         isCurrentUser={isCurrentUser}
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!user}
       />
     </main>
   )

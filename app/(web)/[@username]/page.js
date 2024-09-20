@@ -15,9 +15,8 @@ import UserInfo from './components/UserInfo'
 
 export default async function UserDetail({ params }) {
   const username = decodeURIComponent(params['@username']).replace('@', '')
-  const { user, isAuthenticated } = await getUser(true)
+  const { user } = await getUser()
 
-  const isCurrentUser = username === user.username
   const followUserInfo = await getUserInfoByUsername(username)
 
   if (!followUserInfo) {
@@ -25,6 +24,7 @@ export default async function UserDetail({ params }) {
     return null
   }
 
+  const isCurrentUser = username === user.username
   const isFollowed = user ? await checkIfSubscribed(followUserInfo.id) : false
 
   const { images: newImages } = await loadNextPageExtended(1, followUserInfo.id)
@@ -70,7 +70,7 @@ export default async function UserDetail({ params }) {
         userId={user.id}
         followUserId={followUserInfo.id}
         initialImages={extendedImages}
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!user}
       />
     </main>
   )

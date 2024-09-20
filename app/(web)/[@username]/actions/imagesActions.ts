@@ -286,8 +286,8 @@ export const loadNextPageExtended = async (
   page: number,
   userId?: string
 ): Promise<ExtendedImageResponse> => {
-  const { user, isAuthenticated } = await getUser(true)
-  const currentUserId = isAuthenticated ? user?.id : null
+  const { user } = await getUser()
+  const currentUserId = user?.id || null
 
   const { images, totalCount } = await getImages(currentUserId, userId, page)
 
@@ -295,9 +295,7 @@ export const loadNextPageExtended = async (
     images.map(async (image) => {
       const [relatedImages, { existingLike }] = await Promise.all([
         getRandomImagesExcluding(image.user_id, image.id),
-        isAuthenticated
-          ? checkIfLiked(image.id)
-          : { existingLike: null, fetchError: null },
+        currentUserId ? checkIfLiked(image.id) : { existingLike: null, fetchError: null },
       ])
 
       return {

@@ -3,25 +3,13 @@ import { supabaseService } from '@/app/supabase/service'
 
 import { getAvatars } from './getAvatars'
 
-export async function getUser(includeAuthStatus = false) {
+export async function getUser() {
   const supabase = createClient()
   try {
     const { data, error } = await supabase.auth.getUser()
 
-    if (error) {
-      return includeAuthStatus
-        ? { user: null, error, isAuthenticated: false }
-        : { user: null, error }
-    }
-
-    if (!data?.user) {
-      return includeAuthStatus
-        ? {
-            user: null,
-            error: new Error('The user was not found'),
-            isAuthenticated: false,
-          }
-        : { user: null, error: new Error('The user was not found') }
+    if (error || !data?.user) {
+      return { user: null, error: error || new Error('The user was not found') }
     }
 
     const { data: userData, error: userError } = await supabaseService
@@ -31,9 +19,7 @@ export async function getUser(includeAuthStatus = false) {
       .single()
 
     if (userError) {
-      return includeAuthStatus
-        ? { user: null, error: userError, isAuthenticated: false }
-        : { user: null, error: userError }
+      return { user: null, error: userError }
     }
 
     const { avatarUrl, coverUrl } = await getAvatars(userData)
@@ -44,12 +30,8 @@ export async function getUser(includeAuthStatus = false) {
       coverUrl,
     }
 
-    return includeAuthStatus
-      ? { user, error: null, isAuthenticated: true }
-      : { user, error: null }
+    return { user, error: null }
   } catch (error) {
-    return includeAuthStatus
-      ? { user: null, error, isAuthenticated: false }
-      : { user: null, error }
+    return { user: null, error }
   }
 }
