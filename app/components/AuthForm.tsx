@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { Button } from '@nextui-org/button'
 import { Tab, Tabs } from '@nextui-org/tabs'
@@ -17,6 +17,7 @@ import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 
 function AuthForm() {
+  const searchParams = useSearchParams()
   const [isSignupVisible, setIsSignupVisible] = useState(false)
   const [isLoginVisible, setIsLoginVisible] = useState(false)
 
@@ -41,7 +42,7 @@ function AuthForm() {
   const [passwordSignup, setPasswordSignup] = useState('')
   const [usernameSignup, setUsernameSignup] = useState('')
 
-  const { push } = useRouter()
+  const { push, refresh } = useRouter()
 
   const toggleSignupVisibility = () => {
     setIsSignupVisible((prev) => !prev)
@@ -130,7 +131,8 @@ function AuthForm() {
         fields: response?.errors || [],
       })
     } else {
-      push('/')
+      push(searchParams.get('redirectedFrom') ?? '/')
+      refresh()
     }
   }
 
@@ -159,7 +161,8 @@ function AuthForm() {
         fields: response?.errors || [],
       })
     } else {
-      push('/')
+      push(searchParams.get('redirectedFrom') ?? '/')
+      refresh()
     }
   }
   return (

@@ -65,3 +65,5 @@ INSERT INTO public.softwares (name, type) VALUES
 
 
 SELECT update_username_with_email();
+
+UPDATE public.users SET is_creator = TRUE;
