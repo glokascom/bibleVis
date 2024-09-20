@@ -15,6 +15,7 @@ import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import PasswordStrengthMeter from './PasswordStrengthMeter'
 
 function AuthForm() {
   const searchParams = useSearchParams()
@@ -289,6 +290,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'password')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
+                <PasswordStrengthMeter password={passwordSignup} />
                 <p className="my-8 text-small text-secondary-200">
                   This site is protected by reCAPTCHA and the Google{' '}
                   <a
