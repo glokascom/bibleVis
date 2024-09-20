@@ -15,7 +15,6 @@ import {
 import { Image } from '@nextui-org/image'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/navbar'
 
-import { useAuth } from './AuthContext'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
@@ -26,9 +25,7 @@ function formatSearchQuery(query) {
   return encodeURIComponent(query.replace(/\s+/g, '-'))
 }
 
-function Navigation({ user: propUser }) {
-  const { user: contextUser } = useAuth()
-  const user = propUser || contextUser
+function Navigation({ user }) {
   const [search, setSearch] = useState('')
   const pathname = usePathname()
   const { push } = useRouter()
