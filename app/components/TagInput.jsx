@@ -45,7 +45,8 @@ export default function TagInput({
       allTags,
       selectedTags,
     })
-  }, [selectedTags, isTagInput, inputValue, allTags, onBlur])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTags, isTagInput, inputValue, allTags])
 
   const handleBlur = () => {
     if (allowAddOnEnter && isTagInput && inputValue.trim()) {
