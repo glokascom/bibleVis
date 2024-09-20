@@ -24,7 +24,7 @@ function ImagePageContent({
 }) {
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
   const incrementDownloads = () => {
-    setTotalDownloads(totalDownloads + 1)
+    setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
   return (
     <div
