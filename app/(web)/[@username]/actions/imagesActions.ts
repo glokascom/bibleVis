@@ -304,10 +304,6 @@ export const loadNextPageExtended = async (
 ): Promise<ExtendedImageResponse> => {
   const currentUser = await getUser()
 
-  if (!currentUser || !currentUser.user) {
-    throw new Error('Пользователь не найден или не авторизован.')
-  }
-
   const { id: currentUserId } = currentUser.user
   const { images, totalCount } = await getImages(currentUserId, userId, page)
 

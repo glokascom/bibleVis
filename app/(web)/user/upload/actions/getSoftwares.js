@@ -2,32 +2,60 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/server'
 
-export async function getDataFromTable(tableName) {
+export async function getSoftwares() {
   try {
-    const { data, error } = await supabaseService
-      .from(tableName)
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+      .from('softwares')
       .select('*')
       .order('name', { ascending: true })
     if (error) {
-      console.error(`Error fetching data from ${tableName}:`, error)
-      return { status: 500, error: `Error fetching data from ${tableName}` }
+      console.error(`Error fetching data from softwares:`, error)
+      return { status: 500, error: `Error fetching data from softwares` }
     }
     return { status: 200, data }
   } catch (error) {
-    console.error(`Unexpected error fetching data from ${tableName}:`, error)
-    return { status: 500, error: `Unexpected error fetching data from ${tableName}` }
+    console.error(`Unexpected error fetching data from softwares:`, error)
+    return { status: 500, error: `Unexpected error fetching data from softwares` }
   }
 }
 
-export async function updateLayot() {
+export async function getTags() {
+  try {
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+      .from('tags')
+      .select('*')
+      .order('name', { ascending: true })
+    if (error) {
+      console.error(`Error fetching data from tags:`, error)
+      return { status: 500, error: `Error fetching data from tags` }
+    }
+    return { status: 200, data }
+  } catch (error) {
+    console.error(`Unexpected error fetching data from tags:`, error)
+    return { status: 500, error: `Unexpected error fetching data from tags` }
+  }
+}
+
+export async function updateLayout() {
   try {
     revalidatePath('/', 'layout')
     return { error: null }
   } catch (error) {
-    console.log(27)
+    return { error: error.message }
+  }
+}
 
+export async function updateUploadImage() {
+  try {
+    revalidatePath('/upload-image', 'layout')
+    return { error: null }
+  } catch (error) {
     return { error: error.message }
   }
 }

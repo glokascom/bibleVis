@@ -26,18 +26,19 @@ export default function TagInput({
   const [allTags, setAllTags] = useState(initialTags)
   const tagsContainerRef = useRef(null)
   const inputRef = useRef(null)
-
+  const initialAIGeneration = useRef(isAIGeneration)
   const totalChars =
     selectedTags.reduce((acc, t) => acc + t.name.length, 0) + inputValue.length
 
   useEffect(() => {
     onTagsChange({ allTags, selectedTags })
   }, [allTags, onTagsChange, selectedTags])
-
   useEffect(() => {
-    setSelectedTags([])
-  }, [isAIGeneration])
-
+    if (initialAIGeneration.current !== isAIGeneration) {
+      setSelectedTags([])
+      setAllTags(initialTags)
+    }
+  }, [isAIGeneration, initialTags])
   useEffect(() => {
     onBlur({
       value: isTagInput ? selectedTags : inputValue,
@@ -69,21 +70,14 @@ export default function TagInput({
 
     if (value.endsWith(',')) {
       const trimmedValue = value.slice(0, -1).trim()
-
-      if (trimmedValue) {
-        addTagsFromInput(trimmedValue)
-      }
-
+      if (trimmedValue) addTagsFromInput(trimmedValue)
       setInputValue('')
-    } else {
-      if (!isTagInput && value.length <= limitLettersAllTags) {
-        setInputValue(value)
-      } else if (isTagInput) {
-        setInputValue(value)
-      }
-
-      updateSuggestions(value, selectedTags)
+      return
     }
+    if (isTagInput || value.length <= limitLettersAllTags) {
+      setInputValue(value)
+    }
+    updateSuggestions(value, selectedTags)
   }
 
   const filterTagsByType = useCallback(() => {
