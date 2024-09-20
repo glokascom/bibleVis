@@ -138,7 +138,7 @@ function AuthForm() {
       if (response.status === 'error') {
         setSignupErrors({ message: response.message, fields: response?.errors || [] })
       } else {
-        push('/')
+        push('/success-sign-up')
       }
     } catch (error) {
       console.error(error)
