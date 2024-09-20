@@ -35,6 +35,24 @@ interface ImageResponse {
   totalCount: number
 }
 
+export async function getLikeCountForImage(imageId: number): Promise<number> {
+  try {
+    const { count, error } = await supabaseService
+      .from('likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('image_id', imageId)
+
+    if (error) throw error
+    return count || 0
+  } catch (error) {
+    console.error(
+      `Error fetching like count for image ${imageId}:`,
+      (error as Error).message
+    )
+    return 0
+  }
+}
+
 export async function getUserImagesWithLikes(
   userId: string,
   page: number = 1,
@@ -72,20 +90,25 @@ export async function getUserImagesWithLikes(
       likedImages = new Set(likes?.map((like) => like.image_id))
     }
 
-    const imagesWithLikes = images.map((image) => {
-      const imagePath = image.original_file_path
-        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
-        : null
+    const imagesWithLikes = await Promise.all(
+      images.map(async (image) => {
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
 
-      const isOwnedByCurrentUser = image.user_id === currentUserId
+        const isOwnedByCurrentUser = image.user_id === currentUserId
 
-      return {
-        ...image,
-        liked_by_current_user: likedImages.has(image.id),
-        imagePath,
-        isOwnedByCurrentUser,
-      }
-    })
+        const total_likes = await getLikeCountForImage(image.id)
+
+        return {
+          ...image,
+          liked_by_current_user: likedImages.has(image.id),
+          imagePath,
+          isOwnedByCurrentUser,
+          total_likes,
+        }
+      })
+    )
 
     return { images: imagesWithLikes, totalCount: totalCount || 0 }
   } catch (error) {

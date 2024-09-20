@@ -56,6 +56,24 @@ function Gallery({ profileUserId }) {
     isLoadingRef.current = false
   }, [profileUserId, page, hasMore])
 
+  const resetAndReloadImages = async () => {
+    setPage(1)
+    setHasMore(true)
+    setImages([])
+    await loadMoreImages()
+  }
+
+  const handleImageDelete = async (deletedImageId) => {
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((img) => img.id !== deletedImageId)
+      return updatedImages
+    })
+
+    setTotalImages((prevTotal) => prevTotal - 1)
+
+    await resetAndReloadImages()
+  }
+
   return (
     <>
       <div className="mb-4 flex items-center">
@@ -76,9 +94,9 @@ function Gallery({ profileUserId }) {
               <div key={image.id}>
                 <ImageForGallery
                   image={image}
-                  fullInfo={image.fullInfo}
                   allImages={images}
                   currentIndex={index}
+                  onDelete={handleImageDelete}
                 />
               </div>
             ))}

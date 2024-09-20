@@ -7,9 +7,9 @@ import { Image } from '@nextui-org/image'
 import { toggleLike as toggleLikeAction } from '../(web)/[@username]/actions/imagesActions'
 import { BVButton } from './BVButton'
 
-function LikesCounter({ imageInfo, isLike }) {
+function LikesCounter({ imageInfo, isLike, totalLikes }) {
   const [isLiked, setIsLiked] = useState(!!isLike)
-  const [count, setCount] = useState(imageInfo.total_likes)
+  const [count, setCount] = useState(totalLikes)
   const [isLoading, setIsLoading] = useState(false)
   const handleToggleLike = useCallback(() => {
     setIsLiked((prevIsLiked) => !prevIsLiked)

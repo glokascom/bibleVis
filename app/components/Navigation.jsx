@@ -160,9 +160,6 @@ function Navigation({ user }) {
                 <DropdownItem key="my_profile" href={`/@${user.username}`} showDivider>
                   My Profile
                 </DropdownItem>
-                <DropdownItem key="edit_profile" href="/user/edit" showDivider>
-                  Edit Profile
-                </DropdownItem>
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
