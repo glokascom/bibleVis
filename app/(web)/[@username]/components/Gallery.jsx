@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -9,7 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { BVButton } from '@/app/components/BVButton'
 import ImageForGallery from '@/app/components/ImageForGallery'
 
-import { loadNextPageExtended } from '../actions/imagesActions'
+import { loadNextPage } from '../actions/imagesActions'
 
 const ResponsiveMasonry = dynamic(
   () => import('react-responsive-masonry').then((mod) => mod.ResponsiveMasonry),
@@ -24,35 +24,23 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = false }) {
-  const [images, setImages] = useState(initialImages)
+function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) {
+  const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
-  const [mounted, setMounted] = useState(false)
-  const [totalImages, setTotalImages] = useState()
+  const [totalImages, setTotalImages] = useState(0)
   const isLoadingRef = useRef(false)
 
   useEffect(() => {
-    setImages(initialImages)
-  }, [initialImages])
-
-  useEffect(() => {
-    const initialize = async () => {
-      await loadMoreImages()
-      setMounted(true)
-    }
-
-    initialize()
+    loadMoreImages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const loadMoreImages = async () => {
+  const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPageExtended(
-      page,
-      followUserId
-    )
+    const { images: newImages, totalCount } = await loadNextPage(profileUserId, page)
 
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
@@ -68,7 +56,8 @@ function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = fa
     }
 
     isLoadingRef.current = false
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileUserId, page, hasMore])
 
   const resetAndReloadImages = async () => {
     setPage(1)
@@ -87,8 +76,6 @@ function Gallery({ followUserId, initialImages, isAuthenticated, isMainPage = fa
 
     await resetAndReloadImages()
   }
-
-  if (!mounted) return null
 
   return (
     <>

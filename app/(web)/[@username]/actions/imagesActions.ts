@@ -54,10 +54,10 @@ export async function getLikeCountForImage(imageId: number): Promise<number> {
 }
 
 export async function getUserImagesWithLikes(
-  currentUserId: string | null,
-  userId?: string,
+  userId: string | null,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
+  currentUserId?: string | null
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
@@ -118,30 +118,6 @@ export async function getUserImagesWithLikes(
     console.error('Error fetching user images:', (error as Error).message)
     return { images: [], totalCount: 0 }
   }
-}
-
-export const getImages = async (
-  currentUserId: string,
-  userId?: string,
-  page: number = 1,
-  pageSize: number = 10
-): Promise<ImageResponse> => {
-  try {
-    const data = await getUserImagesWithLikes(currentUserId, userId, page, pageSize)
-    return data
-  } catch (error) {
-    console.error('Error in getImages:', (error as Error).message)
-    return { images: [], totalCount: 0 }
-  }
-}
-
-export const loadNextPage = async (
-  userId: string,
-  page: number
-): Promise<ImageResponse> => {
-  const { id: currentUserId } = (await getUser()).user
-
-  return await getImages(currentUserId, userId, page)
 }
 
 interface LikeResponse {
@@ -307,20 +283,26 @@ interface ExtendedImageResponse {
   totalCount: number
 }
 
-export const loadNextPageExtended = async (
+export const loadNextPage = async (
+  userId: string | null,
   page: number,
-  userId?: string
+  pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
-  const { user } = await getUser()
-  const currentUserId = user?.id || null
-
-  const { images, totalCount } = await getImages(currentUserId, userId, page)
+  const { user: currentUser } = await getUser()
+  const { images, totalCount } = await getUserImagesWithLikes(
+    userId,
+    page,
+    pageSize,
+    currentUser?.id
+  )
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
       const [relatedImages, { existingLike }] = await Promise.all([
         getRandomImagesExcluding(image.user_id, image.id),
-        currentUserId ? checkIfLiked(image.id) : { existingLike: null, fetchError: null },
+        currentUser?.id
+          ? checkIfLiked(image.id)
+          : { existingLike: null, fetchError: null },
       ])
 
       return {
@@ -330,7 +312,7 @@ export const loadNextPageExtended = async (
           relatedImages,
           isLike: !!existingLike,
           isFollowed: false,
-          isCurrentUser: currentUserId === image.user_id,
+          isCurrentUser: currentUser?.id === image.user_id,
         },
       }
     })

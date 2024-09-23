@@ -64,13 +64,13 @@ export async function toggleSubscription(followingUuid: string) {
 
 export async function checkIfSubscribed(followingUuid: string): Promise<boolean | null> {
   try {
-    const user = await getUser()
+    const { user } = await getUser()
     if (!user) {
       console.error('User not found')
       return null
     }
 
-    const followerUuid = user.user.id
+    const followerUuid = user.id
 
     const { data, error } = await supabaseService
       .from('subscriptions')

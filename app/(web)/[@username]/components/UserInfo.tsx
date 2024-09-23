@@ -3,25 +3,27 @@
 import { useState } from 'react'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
-import { UserInfoProps } from '@/app/types/subscription'
+import { UserProps } from '@/app/types/subscription'
 
 import { toggleSubscription } from '../actions/userActions'
 
-const UserInfo: React.FC<UserInfoProps> = ({
+const UserInfo: React.FC<UserProps> = ({
   isCurrentUser,
-  followUserInfo,
+  profileUser,
   initialIsFollowed,
-  userInfo,
+  user,
 }) => {
+  const pathname = usePathname()
   const [isFollowed, setIsFollowed] = useState<boolean>(initialIsFollowed || false)
-  const [totalFollowers, setTotalFollowers] = useState(followUserInfo.total_followers)
+  const [totalFollowers, setTotalFollowers] = useState(profileUser.total_followers)
 
   const handleToggleFollow = async () => {
     try {
-      const result = await toggleSubscription(followUserInfo.id)
+      const result = await toggleSubscription(profileUser.id)
       if (result === null) return
       if (result.error) {
         throw new Error(result.error)
@@ -39,10 +41,10 @@ const UserInfo: React.FC<UserInfoProps> = ({
       <div className="relative flex w-full flex-col items-center justify-between md:gap-3 lg:gap-5">
         <BVAvatar
           className="absolute bottom-0 left-0 h-14 w-14 text-mega md:relative md:bottom-auto md:left-auto md:h-20 md:w-20 2xl:h-36 2xl:w-36"
-          src={followUserInfo.avatarUrl}
-          alt={`${followUserInfo.username}'s avatar`}
+          src={profileUser.avatarUrl}
+          alt={`${profileUser.username}'s avatar`}
         />
-        <div className="text-semixlarge font-bold">{followUserInfo.username}</div>
+        <div className="text-semixlarge font-bold">{profileUser.username}</div>
         <div className="flex flex-row-reverse items-center gap-1 xl:flex-col">
           <div className="text-small text-secondary-500">Followers</div>
           <div className="text-small">{totalFollowers}</div>
@@ -53,8 +55,14 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <BVButton as={Link} href="/user/edit" fullWidth className="mt-5">
             Edit Profile
           </BVButton>
-        ) : !userInfo ? (
-          <BVButton as={Link} href="/login" fullWidth color="primary" className="mt-5">
+        ) : !user ? (
+          <BVButton
+            as={Link}
+            href={`/login?redirectedFrom=${pathname}`}
+            fullWidth
+            color="primary"
+            className="mt-5"
+          >
             Follow
           </BVButton>
         ) : (

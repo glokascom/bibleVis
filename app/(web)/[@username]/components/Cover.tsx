@@ -5,11 +5,11 @@ import Image from 'next/image'
 import { BVLink } from '@/app/components/BVLink'
 import { CoverProps } from '@/app/types/subscription'
 
-function Cover({ isCurrentUser, followUserInfo }: CoverProps) {
+function Cover({ isCurrentUser, profileUser }: CoverProps) {
   return (
-    <div className="relative max-h-[400px] overflow-hidden rounded-medium">
+    <div className="relative h-full max-h-[400px] overflow-hidden rounded-medium">
       <Image
-        src={followUserInfo.coverUrl}
+        src={profileUser.coverUrl}
         alt="cover"
         className="h-full object-cover"
         sizes="(max-width: 640px) 100vw, 50vw"
