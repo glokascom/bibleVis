@@ -16,7 +16,6 @@ function formatDate(dateString) {
 
 function Description({ imageInfo, isLike, isAuthenticated, totalLikes }) {
   const statistics = [
-    //TODO: добавить механизм подсчета просмотров и скачиваний
     { label: 'Views', value: imageInfo.total_views },
     { label: 'Downloads', value: imageInfo.total_downloads },
     {
