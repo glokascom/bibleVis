@@ -16,6 +16,7 @@ import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 import PasswordStrengthMeter from './PasswordStrengthMeter'
+import SuccessSignUpForm from './SuccessSignUp'
 
 function AuthForm() {
   const searchParams = useSearchParams()
@@ -42,8 +43,10 @@ function AuthForm() {
   const [emailSignup, setEmailSignup] = useState('')
   const [passwordSignup, setPasswordSignup] = useState('')
   const [usernameSignup, setUsernameSignup] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const { push, refresh } = useRouter()
+  const [isSignupSuccess, setIsSignupSuccess] = useState(false)
 
   const toggleSignupVisibility = () => {
     setIsSignupVisible((prev) => !prev)
@@ -120,26 +123,34 @@ function AuthForm() {
       })
       return
     }
-    const response: ApiResponse<unknown> = await signup(
-      emailSignup,
-      passwordSignup,
-      usernameSignup
-    )
+    setLoading(true)
+    try {
+      const response: ApiResponse<unknown> = await signup(
+        emailSignup,
+        passwordSignup,
+        usernameSignup
+      )
 
-    if (response.status === 'error') {
-      setSignupErrors({
-        message: response.message,
-        fields: response?.errors || [],
-      })
-    } else {
-      push(searchParams.get('redirectedFrom') ?? '/')
-      refresh()
+      if (response.status === 'error') {
+        setSignupErrors({
+          message: response.message,
+          fields: response?.errors || [],
+        })
+      } else {
+        setIsSignupSuccess(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setSignupErrors({ message: 'Something went wrong. Please try again.', fields: [] })
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleLogin = async () => {
     setLoginErrors({ message: '', fields: [] })
     const errors: { field?: string; message: string }[] = []
+
     if (!emailLogin) {
       errors.push({ field: 'email', message: 'Email is required' })
     }
@@ -147,25 +158,38 @@ function AuthForm() {
     if (!passwordLogin) {
       errors.push({ field: 'password', message: 'Password is required' })
     }
+
     if (errors.length > 0) {
-      setLoginErrors({
-        message: 'Validation errors occurred',
-        fields: errors,
-      })
+      setLoginErrors({ message: 'Validation errors occurred', fields: errors })
       return
     }
-    const response: ApiResponse<unknown> = await login(emailLogin, passwordLogin)
 
-    if (response.status === 'error') {
-      setLoginErrors({
-        message: response.message,
-        fields: response?.errors || [],
-      })
-    } else {
-      push(searchParams.get('redirectedFrom') ?? '/')
-      refresh()
+    setLoading(true)
+
+    try {
+      const response: ApiResponse<unknown> = await login(emailLogin, passwordLogin)
+
+      if (response.status === 'error') {
+        setLoginErrors({
+          message: response.message,
+          fields: response?.errors || [],
+        })
+      } else {
+        push(searchParams.get('redirectedFrom') ?? '/')
+        refresh()
+      }
+    } catch (error) {
+      console.error(error)
+      setLoginErrors({ message: 'Something went wrong. Please try again.', fields: [] })
+    } finally {
+      setLoading(false)
     }
   }
+
+  if (isSignupSuccess) {
+    return <SuccessSignUpForm />
+  }
+
   return (
     <>
       <div className="z-50 flex h-[90vh] w-[90vw] flex-row overflow-hidden rounded-medium">
@@ -195,7 +219,12 @@ function AuthForm() {
                   className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
                   fullWidth
                   radius="full"
-                  onClick={() => push('/api/auth/google')}
+                  onClick={() =>
+                    push(
+                      '/api/auth/google?redirectedFrom=' +
+                        searchParams.get('redirectedFrom')
+                    )
+                  }
                 >
                   <Image
                     src="/google.svg"
@@ -313,8 +342,8 @@ function AuthForm() {
                 {signupErrors?.message && (
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
-                <BVButton fullWidth onClick={handleSignup}>
-                  Join
+                <BVButton fullWidth onClick={handleSignup} isLoading={loading}>
+                  {'Join'}
                 </BVButton>
               </Tab>
               <Tab key="log-in" title="Log in">
@@ -422,8 +451,8 @@ function AuthForm() {
                 {loginErrors?.message && (
                   <p className="my-4 text-small text-danger">{loginErrors.message}</p>
                 )}
-                <BVButton fullWidth onClick={handleLogin}>
-                  Join
+                <BVButton fullWidth onClick={handleLogin} isLoading={loading}>
+                  {'Log in'}
                 </BVButton>
                 <BVLink
                   as={Link}

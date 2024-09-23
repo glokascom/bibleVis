@@ -15,7 +15,9 @@ import { Image } from '@nextui-org/image'
 import {
   checkIfLiked,
   deleteImage,
+  getImageStats,
   getLikeCountForImage,
+  incrementImageViews,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
 import { BVAvatar } from './BVAvatar'
@@ -24,7 +26,7 @@ import DeleteConfirmationModal from './DeleteConfirmationModal'
 import ImagePageContent from './ImagePageContent'
 import { Modal } from './Modal'
 
-function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
+function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthenticated }) {
   const [isLiked, setIsLiked] = useState(!!image.liked_by_current_user)
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -38,6 +40,8 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
   const originalPathname = useRef(pathname)
 
   const handleToggleLike = useCallback(() => {
+    if (!isAuthenticated) return
+
     setIsLiked((prevIsLiked) => !prevIsLiked)
 
     const imageIndex = allImages.findIndex((img) => img.id === image.id)
@@ -105,10 +109,17 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
     window.history.pushState(null, '', newUrl)
   }
 
-  const openImageModal = () => {
+  const openImageModal = async () => {
     setIsImageModalOpen(true)
     originalPathname.current = pathname
     updateUrl(image.id)
+
+    const imageIndex = allImages.findIndex((img) => img.id === image.id)
+
+    allImages[imageIndex].total_views += 1
+    if (!(await incrementImageViews(image.id))) {
+      allImages[imageIndex].total_views -= 1
+    }
   }
 
   const closeImageModal = async () => {
@@ -121,7 +132,11 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
 
     const imageIndex = allImages.findIndex((img) => img.id === image.id)
     allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
-    allImages[currentImageIndex].fullInfo.isLike = !!existingLike
+    allImages[imageIndex].fullInfo.isLike = !!existingLike
+
+    const { totalViews, totalDownloads } = await getImageStats(image.id)
+    allImages[imageIndex].total_views = totalViews
+    allImages[imageIndex].total_downloads = totalDownloads
   }
 
   return (
@@ -157,17 +172,19 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
               </div>
             </BVLink>
           </div>
-          <button
-            className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
-            onClick={handleLikeClick}
-            disabled={isLoading}
-          >
-            <Image
-              src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
-              alt="heart"
-              radius="none"
-            />
-          </button>
+          {isAuthenticated && (
+            <button
+              className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+              onClick={handleLikeClick}
+              disabled={isLoading}
+            >
+              <Image
+                src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
+                alt="heart"
+                radius="none"
+              />
+            </button>
+          )}
           {image.fullInfo.isCurrentUser && (
             <Dropdown
               className="bg-secondary-50"
@@ -224,6 +241,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex }) {
             isCurrentUser={allImages[currentImageIndex].fullInfo.isCurrentUser}
             onPrevImage={handlePrevImage}
             onNextImage={handleNextImage}
+            isAuthenticated={isAuthenticated}
           />
         </Modal>
       )}

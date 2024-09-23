@@ -53,32 +53,70 @@ export async function getLikeCountForImage(imageId: number): Promise<number> {
   }
 }
 
+export async function getImageStats(imageId: number) {
+  try {
+    const { data, error } = await supabaseService
+      .from('images')
+      .select('total_views, total_downloads')
+      .eq('id', imageId)
+      .single()
+
+    if (error) {
+      throw new Error(`Error fetching image stats: ${error.message}`)
+    }
+
+    return {
+      totalViews: data?.total_views || 0,
+      totalDownloads: data?.total_downloads || 0,
+    }
+  } catch (error) {
+    console.error('Error fetching image stats:', error)
+    return null
+  }
+}
+
+export async function incrementImageViews(imageId: number) {
+  try {
+    const { error } = await supabaseService.rpc('increment_views', { image_id: imageId })
+
+    if (error) {
+      throw new Error(`Error incrementing image views: ${error.message}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error incrementing image views:', error)
+    return false
+  }
+}
+
 export async function getUserImagesWithLikes(
-  userId: string,
+  userId: string | null,
   page: number = 1,
   pageSize: number = 10,
-  currentUserId: string | null = null
+  currentUserId?: string | null
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
 
-    const { count: totalCount, error: countError } = await supabaseService
+    let query = supabaseService
       .from('images')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
+      .select('*, users(username)', { count: 'exact' })
 
-    if (countError) throw countError
+    if (userId) {
+      query = query.eq('user_id', userId)
+    }
 
-    const { data: images, error } = await supabaseService
-      .from('images')
-      .select('*, users(username)')
-      .eq('user_id', userId)
-      .range(rangeStart, rangeEnd)
-      .order('uploaded_at', { ascending: false })
+    const {
+      data: images,
+      count,
+      error,
+    } = await query.range(rangeStart, rangeEnd).order('uploaded_at', { ascending: false })
 
     if (error) throw error
-    if (!images || images.length === 0) return { images: [], totalCount: totalCount || 0 }
+    if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
+
     let likedImages = new Set()
     if (currentUserId) {
       const { data: likes, error: likesError } = await supabaseService
@@ -96,7 +134,9 @@ export async function getUserImagesWithLikes(
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
 
-        const isOwnedByCurrentUser = image.user_id === currentUserId
+        const isOwnedByCurrentUser = currentUserId
+          ? image.user_id === currentUserId
+          : false
 
         const total_likes = await getLikeCountForImage(image.id)
 
@@ -110,7 +150,7 @@ export async function getUserImagesWithLikes(
       })
     )
 
-    return { images: imagesWithLikes, totalCount: totalCount || 0 }
+    return { images: imagesWithLikes, totalCount: count || 0 }
   } catch (error) {
     console.error('Error fetching user images:', (error as Error).message)
     return { images: [], totalCount: 0 }
@@ -281,7 +321,7 @@ interface ExtendedImageResponse {
 }
 
 export const loadNextPage = async (
-  userId: string,
+  userId: string | null,
   page: number,
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
@@ -296,8 +336,10 @@ export const loadNextPage = async (
   const extendedImages = await Promise.all(
     images.map(async (image) => {
       const [relatedImages, { existingLike }] = await Promise.all([
-        getRandomImagesExcluding(userId, image.id),
-        checkIfLiked(image.id),
+        getRandomImagesExcluding(image.user_id, image.id),
+        currentUser?.id
+          ? checkIfLiked(image.id)
+          : { existingLike: null, fetchError: null },
       ])
 
       return {

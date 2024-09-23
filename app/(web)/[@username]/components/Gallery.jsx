@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import { BVButton } from '@/app/components/BVButton'
 import ImageForGallery from '@/app/components/ImageForGallery'
 
 import { loadNextPage } from '../actions/imagesActions'
@@ -23,7 +24,7 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ profileUserId }) {
+function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -40,6 +41,7 @@ function Gallery({ profileUserId }) {
 
     isLoadingRef.current = true
     const { images: newImages, totalCount } = await loadNextPage(profileUserId, page)
+
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
@@ -54,6 +56,7 @@ function Gallery({ profileUserId }) {
     }
 
     isLoadingRef.current = false
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileUserId, page, hasMore])
 
   const resetAndReloadImages = async () => {
@@ -76,10 +79,18 @@ function Gallery({ profileUserId }) {
 
   return (
     <>
-      <div className="mb-4 flex items-center">
-        <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
-        <span className="mt-6 font-sans text-base text-secondary">Images</span>
-        <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
+      <div className="mb-5 mt-10 flex items-center">
+        {isMainPage ? (
+          <BVButton color="secondary" isDisabled>
+            Photos
+          </BVButton>
+        ) : (
+          <>
+            <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
+            <span className="mt-6 font-sans text-base text-secondary">Images</span>
+            <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
+          </>
+        )}
       </div>
       <InfiniteScroll
         dataLength={images.length}
@@ -88,7 +99,7 @@ function Gallery({ profileUserId }) {
         loader={<h4>Loading...</h4>}
         endMessage={<p>No more images</p>}
       >
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 640: 3, 1280: 4 }}>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 640: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.id}>
@@ -96,6 +107,7 @@ function Gallery({ profileUserId }) {
                   image={image}
                   allImages={images}
                   currentIndex={index}
+                  isAuthenticated={isAuthenticated}
                   onDelete={handleImageDelete}
                 />
               </div>
