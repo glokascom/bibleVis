@@ -77,25 +77,10 @@ export async function getImageStats(imageId: number) {
 
 export async function incrementImageViews(imageId: number) {
   try {
-    const { data, error } = await supabaseService
-      .from('images')
-      .select('total_views')
-      .eq('id', imageId)
-      .single()
+    const { error } = await supabaseService.rpc('increment_views', { image_id: imageId })
 
     if (error) {
-      throw new Error(`Error fetching image views: ${error.message}`)
-    }
-
-    const currentViews = data?.total_views || 0
-
-    const { error: updateError } = await supabaseService
-      .from('images')
-      .update({ total_views: currentViews + 1 })
-      .eq('id', imageId)
-
-    if (updateError) {
-      throw new Error(`Error updating image views: ${updateError.message}`)
+      throw new Error(`Error incrementing image views: ${error.message}`)
     }
 
     return true

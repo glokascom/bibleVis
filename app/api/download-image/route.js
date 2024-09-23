@@ -50,25 +50,10 @@ export async function POST(request) {
 
 async function incrementDownloads(src) {
   try {
-    const { data, error: fetchError } = await supabaseService
-      .from('images')
-      .select('total_downloads')
-      .eq('original_file_path', src)
-      .single()
+    const { error } = await supabaseService.rpc('increment_downloads', { src })
 
-    if (fetchError || !data) {
-      throw new Error('Failed to fetch total downloads')
-    }
-
-    const currentDownloads = data.total_downloads
-
-    const { error: updateError } = await supabaseService
-      .from('images')
-      .update({ total_downloads: currentDownloads + 1 })
-      .eq('original_file_path', src)
-
-    if (updateError) {
-      throw new Error('Failed to update total downloads')
+    if (error) {
+      throw new Error('Failed to increment total downloads: ' + error.message)
     }
 
     return true

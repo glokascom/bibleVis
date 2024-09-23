@@ -1,5 +1,5 @@
 import SuccessSignUpForm from '@/app/components/SuccessSignUp'
 
-export default function SuccessSignUpPoage() {
+export default function SuccessSignUpPage() {
   return <SuccessSignUpForm />
 }
