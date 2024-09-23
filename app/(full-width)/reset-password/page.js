@@ -11,7 +11,6 @@ export default async function ResetPassword({ searchParams }) {
   const code = searchParams['code']
 
   if (!code) {
-    // return the user to an error page with instructions
     return redirect(`${origin}/auth/auth-code-error`)
   }
 
