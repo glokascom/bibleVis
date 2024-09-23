@@ -1,99 +1,74 @@
-export default function PasswordStrengthMeter({ password }) {
-  const calculateStrength = () => {
-    if (password.length === 0) {
-      return { message: '', strength: '', color: 'gray' }
-    }
+import { useMemo } from 'react'
 
-    if (password.length < 6) {
-      return {
-        message: 'The password must be at least 6 characters',
-        strength: 'low',
-        color: 'red',
-      }
-    }
+export default function PasswordStrengthMeter({ password }) {
+  const getPasswordStrength = () => {
+    if (password.length === 0) return { strength: '', message: '', color: 'gray' }
+    if (password.length < 6)
+      return { strength: 'low', message: 'At least 6 characters', color: 'red' }
 
     let strengthPoints = 0
-
     if (/[a-z]/.test(password)) strengthPoints++
     if (/[A-Z]/.test(password)) strengthPoints++
     if (/\d/.test(password)) strengthPoints++
     if (/[^\w]/.test(password)) strengthPoints++
 
-    if (strengthPoints === 1) {
-      return {
-        message: 'Include at least one number and letter for better security.',
+    const strengthLevels = {
+      1: {
         strength: 'poor',
+        message: 'Add letters and numbers for better security.',
         color: 'red',
-      }
-    }
-
-    if (strengthPoints === 2) {
-      return {
-        message:
-          'Include both uppercase and lowercase letters, numbers, and special characters.',
+      },
+      2: {
         strength: 'moderate',
+        message: 'Include uppercase, lowercase, numbers, and symbols.',
         color: 'yellow',
-      }
-    }
-
-    if (strengthPoints === 3) {
-      return {
+      },
+      3: {
+        strength: 'strong',
         message:
           'Include a mix of uppercase, lowercase, numbers, and special characters for maximum security.',
-        strength: 'strong',
         color: 'green',
-      }
+      },
+      4: { strength: 'strong', message: '', color: 'green' },
     }
 
-    if (strengthPoints > 3) {
-      return {
-        message: '',
-        strength: 'strong',
-        color: 'green',
-      }
-    }
-
-    return { message: '', strength: '', color: 'gray' }
+    return strengthLevels[strengthPoints] || { strength: '', message: '', color: 'gray' }
   }
 
-  const { message, strength, color } = calculateStrength()
+  const { strength, message, color } = useMemo(getPasswordStrength, [password])
+
+  const colorClasses = {
+    red: 'w-1/4 bg-danger',
+    yellow: 'w-2/4 bg-warning',
+    green: 'w-full bg-primary',
+    gray: 'w-0',
+  }
 
   return (
     <div className="flex flex-col space-y-2">
       <div className="h-2 w-full rounded-full bg-secondary-50">
-        <div
-          className={`h-2 rounded-full ${
-            color === 'red'
-              ? 'w-1/4 bg-danger'
-              : color === 'yellow'
-                ? 'w-2/4 bg-warning'
-                : color === 'green'
-                  ? 'w-full bg-primary'
-                  : 'w-0'
-          }`}
-        ></div>
+        <div className={`h-2 rounded-full ${colorClasses[color]}`}></div>
       </div>
 
-      {(strength !== 'strong' || (strength === 'strong' && message)) &&
-        color !== 'gray' && (
-          <div className="flex flex-col">
-            <span className="font-sans font-semibold text-secondary-600">
-              Strength{' '}
-              <span
-                className={`${
-                  color === 'red'
-                    ? 'text-danger'
-                    : color === 'yellow'
-                      ? 'text-warning'
-                      : 'text-primary'
-                }`}
-              >
-                {strength}
-              </span>
+      {message && color !== 'gray' && (
+        <div className="flex flex-col">
+          <span className="font-sans font-semibold text-secondary-600">
+            Strength{' '}
+            <span
+              className={
+                color === 'red'
+                  ? 'text-danger'
+                  : color === 'yellow'
+                    ? 'text-warning'
+                    : 'text-primary'
+              }
+            >
+              {strength}
             </span>
-            <span className="font-sans text-sm text-secondary-400">{message}</span>
-          </div>
-        )}
+          </span>
+          <span className="font-sans text-sm text-secondary-400">{message}</span>
+        </div>
+      )}
     </div>
   )
 }
