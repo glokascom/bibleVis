@@ -19,7 +19,7 @@ export default function PasswordStrengthMeter({ password }) {
     if (/\d/.test(password)) strengthPoints++
     if (/[^\w]/.test(password)) strengthPoints++
 
-    if (password.length >= 6 && strengthPoints === 1) {
+    if (strengthPoints === 1) {
       return {
         message: 'Include at least one number and letter for better security.',
         strength: 'poor',
@@ -27,7 +27,7 @@ export default function PasswordStrengthMeter({ password }) {
       }
     }
 
-    if (password.length >= 7 && strengthPoints >= 2 && password.length <= 10) {
+    if (strengthPoints === 2) {
       return {
         message:
           'Include both uppercase and lowercase letters, numbers, and special characters.',
@@ -36,20 +36,20 @@ export default function PasswordStrengthMeter({ password }) {
       }
     }
 
-    if (password.length >= 11) {
-      if (strengthPoints === 3) {
-        return {
-          message:
-            'Include a mix of uppercase, lowercase, numbers, and special characters for maximum security.',
-          strength: 'strong',
-          color: 'green',
-        }
-      } else {
-        return {
-          message: '',
-          strength: 'strong',
-          color: 'green',
-        }
+    if (strengthPoints === 3) {
+      return {
+        message:
+          'Include a mix of uppercase, lowercase, numbers, and special characters for maximum security.',
+        strength: 'strong',
+        color: 'green',
+      }
+    }
+
+    if (strengthPoints > 3) {
+      return {
+        message: '',
+        strength: 'strong',
+        color: 'green',
       }
     }
 
@@ -60,37 +60,40 @@ export default function PasswordStrengthMeter({ password }) {
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="h-2 w-full rounded-full bg-gray-200">
+      <div className="h-2 w-full rounded-full bg-secondary-50">
         <div
           className={`h-2 rounded-full ${
             color === 'red'
-              ? 'w-1/4 bg-red-500'
+              ? 'w-1/4 bg-danger'
               : color === 'yellow'
-                ? 'w-2/4 bg-yellow-500'
+                ? 'w-2/4 bg-warning'
                 : color === 'green'
-                  ? 'w-full bg-green-500'
+                  ? 'w-full bg-primary'
                   : 'w-0'
           }`}
         ></div>
       </div>
 
-      <div className="flex flex-col">
-        <span className="font-sans font-semibold text-secondary-600">
-          Strength{' '}
-          <span
-            className={`${
-              color === 'red'
-                ? 'text-red-500'
-                : color === 'yellow'
-                  ? 'text-yellow-500'
-                  : 'text-green-500'
-            }`}
-          >
-            {strength ? strength : ''}
-          </span>
-        </span>
-        <span className="font-sans text-sm text-secondary-400">{message}</span>
-      </div>
+      {(strength !== 'strong' || (strength === 'strong' && message)) &&
+        color !== 'gray' && (
+          <div className="flex flex-col">
+            <span className="font-sans font-semibold text-secondary-600">
+              Strength{' '}
+              <span
+                className={`${
+                  color === 'red'
+                    ? 'text-danger'
+                    : color === 'yellow'
+                      ? 'text-warning'
+                      : 'text-primary'
+                }`}
+              >
+                {strength}
+              </span>
+            </span>
+            <span className="font-sans text-sm text-secondary-400">{message}</span>
+          </div>
+        )}
     </div>
   )
 }
