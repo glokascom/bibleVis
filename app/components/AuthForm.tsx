@@ -15,6 +15,7 @@ import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import SuccessSignUpForm from './SuccessSignUp'
 
 function AuthForm() {
   const searchParams = useSearchParams()
@@ -44,6 +45,7 @@ function AuthForm() {
   const [loading, setLoading] = useState(false)
 
   const { push, refresh } = useRouter()
+  const [isSignupSuccess, setIsSignupSuccess] = useState(false)
 
   const toggleSignupVisibility = () => {
     setIsSignupVisible((prev) => !prev)
@@ -134,8 +136,7 @@ function AuthForm() {
           fields: response?.errors || [],
         })
       } else {
-        push('/success-sign-up')
-        refresh()
+        setIsSignupSuccess(true)
       }
     } catch (error) {
       console.error(error)
@@ -183,6 +184,11 @@ function AuthForm() {
       setLoading(false)
     }
   }
+
+  if (isSignupSuccess) {
+    return <SuccessSignUpForm />
+  }
+
   return (
     <>
       <div className="z-50 flex h-[90vh] w-[90vw] flex-row overflow-hidden rounded-medium">
