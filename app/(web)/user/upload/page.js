@@ -1,11 +1,13 @@
 import { getUser } from '@/app/actions/getUser'
 
-import { getDataFromTable } from './actions/getSoftwares'
+import { getSoftwares, getTags } from './actions/getSoftwares'
 import UploadImage from './components/UploadImage'
 
+export const dynamic = 'force-dynamic'
 export default async function EditUser() {
-  const softwareOptions = (await getDataFromTable('softwares')).data
-  const tagsOptions = (await getDataFromTable('tags')).data
+  const softwareOptions = (await getSoftwares()).data
+  const tagsOptions = (await getTags()).data
+
   const user = (await getUser()).user
   return (
     <>

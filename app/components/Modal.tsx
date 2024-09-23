@@ -16,8 +16,10 @@ export function Modal({ closeModal, showCloseButton = false, children }: ModalPr
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 top-0 z-40 flex items-center justify-center bg-black/50">
-      <div className={`relative mx-5 lg:mx-0 ${showCloseButton ? 'mt-6 lg:mt-0' : ''}`}>
+    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-black/50">
+      <div
+        className={`relative my-6 max-h-[90vh] lg:mx-0 ${showCloseButton ? 'mt-6 lg:mt-0' : ''}`}
+      >
         <button
           onClick={onDismiss}
           className={`absolute -top-12 right-0 h-10 w-10 items-center justify-center rounded-full bg-secondary-50 text-secondary lg:-right-12 lg:top-0 ${showCloseButton ? 'flex' : 'hidden lg:flex'}`}

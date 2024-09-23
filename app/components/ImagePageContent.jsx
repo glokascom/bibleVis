@@ -1,4 +1,9 @@
+'use client'
+
+import { useState } from 'react'
+
 import { Image } from '@nextui-org/image'
+import { Link } from '@nextui-org/react'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
@@ -12,14 +17,25 @@ function ImagePageContent({
   relatedImages,
   isFollowed,
   isLike,
+  totalLikes,
   isCurrentUser,
+  onPrevImage,
+  onNextImage,
+  isAuthenticated,
+  isModal = false,
 }) {
+  const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
+  const incrementDownloads = () => {
+    setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
+  }
   return (
-    <>
-      <div className="px-5">
-        <div className="flex flex-col md:flex-row md:items-start">
-          <div className="rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
-            {imageInfo.imagePath ? (
+    <div
+      className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}
+    >
+      <div className="flex flex-col md:flex-row md:items-start">
+        <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
+          {imageInfo.imagePath ? (
+            <>
               <Image
                 src={imageInfo.imagePath}
                 alt={imageInfo.title}
@@ -28,50 +44,96 @@ function ImagePageContent({
                   img: 'w-full h-auto aspect-video object-contain',
                 }}
               />
-            ) : (
-              <p className="text-center">Image not available</p>
-            )}
-          </div>
+              {isCurrentUser && (
+                <Link
+                  href={`/user/${imageInfo.id}`}
+                  className="absolute bottom-5 right-5 z-10 h-10 w-10 justify-center rounded-full bg-background"
+                >
+                  <Image
+                    src="/pencil.svg"
+                    alt="edit"
+                    width={18}
+                    height={18}
+                    radius="none"
+                  />
+                </Link>
+              )}
+            </>
+          ) : (
+            <p className="text-center">Image not available</p>
+          )}
+          {isModal && (
+            <div className="hidden md:block">
+              <button
+                onClick={onPrevImage}
+                className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
+              >
+                <Image src="/polygon.svg" alt="previous image" />
+              </button>
+              <button
+                onClick={onNextImage}
+                className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+              >
+                <Image src="/polygon.svg" alt="next image" />
+              </button>
+            </div>
+          )}
+        </div>
 
-          <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
-            <div className="flex flex-col gap-5 rounded-medium">
-              <div className="rounded-medium border bg-background p-5 shadow-small">
-                <Download imageInfo={imageInfo} />
-                <Description imageInfo={imageInfo} isLike={isLike} />
-                <CreatorDetails
-                  creator={imageInfo.users}
-                  followUserId={imageInfo.users.id}
-                  isFollowed={isFollowed}
-                  isCurrentUser={isCurrentUser}
-                />
-              </div>
+        <div className="my-2.5 flex justify-between md:hidden">
+          <button
+            onClick={onPrevImage}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
+          >
+            <Image src="/polygon.svg" alt="previous image" />
+          </button>
+          <button
+            onClick={onNextImage}
+            className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+          >
+            <Image src="/polygon.svg" alt="next image" />
+          </button>
+        </div>
 
+        <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
+          <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
+            <div className="rounded-medium border bg-background p-5 shadow-small">
+              <Download imageInfo={imageInfo} onDownload={incrementDownloads} />
+              <Description
+                imageInfo={imageInfo}
+                totalDownloads={totalDownloads}
+                isLike={isLike}
+                isAuthenticated={isAuthenticated}
+                totalLikes={totalLikes}
+              />
+              <CreatorDetails
+                creator={imageInfo.users}
+                followUserId={imageInfo.users.id}
+                isFollowed={isFollowed}
+                isCurrentUser={isCurrentUser}
+              />
+            </div>
+
+            {!isModal && (
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
+            )}
 
-              <div className="rounded-medium border bg-background p-5 shadow-small">
-                <TagList tags={imageInfo.tags} />
-              </div>
+            <div className="rounded-medium border bg-background p-5 shadow-small">
+              <TagList tags={imageInfo.tags} />
+            </div>
 
-              <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
-                <RelatedImages
-                  relatedImages={relatedImages}
-                  username={imageInfo.users.username}
-                />
-              </div>
+            <div className="rounded-medium border bg-background p-5 shadow-small">
+              <RelatedImages
+                relatedImages={relatedImages}
+                username={imageInfo.users.username}
+              />
             </div>
           </div>
         </div>
       </div>
-
-      <div className="mt-12 border-t px-5 py-10 md:hidden">
-        <RelatedImages
-          relatedImages={relatedImages}
-          username={imageInfo.users.username}
-        />
-      </div>
-    </>
+    </div>
   )
 }
 

@@ -14,15 +14,21 @@ import {
   DropdownTrigger,
 } from '@nextui-org/react'
 
-function Download({ imageInfo }) {
+function Download({ imageInfo = {}, onDownload }) {
   const [dropdownWidth, setDropdownWidth] = useState(0)
   const buttonGroupRef = useRef(null)
 
   const downloadImage = (size) => {
+    if (!imageInfo.file_sizes || !imageInfo.original_file_path) return
+
     const fileSize = imageInfo.file_sizes[size] || imageInfo.file_sizes.original
     const widthParam = fileSize ? `&width=${fileSize.width}` : ''
     const downloadUrl = `/api/download-image?src=${encodeURIComponent(imageInfo.original_file_path)}${widthParam}`
     window.location.href = downloadUrl
+
+    if (onDownload) {
+      onDownload()
+    }
   }
 
   useEffect(() => {
@@ -38,6 +44,8 @@ function Download({ imageInfo }) {
   }, [])
 
   const renderDropdownItems = () => {
+    if (!imageInfo.file_sizes) return null
+
     return Object.keys(imageInfo.file_sizes).map((sizeKey) => {
       const size = imageInfo.file_sizes[sizeKey]
       return (

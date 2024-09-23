@@ -19,7 +19,7 @@ export async function getUserInfoById(userId) {
   return data[0] || null
 }
 
-export async function getUserInfoByUsername(username) {
+export async function getUserByUsername(username) {
   const supabase = createClient()
 
   const { data, error } = await supabase
@@ -31,7 +31,7 @@ export async function getUserInfoByUsername(username) {
     throw new Error('Error fetching username: ' + error.message)
   }
   if (data.length === 0) {
-    return null
+    throw new Error('Error fetching username: user not found')
   } else {
     const { avatarUrl, coverUrl } = await getAvatars(data[0])
     return { ...data[0], avatarUrl, coverUrl }

@@ -2,6 +2,8 @@ import { getUser } from '@/app/actions/getUser'
 
 import ProfileCard from './components/ProfileCard'
 
+export const dynamic = 'force-dynamic'
+
 export default async function EditUser() {
   let user = null
 

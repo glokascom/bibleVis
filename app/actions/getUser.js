@@ -8,12 +8,8 @@ export async function getUser() {
   try {
     const { data, error } = await supabase.auth.getUser()
 
-    if (error) {
-      return { user: null, error }
-    }
-
-    if (!data?.user) {
-      return { user: null, error: new Error('The user was not found') }
+    if (error || !data?.user) {
+      return { user: null, error: error || new Error('The user was not found') }
     }
 
     const { data: userData, error: userError } = await supabaseService
@@ -22,19 +18,19 @@ export async function getUser() {
       .eq('id', data.user.id)
       .single()
 
-    if (error) {
+    if (userError) {
       return { user: null, error: userError }
     }
+
     const { avatarUrl, coverUrl } = await getAvatars(userData)
-    return {
-      user: {
-        ...userData,
-        provider: data.user.app_metadata.provider,
-        avatarUrl,
-        coverUrl,
-      },
-      error: null,
+    const user = {
+      ...userData,
+      provider: data.user.app_metadata.provider,
+      avatarUrl,
+      coverUrl,
     }
+
+    return { user, error: null }
   } catch (error) {
     return { user: null, error }
   }

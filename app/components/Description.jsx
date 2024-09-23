@@ -14,11 +14,10 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-function Description({ imageInfo, isLike }) {
+function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, totalLikes }) {
   const statistics = [
-    //TODO: добавить механизм подсчета просмотров и скачиваний
     { label: 'Views', value: imageInfo.total_views },
-    { label: 'Downloads', value: imageInfo.total_downloads },
+    { label: 'Downloads', value: totalDownloads },
     {
       label: 'Resolution',
       value: `${imageInfo.file_sizes.original.width}x${imageInfo.file_sizes.original.height}`,
@@ -28,7 +27,12 @@ function Description({ imageInfo, isLike }) {
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <LikesCounter imageInfo={imageInfo} isLike={isLike} />
+      <LikesCounter
+        imageInfo={imageInfo}
+        isLike={isLike}
+        isAuthenticated={isAuthenticated}
+        totalLikes={totalLikes}
+      />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
         <p>{imageInfo.description}</p>

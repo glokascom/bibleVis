@@ -4,14 +4,44 @@ import { revalidatePath } from 'next/cache'
 
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
+import {
+  checkUsernameAvailability,
+  validateCharacters,
+  validateContent,
+  validateLength,
+} from '@/app/utils/validation'
 
 export async function updateUsername(newUsername) {
   const { user, error: userError } = await getUser()
   if (userError) {
     return { error: userError?.message || 'User is not authenticated.' }
   }
+
   if (!newUsername) {
-    return { error: 'New username cannot be empty.' }
+    return { error: 'Username cannot be blank.' }
+  }
+
+  const lengthError = validateLength(newUsername)
+  if (lengthError) {
+    return { error: lengthError }
+  }
+
+  const characterError = validateCharacters(newUsername)
+  if (characterError) {
+    return { error: characterError }
+  }
+
+  const contentError = validateContent(newUsername)
+  if (contentError) {
+    return { error: contentError }
+  }
+
+  const { error: availabilityError } = await checkUsernameAvailability(
+    newUsername,
+    supabaseService
+  )
+  if (availabilityError) {
+    return { error: availabilityError }
   }
 
   try {
@@ -21,9 +51,6 @@ export async function updateUsername(newUsername) {
       .eq('id', user.id)
 
     if (updateError) {
-      if (updateError.code === '23505') {
-        return { error: 'Username already taken. Please try another.' }
-      }
       return { error: 'Error updating username: ' + updateError.message }
     }
 

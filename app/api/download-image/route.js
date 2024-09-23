@@ -48,12 +48,32 @@ export async function POST(request) {
   }
 }
 
+async function incrementDownloads(src) {
+  try {
+    const { error } = await supabaseService.rpc('increment_downloads', { src })
+
+    if (error) {
+      throw new Error('Failed to increment total downloads: ' + error.message)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error incrementing downloads:', error.message)
+    return false
+  }
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const src = searchParams.get('src')
   const width = searchParams.get('width')
 
   try {
+    const success = await incrementDownloads(src)
+    if (!success) {
+      throw new Error('Failed to increment downloads')
+    }
+
     const resizedBuffer = await processImage(src, width)
 
     return new Response(resizedBuffer, {

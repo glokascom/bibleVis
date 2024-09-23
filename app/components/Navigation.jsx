@@ -160,9 +160,6 @@ function Navigation({ user }) {
                 <DropdownItem key="my_profile" href={`/@${user.username}`} showDivider>
                   My Profile
                 </DropdownItem>
-                <DropdownItem key="edit_profile" href="/user/edit" showDivider>
-                  Edit Profile
-                </DropdownItem>
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
@@ -191,7 +188,11 @@ function Navigation({ user }) {
           ) : (
             <>
               <NavbarItem>
-                <BVButton as={Link} href="/login" className="hidden md:block">
+                <BVButton
+                  as={Link}
+                  href={`/login?redirectedFrom=${pathname}`}
+                  className="hidden md:block"
+                >
                   Log in
                 </BVButton>
               </NavbarItem>
@@ -251,7 +252,7 @@ function Navigation({ user }) {
                       License
                     </DropdownItem>
                     <DropdownItem key="login" className="text-primary">
-                      <Link href="/login">Log in</Link>
+                      <Link href={`/login?redirectedFrom=${pathname}`}>Log in</Link>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

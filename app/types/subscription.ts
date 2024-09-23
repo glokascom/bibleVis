@@ -3,7 +3,7 @@ export interface ToggleSubscriptionResult {
   error?: string
 }
 
-export interface FollowUserInfo {
+export interface ProfileUser {
   id: string
   username: string
   total_followers: number
@@ -14,26 +14,26 @@ export interface FollowUserInfo {
   avatarUrl: string
 }
 
-export interface UserInfo {
+export interface User {
   id: string
   username: string
   avatarUrl: string
   coverUrl: string
 }
 
-export interface UserInfoProps {
+export interface UserProps {
   isCurrentUser: boolean
-  followUserInfo: FollowUserInfo
+  profileUser: ProfileUser
   initialIsFollowed: boolean
-  userInfo: UserInfo
+  user: User
 }
 
-export interface FollowUserInfo {
+export interface ProfileUser {
   id: string
   cover_file_exists: boolean
 }
 
 export interface CoverProps {
   isCurrentUser: boolean
-  followUserInfo: FollowUserInfo
+  profileUser: ProfileUser
 }
