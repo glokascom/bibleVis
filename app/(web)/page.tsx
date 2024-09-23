@@ -1,5 +1,6 @@
+import { getUser } from '../actions/getUser'
 import HeroBlock from '../components/HeroBlock'
-import NotificationButtons from '../components/NotificationButtons'
+import Gallery from './[@username]/components/Gallery'
 
 interface PageProps {
   params: {
@@ -7,15 +8,14 @@ interface PageProps {
   }
 }
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<PageProps> = async () => {
+  const { user: currentUser } = await getUser()
+
   return (
     <>
       <HeroBlock />
       <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
-        <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
-          <h1 className="text-3xl">MAIN PAGE</h1>
-          <NotificationButtons />
-        </div>
+        <Gallery isMainPage={true} isAuthenticated={!!currentUser} />
       </main>
     </>
   )
