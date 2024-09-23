@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import { Image } from '@nextui-org/image'
+import { Link } from '@nextui-org/react'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
@@ -20,6 +21,7 @@ function ImagePageContent({
   isCurrentUser,
   onPrevImage,
   onNextImage,
+  isAuthenticated,
   isModal = false,
 }) {
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
@@ -33,14 +35,30 @@ function ImagePageContent({
       <div className="flex flex-col md:flex-row md:items-start">
         <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
           {imageInfo.imagePath ? (
-            <Image
-              src={imageInfo.imagePath}
-              alt={imageInfo.title}
-              className="w-full bg-secondary-50"
-              classNames={{
-                img: 'w-full h-auto aspect-video object-contain',
-              }}
-            />
+            <>
+              <Image
+                src={imageInfo.imagePath}
+                alt={imageInfo.title}
+                className="w-full bg-secondary-50"
+                classNames={{
+                  img: 'w-full h-auto aspect-video object-contain',
+                }}
+              />
+              {isCurrentUser && (
+                <Link
+                  href={`/user/${imageInfo.id}`}
+                  className="absolute bottom-5 right-5 z-10 h-10 w-10 justify-center rounded-full bg-background"
+                >
+                  <Image
+                    src="/pencil.svg"
+                    alt="edit"
+                    width={18}
+                    height={18}
+                    radius="none"
+                  />
+                </Link>
+              )}
+            </>
           ) : (
             <p className="text-center">Image not available</p>
           )}
@@ -85,6 +103,7 @@ function ImagePageContent({
                 imageInfo={imageInfo}
                 totalDownloads={totalDownloads}
                 isLike={isLike}
+                isAuthenticated={isAuthenticated}
                 totalLikes={totalLikes}
               />
               <CreatorDetails

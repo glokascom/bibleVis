@@ -92,6 +92,7 @@ export default function ForgotForm() {
                   variant="bordered"
                   size="sm"
                   isRequired
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   isInvalid={errors?.fields.some((error) => error.field === 'email')}

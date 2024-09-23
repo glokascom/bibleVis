@@ -14,7 +14,7 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-function Description({ imageInfo, totalDownloads, isLike, totalLikes }) {
+function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, totalLikes }) {
   const statistics = [
     { label: 'Views', value: imageInfo.total_views },
     { label: 'Downloads', value: totalDownloads },
@@ -27,7 +27,12 @@ function Description({ imageInfo, totalDownloads, isLike, totalLikes }) {
 
   return (
     <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
-      <LikesCounter imageInfo={imageInfo} isLike={isLike} totalLikes={totalLikes} />
+      <LikesCounter
+        imageInfo={imageInfo}
+        isLike={isLike}
+        isAuthenticated={isAuthenticated}
+        totalLikes={totalLikes}
+      />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
         <p>{imageInfo.description}</p>
