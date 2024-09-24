@@ -4,6 +4,7 @@ import ImagePageContent from '@/app/components/ImagePageContent'
 import {
   checkIfLiked,
   getRandomImagesExcluding,
+  incrementImageViews,
 } from '../../[@username]/actions/imagesActions'
 import { checkIfSubscribed } from '../../[@username]/actions/userActions'
 import { getImageInfoById } from '../../user/[uuid]/actions/getImage'
@@ -43,6 +44,11 @@ export default async function ImagePage({ params }) {
 
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
+
+  imageInfo.total_views += 1
+  if (!(await incrementImageViews(imageInfo.id))) {
+    imageInfo.total_views -= 1
+  }
 
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">

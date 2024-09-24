@@ -92,16 +92,20 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     setDeleteError(null)
   }
 
-  const handlePrevImage = () => {
+  const handlePrevImage = async () => {
     const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].id)
+
+    await incrementImage(newIndex)
   }
 
-  const handleNextImage = () => {
+  const handleNextImage = async () => {
     const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].id)
+
+    await incrementImage(newIndex)
   }
 
   const updateUrl = (imageId) => {
@@ -116,9 +120,13 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
 
     const imageIndex = allImages.findIndex((img) => img.id === image.id)
 
-    allImages[imageIndex].total_views += 1
+    await incrementImage(imageIndex)
+  }
+
+  const incrementImage = async (index) => {
+    allImages[index].total_views += 1
     if (!(await incrementImageViews(image.id))) {
-      allImages[imageIndex].total_views -= 1
+      allImages[index].total_views -= 1
     }
   }
 
