@@ -49,6 +49,11 @@ export default function TagInput({
   }, [selectedTags, isTagInput, inputValue, allTags])
 
   const handleBlur = () => {
+    if (label === 'Software Used') {
+      setInputValue('')
+      return
+    }
+
     if (allowAddOnEnter && isTagInput && inputValue.trim()) {
       addTagsFromInput(inputValue)
     } else {
