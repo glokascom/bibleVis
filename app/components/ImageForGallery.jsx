@@ -254,7 +254,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
         <Modal showCloseButton={true} closeModal={closeImageModal}>
           <ImagePageContent
             isModal={true}
-            imageInfo={allImages[currentImageIndex]}
+            imageInfo={allImages[currentImageIndex].fullInfo.imageInfo}
             relatedImages={allImages[currentImageIndex].fullInfo.relatedImages}
             isFollowed={allImages[currentImageIndex].fullInfo.isFollowed}
             isLike={allImages[currentImageIndex].fullInfo.isLike}

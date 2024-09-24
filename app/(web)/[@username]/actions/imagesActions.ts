@@ -102,7 +102,7 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(username,avatar_file_path)', { count: 'exact' })
+      .select('*, users(id,username,avatar_file_path)', { count: 'exact' })
 
     if (userId) {
       query = query.eq('user_id', userId)
