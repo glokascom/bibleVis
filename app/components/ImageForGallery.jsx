@@ -42,30 +42,40 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const handleToggleLike = useCallback(() => {
     if (!isAuthenticated) return
 
-    setIsLiked((prevIsLiked) => !prevIsLiked)
-
-    const imageIndex = allImages.findIndex((img) => img.id === image.id)
-    if (imageIndex !== -1) {
-      allImages[imageIndex].fullInfo.isLike = !isLiked
-    }
-  }, [isLiked, allImages, image.id])
+    setIsLiked((prevIsLiked) => {
+      const updatedIsLiked = !prevIsLiked
+      const imageIndex = allImages.findIndex((img) => img.id === image.id)
+      if (imageIndex !== -1) {
+        allImages[imageIndex].fullInfo.isLike = updatedIsLiked
+      }
+      return updatedIsLiked
+    })
+  }, [isAuthenticated, allImages, image.id])
 
   const handleLikeClick = async () => {
     if (isLoading) return
     setIsLoading(true)
+
+    let isMounted = true
     try {
       handleToggleLike()
       const result = await toggleLikeAction(image.id)
       if (result.error) {
-        handleToggleLike()
+        if (isMounted) handleToggleLike()
         throw new Error(result.error)
       }
       const imageIndex = allImages.findIndex((img) => img.id === image.id)
-      allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
+      if (isMounted) {
+        allImages[imageIndex].total_likes = await getLikeCountForImage(image.id)
+      }
     } catch (error) {
       console.error('Failed to toggle like state:', error)
     } finally {
-      setIsLoading(false)
+      if (isMounted) setIsLoading(false)
+    }
+
+    return () => {
+      isMounted = false
     }
   }
 
