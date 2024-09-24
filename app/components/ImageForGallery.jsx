@@ -20,6 +20,7 @@ import {
   incrementImageViews,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
+import { checkIfSubscribed } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
@@ -38,7 +39,6 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
 
   const pathname = usePathname()
   const originalPathname = useRef(pathname)
-  console.log(allImages, 41)
 
   const handleToggleLike = useCallback(() => {
     if (!isAuthenticated) return
@@ -125,7 +125,6 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   }
 
   const openImageModal = async () => {
-    console.log(129, image.imageInfo)
     setIsImageModalOpen(true)
     originalPathname.current = pathname
     updateUrl(image.imageInfo.id)
@@ -151,11 +150,15 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     const { existingLike } = await checkIfLiked(image.imageInfo.id)
     setIsLiked(!!existingLike)
 
+    const isFollowed = await checkIfSubscribed(image.imageInfo.user_id)
     const index = allImages.findIndex((img) => img.imageInfo.id === image.imageInfo.id)
     allImages[index].imageInfo.total_likes = await getLikeCountForImage(
       image.imageInfo.id
     )
-    allImages[index].imageInfo.isLike = !!existingLike
+
+    allImages[index].isFollowed = isFollowed
+
+    allImages[index].isLike = !!existingLike
 
     const { totalViews, totalDownloads } = await getImageStats(image.imageInfo.id)
     allImages[index].imageInfo.total_views = totalViews
@@ -263,7 +266,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
             relatedImages={allImages[currentImageIndex].relatedImages}
             isFollowed={allImages[currentImageIndex].isFollowed}
             isLike={allImages[currentImageIndex].isLike}
-            totalLikes={allImages[currentImageIndex].totalLikes}
+            totalLikes={allImages[currentImageIndex].imageInfo.totalLikes}
             isCurrentUser={allImages[currentImageIndex].isCurrentUser}
             onPrevImage={handlePrevImage}
             onNextImage={handleNextImage}
