@@ -48,7 +48,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     if (imageIndex !== -1) {
       allImages[imageIndex].fullInfo.isLike = !isLiked
     }
-  }, [isLiked, allImages, image.id])
+  }, [isAuthenticated, allImages, image.id, isLiked])
 
   const handleLikeClick = async () => {
     if (isLoading) return
