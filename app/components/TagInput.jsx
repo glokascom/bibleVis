@@ -49,17 +49,14 @@ export default function TagInput({
   }, [selectedTags, isTagInput, inputValue, allTags])
 
   const handleBlur = () => {
-    setTimeout(() => {
-      if (allowAddOnEnter && isTagInput && inputValue.trim()) {
-        addTagsFromInput(inputValue)
-      }
-      setInputValue('')
-      onBlur({
-        value: isTagInput ? selectedTags : inputValue,
-        allTags,
-        selectedTags,
-      })
-    }, 100)
+    if (allowAddOnEnter && isTagInput && inputValue.trim()) {
+      addTagsFromInput(inputValue)
+    }
+    onBlur({
+      value: isTagInput ? selectedTags : inputValue,
+      allTags,
+      selectedTags,
+    })
   }
 
   const scrollToBottom = () => {
