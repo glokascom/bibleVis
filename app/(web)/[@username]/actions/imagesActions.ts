@@ -351,14 +351,11 @@ export const loadNextPage = async (
       ])
 
       return {
-        ...image,
-        fullInfo: {
-          imageInfo: image,
-          relatedImages,
-          isLike: !!existingLike,
-          isFollowed: false,
-          isCurrentUser: currentUser?.id === image.user_id,
-        },
+        imageInfo: image,
+        relatedImages,
+        isLike: !!existingLike,
+        isFollowed: false,
+        isCurrentUser: currentUser?.id === image.user_id,
       }
     })
   )
