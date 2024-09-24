@@ -102,7 +102,7 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(username)', { count: 'exact' })
+      .select('*, users(username,avatar_file_path)', { count: 'exact' })
 
     if (userId) {
       query = query.eq('user_id', userId)
@@ -130,6 +130,10 @@ export async function getUserImagesWithLikes(
 
     const imagesWithLikes = await Promise.all(
       images.map(async (image) => {
+        const avatarUrl = image.users?.avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+          : null
+
         const imagePath = image.original_file_path
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
@@ -142,6 +146,10 @@ export async function getUserImagesWithLikes(
 
         return {
           ...image,
+          users: {
+            ...image.users,
+            avatarUrl,
+          },
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           isOwnedByCurrentUser,

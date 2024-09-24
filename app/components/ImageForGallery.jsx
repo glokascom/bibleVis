@@ -184,7 +184,10 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
               className="flex items-center gap-2"
               href={`/@${image.users.username}`}
             >
-              <BVAvatar className="h-8 w-8 md:h-10 md:w-10" />
+              <BVAvatar
+                className="h-8 w-8 md:h-10 md:w-10"
+                src={image.fullInfo.imageInfo.users.avatarUrl}
+              />
               <div className="text-large font-bold text-background">
                 @{image.users.username}
               </div>
