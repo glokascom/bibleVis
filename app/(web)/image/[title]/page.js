@@ -45,9 +45,9 @@ export default async function ImagePage({ params }) {
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
 
-  imageInfo.total_views += 1
+  imageInfo.total_views++
   if (!(await incrementImageViews(imageInfo.id))) {
-    imageInfo.total_views -= 1
+    imageInfo.total_views--
   }
 
   return (
