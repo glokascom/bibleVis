@@ -29,6 +29,7 @@ export default function TagInput({
   const initialAIGeneration = useRef(isAIGeneration)
   const totalChars =
     selectedTags.reduce((acc, t) => acc + t.name.length, 0) + inputValue.length
+  const isClickingSuggestion = useRef(false)
 
   useEffect(() => {
     onTagsChange({ allTags, selectedTags })
@@ -49,15 +50,25 @@ export default function TagInput({
   }, [selectedTags, isTagInput, inputValue, allTags])
 
   const handleBlur = () => {
+    if (isClickingSuggestion.current) return
+
     if (allowAddOnEnter && isTagInput && inputValue.trim()) {
       addTagsFromInput(inputValue)
-    } else {
-      onBlur({
-        value: isTagInput ? selectedTags : inputValue,
-        allTags,
-        selectedTags,
-      })
     }
+
+    onBlur({
+      value: isTagInput ? selectedTags : inputValue,
+      allTags,
+      selectedTags,
+    })
+  }
+
+  const handleSuggestionMouseDown = () => {
+    isClickingSuggestion.current = true
+  }
+
+  const handleSuggestionMouseUp = () => {
+    isClickingSuggestion.current = false
   }
 
   const scrollToBottom = () => {
@@ -322,6 +333,8 @@ export default function TagInput({
                     {suggestions.map((tag) => (
                       <div
                         key={tag.id}
+                        onMouseDown={handleSuggestionMouseDown}
+                        onMouseUp={handleSuggestionMouseUp}
                         onClick={() => addTag(tag)}
                         className="flex cursor-pointer items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5 text-small hover:bg-secondary-200"
                       >
