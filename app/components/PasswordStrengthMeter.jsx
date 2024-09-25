@@ -57,7 +57,9 @@ export default function PasswordStrengthMeter({ password }) {
   return (
     <div className="flex flex-col space-y-2">
       <div className="h-2 w-full rounded-full bg-secondary-50">
-        <div className={`h-2 rounded-full ${colorClasses[color]}`}></div>
+        <div
+          className={`h-2 rounded-full transition-all duration-300 ease-in-out ${colorClasses[color]}`}
+        ></div>
       </div>
 
       {message && color !== 'gray' && (
