@@ -94,7 +94,8 @@ export async function getUserImagesWithLikes(
   userId: string | null,
   page: number = 1,
   pageSize: number = 10,
-  currentUserId?: string | null
+  currentUserId?: string | null,
+  searchQuery?: string | null
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
@@ -106,6 +107,10 @@ export async function getUserImagesWithLikes(
 
     if (userId) {
       query = query.eq('user_id', userId)
+    }
+
+    if (searchQuery) {
+      query = query.ilike('title', `%${searchQuery}%`)
     }
 
     const {
@@ -323,6 +328,7 @@ interface ExtendedImageResponse {
 export const loadNextPage = async (
   userId: string | null,
   page: number,
+  searchQuery: string | null,
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
   const { user: currentUser } = await getUser()
@@ -330,7 +336,8 @@ export const loadNextPage = async (
     userId,
     page,
     pageSize,
-    currentUser?.id
+    currentUser?.id,
+    searchQuery
   )
 
   const extendedImages = await Promise.all(
