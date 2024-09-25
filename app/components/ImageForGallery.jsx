@@ -35,6 +35,12 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+    setIsDropdownOpen(false)
+  }
 
   const pathname = usePathname()
   const originalPathname = useRef(pathname)
@@ -48,6 +54,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     if (imageIndex !== -1) {
       allImages[imageIndex].fullInfo.isLike = !isLiked
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLiked, allImages, image.id])
 
   const handleLikeClick = async () => {
@@ -87,7 +94,6 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   }
 
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
     setDeleteError(null)
   }
@@ -156,7 +162,9 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           className="h-full w-full object-cover"
           onLoad={() => setIsImageLoaded(true)}
         />
-        <div className="absolute inset-0 z-10 rounded-medium bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.7)_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+        <div
+          className={`absolute inset-0 z-10 rounded-medium bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.7)_100%)] transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+        ></div>
       </div>
 
       {isImageLoaded && (
@@ -193,9 +201,13 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
                 content: 'py-1 px-2 shadow-none',
               }}
               placement="right-start"
+              onOpenChange={(open) => setIsDropdownOpen(open)}
+              isOpen={isDropdownOpen}
             >
               <DropdownTrigger>
-                <button className="absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-3">
+                <button
+                  className={`absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} md:p-3`}
+                >
                   <Image src="/pencil.svg" alt="edit" className="rounded-none" />
                 </button>
               </DropdownTrigger>
@@ -214,7 +226,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
                 <DropdownItem key="edit">
                   <BVLink href={`/user/${image.id}`}>Edit Image</BVLink>
                 </DropdownItem>
-                <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
+                <DropdownItem key="delete" onClick={openDeleteModal}>
                   Delete
                 </DropdownItem>
               </DropdownMenu>
