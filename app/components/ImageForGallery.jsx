@@ -146,7 +146,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
       } overflow-hidden`}
     >
       <div
-        className="absolute inset-0 h-full w-full cursor-pointer group-hover:opacity-80"
+        className="group absolute h-full w-full cursor-pointer"
         onClick={openImageModal}
       >
         <Image
@@ -156,6 +156,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           className="h-full w-full object-cover"
           onLoad={() => setIsImageLoaded(true)}
         />
+        <div className="absolute inset-0 z-10 rounded-medium bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.7)_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
       </div>
 
       {isImageLoaded && (
