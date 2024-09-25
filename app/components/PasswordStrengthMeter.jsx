@@ -2,6 +2,16 @@ import { useMemo } from 'react'
 
 export default function PasswordStrengthMeter({ password }) {
   const getPasswordStrength = () => {
+    const forbiddenCharsPattern = /[а-яА-ЯёЁ\u0400-\u04FF\u0600-\u06FF\u4E00-\u9FFF]/
+
+    if (forbiddenCharsPattern.test(password)) {
+      return {
+        strength: 'invalid',
+        message: 'Password cannot contain Cyrillic, Chinese, or Arabic characters.',
+        color: 'red',
+      }
+    }
+
     if (password.length === 0) return { strength: '', message: '', color: 'gray' }
     if (password.length < 6)
       return { strength: 'low', message: 'At least 6 characters', color: 'red' }
