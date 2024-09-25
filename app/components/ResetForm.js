@@ -211,9 +211,7 @@ export default function ResetForm() {
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
               </label>
-              <div className="min-h-[60px]">
-                <PasswordStrengthMeter password={password} />
-              </div>
+              <PasswordStrengthMeter password={password} />
             </div>
             <div>
               {resetErrors?.message && (
