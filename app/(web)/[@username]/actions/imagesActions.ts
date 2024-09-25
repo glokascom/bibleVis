@@ -316,13 +316,11 @@ export async function getRandomImagesExcluding(
 }
 
 export interface ExtendedImage extends Image {
-  fullInfo: {
-    imageInfo: Image
-    relatedImages: Image[]
-    isLike: boolean
-    isFollowed: boolean
-    isCurrentUser: boolean
-  }
+  imageInfo: Image
+  relatedImages: Image[]
+  isLike: boolean
+  isFollowed: boolean
+  isCurrentUser: boolean
 }
 
 interface ExtendedImageResponse {
@@ -358,7 +356,7 @@ export const loadNextPage = async (
         isLike: !!existingLike,
         isFollowed: false,
         isCurrentUser: currentUser?.id === image.user_id,
-      }
+      } as ExtendedImage
     })
   )
 
