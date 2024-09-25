@@ -64,9 +64,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
       return jsonResponse(errorResponse, 401)
     }
-    const { origin } = new URL(request.url)
     const { error } = await supabaseServer.auth.resetPasswordForEmail(email, {
-      redirectTo: `${origin}/reset-password`,
+      redirectTo: `${request.nextUrl.origin}/reset-password`,
     })
 
     if (error) {
