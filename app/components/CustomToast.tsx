@@ -9,16 +9,16 @@ const CustomToast: React.FC<CustomToastProps> = ({ message, type, onClose }) => 
   let backgroundColor, backgroundIconColor
   switch (type) {
     case 'success':
-      backgroundColor = 'bg-primary-400/30'
+      backgroundColor = 'bg-primary-500/50'
       backgroundIconColor = 'text-primary-500'
       break
     case 'error':
-      backgroundColor = 'bg-danger-400/30'
+      backgroundColor = 'bg-danger-500/40'
       backgroundIconColor = 'text-danger-500'
       break
     case 'neutral':
     default:
-      backgroundColor = 'bg-secondary-400/50'
+      backgroundColor = 'bg-secondary-500/50'
       backgroundIconColor = 'text-secondary'
       break
   }
