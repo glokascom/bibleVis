@@ -14,6 +14,8 @@ import {
   DropdownTrigger,
 } from '@nextui-org/react'
 
+import { Chevron } from './Chevron'
+
 function Download({ imageInfo = {} }) {
   const [dropdownWidth, setDropdownWidth] = useState(0)
   const buttonGroupRef = useRef(null)
@@ -72,7 +74,7 @@ function Download({ imageInfo = {} }) {
         >
           <DropdownTrigger>
             <Button isIconOnly className="h-14 w-1/5 border-l bg-primary">
-              <Image src="/chevron.svg" alt="chevron" width={15} height={15} priority />
+              <Chevron fill="white" />
             </Button>
           </DropdownTrigger>
           <DropdownMenu
