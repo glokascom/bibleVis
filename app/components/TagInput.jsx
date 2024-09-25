@@ -84,10 +84,7 @@ export default function TagInput({
   const handleInputChange = (e) => {
     const value = e.target.value
 
-    if (value.endsWith(',')) {
-      if (label === 'Software Used') {
-        return
-      }
+    if (label === 'Image tags' && value.endsWith(',')) {
       const trimmedValue = value.slice(0, -1).trim()
       if (trimmedValue) addTagsFromInput(trimmedValue)
       setInputValue('')
