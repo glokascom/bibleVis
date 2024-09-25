@@ -5,6 +5,8 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
+import { checkIfSubscribed } from './userActions'
+
 type User = {
   username: string
 }
@@ -349,12 +351,12 @@ export const loadNextPage = async (
           ? checkIfLiked(image.id)
           : { existingLike: null, fetchError: null },
       ])
-
+      const isFollowed = await checkIfSubscribed(image.user_id)
       return {
         imageInfo: image,
         relatedImages,
         isLike: !!existingLike,
-        isFollowed: false,
+        isFollowed,
         isCurrentUser: currentUser?.id === image.user_id,
       } as ExtendedImage
     })
