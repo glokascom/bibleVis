@@ -112,7 +112,7 @@ function Gallery({
         loader={<h4>Loading...</h4>}
         endMessage={<p>No more images</p>}
       >
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 640: 2, 1280: 3 }}>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.id}>
