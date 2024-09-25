@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import ReactDOM from 'react-dom'
 import { ToastOptions } from 'react-hot-toast'
@@ -67,29 +67,58 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       {children}
 
       {toasts.map((toast, index) => {
-        const topOffset = 7 + index * 5
-
-        return ReactDOM.createPortal(
-          <div
+        return (
+          <ToastPortal
             key={toast.id}
-            style={{
-              position: 'fixed',
-              top: `${topOffset}rem`,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 50,
-            }}
-          >
-            <CustomToast
-              message={toast.message}
-              type={toast.type}
-              id={toast.id}
-              onClose={() => removeToast(toast.id)}
-            />
-          </div>,
-          document.body
+            toast={toast}
+            index={index}
+            totalToasts={toasts.length}
+            removeToast={() => removeToast(toast.id)}
+          />
         )
       })}
     </ToastContext.Provider>
+  )
+}
+
+const ToastPortal: React.FC<{
+  toast: { id: string; message: string; type: CustomToastProps['type'] }
+  index: number
+  totalToasts: number
+  removeToast: () => void
+}> = ({ toast, index, removeToast }) => {
+  const toastRef = useRef<HTMLDivElement | null>(null)
+  const [height, setHeight] = useState<number>(0)
+
+  useEffect(() => {
+    if (toastRef.current) {
+      setHeight(toastRef.current.getBoundingClientRect().height)
+    }
+  }, [toastRef])
+
+  const topOffset = Array.from({ length: index }, (_, i) => height + 10 * i).reduce(
+    (acc, offset) => acc + offset,
+    7
+  )
+
+  return ReactDOM.createPortal(
+    <div
+      ref={toastRef}
+      style={{
+        position: 'fixed',
+        top: `${topOffset}px`,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 50,
+      }}
+    >
+      <CustomToast
+        message={toast.message}
+        type={toast.type}
+        id={toast.id}
+        onClose={removeToast}
+      />
+    </div>,
+    document.body
   )
 }
