@@ -53,6 +53,43 @@ export async function getLikeCountForImage(imageId: number): Promise<number> {
   }
 }
 
+export async function getImageStats(imageId: number) {
+  try {
+    const { data, error } = await supabaseService
+      .from('images')
+      .select('total_views, total_downloads')
+      .eq('id', imageId)
+      .single()
+
+    if (error) {
+      throw new Error(`Error fetching image stats: ${error.message}`)
+    }
+
+    return {
+      totalViews: data?.total_views || 0,
+      totalDownloads: data?.total_downloads || 0,
+    }
+  } catch (error) {
+    console.error('Error fetching image stats:', error)
+    return null
+  }
+}
+
+export async function incrementImageViews(imageId: number) {
+  try {
+    const { error } = await supabaseService.rpc('increment_views', { image_id: imageId })
+
+    if (error) {
+      throw new Error(`Error incrementing image views: ${error.message}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error incrementing image views:', error)
+    return false
+  }
+}
+
 export async function getUserImagesWithLikes(
   userId: string | null,
   page: number = 1,

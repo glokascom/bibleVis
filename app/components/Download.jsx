@@ -16,7 +16,7 @@ import {
 
 import { Chevron } from './Chevron'
 
-function Download({ imageInfo = {} }) {
+function Download({ imageInfo = {}, onDownload }) {
   const [dropdownWidth, setDropdownWidth] = useState(0)
   const buttonGroupRef = useRef(null)
 
@@ -27,6 +27,10 @@ function Download({ imageInfo = {} }) {
     const widthParam = fileSize ? `&width=${fileSize.width}` : ''
     const downloadUrl = `/api/download-image?src=${encodeURIComponent(imageInfo.original_file_path)}${widthParam}`
     window.location.href = downloadUrl
+
+    if (onDownload) {
+      onDownload()
+    }
   }
 
   useEffect(() => {
