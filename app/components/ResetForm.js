@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import BVButton from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import PasswordStrengthMeter from './PasswordStrengthMeter'
 
 export default function ResetForm() {
   const router = useRouter()
@@ -210,6 +211,9 @@ export default function ResetForm() {
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
               </label>
+              <div className="min-h-[60px]">
+                <PasswordStrengthMeter password={password} />
+              </div>
             </div>
             <div>
               {resetErrors?.message && (
