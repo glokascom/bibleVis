@@ -20,7 +20,10 @@ import {
   incrementImageViews,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
-import { checkIfSubscribed } from '../(web)/[@username]/actions/userActions'
+import {
+  checkIfSubscribed,
+  getTotalFollowers,
+} from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
@@ -150,19 +153,35 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     const { existingLike } = await checkIfLiked(image.imageInfo.id)
     setIsLiked(!!existingLike)
 
-    const isFollowed = await checkIfSubscribed(image.imageInfo.user_id)
     const index = allImages.findIndex((img) => img.imageInfo.id === image.imageInfo.id)
     allImages[index].imageInfo.total_likes = await getLikeCountForImage(
       image.imageInfo.id
     )
-
-    allImages[index].isFollowed = isFollowed
 
     allImages[index].isLike = !!existingLike
 
     const { totalViews, totalDownloads } = await getImageStats(image.imageInfo.id)
     allImages[index].imageInfo.total_views = totalViews
     allImages[index].imageInfo.total_downloads = totalDownloads
+
+    await updateUserFollowersAndFollowStatus(image.imageInfo.user_id)
+  }
+  async function updateUserFollowersAndFollowStatus(userId) {
+    try {
+      const [totalFollowers, isFollowed] = await Promise.all([
+        getTotalFollowers(userId),
+        checkIfSubscribed(userId),
+      ])
+
+      allImages.forEach((img) => {
+        if (img.imageInfo.users.id === userId) {
+          img.imageInfo.users.total_followers = totalFollowers
+          img.isFollowed = isFollowed
+        }
+      })
+    } catch (error) {
+      console.error('Error updating user followers and follow status:', error)
+    }
   }
 
   return (
