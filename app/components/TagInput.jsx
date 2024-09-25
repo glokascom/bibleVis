@@ -51,6 +51,10 @@ export default function TagInput({
 
   const handleBlur = () => {
     if (isClickingSuggestion.current) return
+    if (label === 'Software Used') {
+      setInputValue('')
+      return
+    }
 
     if (allowAddOnEnter && isTagInput && inputValue.trim()) {
       addTagsFromInput(inputValue)
@@ -81,6 +85,9 @@ export default function TagInput({
     const value = e.target.value
 
     if (value.endsWith(',')) {
+      if (label === 'Software Used') {
+        return
+      }
       const trimmedValue = value.slice(0, -1).trim()
       if (trimmedValue) addTagsFromInput(trimmedValue)
       setInputValue('')
