@@ -1,4 +1,11 @@
-import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import ReactDOM from 'react-dom'
 import { ToastOptions } from 'react-hot-toast'
@@ -66,17 +73,14 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <ToastContext.Provider value={{ success, error, neutral }}>
       {children}
 
-      {toasts.map((toast, index) => {
-        return (
-          <ToastPortal
-            key={toast.id}
-            toast={toast}
-            index={index}
-            totalToasts={toasts.length}
-            removeToast={() => removeToast(toast.id)}
-          />
-        )
-      })}
+      {toasts.map((toast, index) => (
+        <ToastPortal
+          key={toast.id}
+          toast={toast}
+          index={index}
+          removeToast={() => removeToast(toast.id)}
+        />
+      ))}
     </ToastContext.Provider>
   )
 }
@@ -84,32 +88,40 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 const ToastPortal: React.FC<{
   toast: { id: string; message: string; type: CustomToastProps['type'] }
   index: number
-  totalToasts: number
   removeToast: () => void
 }> = ({ toast, index, removeToast }) => {
   const toastRef = useRef<HTMLDivElement | null>(null)
-  const [height, setHeight] = useState<number>(0)
+  const [offsets, setOffsets] = useState<number[]>([])
 
-  useEffect(() => {
+  const BASE_OFFSET_TOP = 112
+
+  useLayoutEffect(() => {
     if (toastRef.current) {
-      setHeight(toastRef.current.getBoundingClientRect().height)
-    }
-  }, [toastRef])
+      const toasts = Array.from(document.querySelectorAll('.toast-item'))
+      const newOffsets = toasts.map((t, i) => {
+        if (i < index && t instanceof HTMLElement) {
+          return t.offsetHeight + 16
+        }
+        return 0
+      })
 
-  const topOffset = Array.from({ length: index }, (_, i) => height + 10 * i).reduce(
-    (acc, offset) => acc + offset,
-    7
-  )
+      setOffsets(newOffsets)
+    }
+  }, [index, toastRef])
+
+  const topOffset = BASE_OFFSET_TOP + offsets.reduce((acc, cur) => acc + cur, 0)
 
   return ReactDOM.createPortal(
     <div
       ref={toastRef}
+      className="toast-item"
       style={{
         position: 'fixed',
         top: `${topOffset}px`,
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 50,
+        transition: 'top 0.3s ease-in-out',
       }}
     >
       <CustomToast
