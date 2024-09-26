@@ -3,6 +3,24 @@
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
+export async function getTotalFollowers(followingUuid: string): Promise<number | null> {
+  try {
+    const { data: userData, error: selectError } = await supabaseService
+      .from('users')
+      .select('total_followers')
+      .eq('id', followingUuid)
+      .single()
+
+    if (selectError) throw new Error('Error retrieving user data')
+    if (!userData) throw new Error('User data not found')
+
+    return userData.total_followers
+  } catch (error) {
+    console.error('Error retrieving total followers:', error)
+    return null
+  }
+}
+
 export async function toggleSubscription(followingUuid: string) {
   const followerUuid = (await getUser()).user.id
   const isFollowed = await checkIfSubscribed(followingUuid)
@@ -21,15 +39,10 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (deleteError) throw new Error('Error deleting subscription')
 
-      const { data: userData, error: selectError } = await supabaseService
-        .from('users')
-        .select('total_followers')
-        .eq('id', followingUuid)
-        .single()
+      const totalFollowers = await getTotalFollowers(followingUuid)
+      if (totalFollowers === null) throw new Error('Failed to retrieve followers count')
 
-      if (selectError) throw new Error('Error retrieving user data')
-      if (!userData) throw new Error('User data not found')
-      const newFollowersCount = userData.total_followers - 1
+      const newFollowersCount = totalFollowers - 1
 
       return { isFollowed: false, totalFollowers: newFollowersCount }
     } else {
@@ -39,15 +52,10 @@ export async function toggleSubscription(followingUuid: string) {
 
       if (insertError) throw new Error('Error creating subscription')
 
-      const { data: userData, error: selectError } = await supabaseService
-        .from('users')
-        .select('total_followers')
-        .eq('id', followingUuid)
-        .single()
+      const totalFollowers = await getTotalFollowers(followingUuid)
+      if (totalFollowers === null) throw new Error('Failed to retrieve followers count')
 
-      if (selectError) throw new Error('Error retrieving user data')
-      if (!userData) throw new Error('User data not found')
-      const newFollowersCount = userData.total_followers + 1
+      const newFollowersCount = totalFollowers + 1
 
       return { isFollowed: true, totalFollowers: newFollowersCount }
     }
