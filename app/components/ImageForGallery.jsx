@@ -164,7 +164,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           onLoad={() => setIsImageLoaded(true)}
         />
         <div
-          className={`absolute inset-0 z-10 rounded-medium bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.7)_100%)] transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+          className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
         ></div>
       </div>
 
