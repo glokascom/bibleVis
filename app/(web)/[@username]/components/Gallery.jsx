@@ -24,7 +24,13 @@ const Masonry = dynamic(
   }
 )
 
-function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) {
+function Gallery({
+  isAuthenticated,
+  profileUserId = null,
+  isMainPage = false,
+  isShowHeader = true,
+  searchQuery = null,
+}) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -34,13 +40,17 @@ function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) 
   useEffect(() => {
     loadMoreImages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchQuery])
 
   const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPage(profileUserId, page)
+    const { images: newImages, totalCount } = await loadNextPage(
+      profileUserId,
+      page,
+      searchQuery
+    )
 
     setImages((prevImages) => {
       const existingImageIds = new Set(prevImages.map((img) => img.id))
@@ -57,7 +67,7 @@ function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) 
 
     isLoadingRef.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileUserId, page, hasMore])
+  }, [profileUserId, page, hasMore, searchQuery])
 
   const resetAndReloadImages = async () => {
     setPage(1)
@@ -79,19 +89,22 @@ function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) 
 
   return (
     <>
-      <div className="mb-5 mt-10 flex items-center">
-        {isMainPage ? (
-          <BVButton color="secondary" isDisabled>
-            Photos
-          </BVButton>
-        ) : (
-          <>
-            <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
-            <span className="mt-6 font-sans text-base text-secondary">Images</span>
-            <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
-          </>
-        )}
-      </div>
+      {isShowHeader && (
+        <div className="mb-5 mt-10 flex items-center">
+          {isMainPage ? (
+            <BVButton color="secondary" isDisabled>
+              Photos
+            </BVButton>
+          ) : (
+            <>
+              <h3 className="mr-4 font-sans text-5xl text-secondary">Gallery</h3>
+              <span className="mt-6 font-sans text-base text-secondary">Images</span>
+              <span className="ml-2 mt-7 text-secondary-500">{totalImages}</span>
+            </>
+          )}
+        </div>
+      )}
+
       <InfiniteScroll
         dataLength={images.length}
         next={loadMoreImages}
@@ -99,7 +112,7 @@ function Gallery({ isAuthenticated, profileUserId = null, isMainPage = false }) 
         loader={<h4>Loading...</h4>}
         endMessage={<p>No more images</p>}
       >
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 640: 2, 1280: 3 }}>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.id}>

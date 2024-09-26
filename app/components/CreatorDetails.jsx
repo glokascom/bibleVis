@@ -10,7 +10,13 @@ import { toggleSubscription } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 
-function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
+function CreatorDetails({
+  creator,
+  followUserId,
+  isFollowed,
+  isCurrentUser,
+  isAuthenticated,
+}) {
   const [follow, setFollow] = useState(isFollowed)
   const [isNarrow, setIsNarrow] = useState(false)
   const [totalFollowers, setTotalFollowers] = useState(creator.total_followers || 0)
@@ -108,7 +114,7 @@ function CreatorDetails({ creator, followUserId, isFollowed, isCurrentUser }) {
         </div>
       </div>
 
-      {!isCurrentUser && (
+      {!isCurrentUser && isAuthenticated && (
         <BVButton
           variant="light"
           color="background"
