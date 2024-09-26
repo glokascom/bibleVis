@@ -17,22 +17,38 @@ export default function License() {
   ]
 
   return (
-    <div className="text-center">
-      <p className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</p>
+    <div className="flex min-h-screen flex-col">
+      <div className="mx-auto w-full max-w-[1806px] flex-grow px-6 text-center md:px-12">
+        <p className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</p>
 
-      <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:gap-5">
-        <RuleColumn
-          title="What is allowed?"
-          rules={allowedRules}
-          iconSrc="/check-mark-green.svg"
-          iconAlt="check mark"
-        />
-        <RuleColumn
-          title="What is not allowed?"
-          rules={notAllowedRules}
-          iconSrc="/close-red.svg"
-          iconAlt="close"
-        />
+        <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:gap-5">
+          <RuleColumn
+            title="What is allowed?"
+            rules={allowedRules}
+            iconSrc="/check-mark-green.svg"
+            iconAlt="check mark"
+          />
+          <RuleColumn
+            title="What is not allowed?"
+            rules={notAllowedRules}
+            iconSrc="/close-red.svg"
+            iconAlt="close"
+          />
+        </div>
+      </div>
+
+      <div className="mt-auto w-full text-balance bg-secondary-50 px-6 pb-10 text-center">
+        <div className="mx-auto w-full max-w-xl">
+          <p className="pb-5 pt-10 text-4xl md:text-5xl">Important</p>
+          <p className="text-small text-secondary-500">
+            BibleVis provides an irrevocable, nonexclusive, worldwide copyright license
+            allowing you to download, copy, modify, distribute, perform, and use images
+            from BibleVis for free. This includes commercial purposes, without needing
+            permission from or attributing the artist or BibleVis. However, this license
+            does not permit compiling images from BibleVis to establish a similar or
+            competing service.
+          </p>
+        </div>
       </div>
     </div>
   )
