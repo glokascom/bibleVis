@@ -11,7 +11,6 @@ describe('BVAvatar component', () => {
       <BVAvatar
         as="button"
         className="transition-transform"
-        name="Jason Hughes"
         size="md"
         src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
       />

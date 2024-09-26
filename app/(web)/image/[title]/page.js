@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation'
+
 import { getUser } from '@/app/actions/getUser'
 import ImagePageContent from '@/app/components/ImagePageContent'
 
@@ -33,7 +35,7 @@ export default async function ImagePage({ params }) {
   const { error, data: imageInfo } = await getImageInfoById(idImage)
 
   if (error) {
-    return <div className="text-danger-500">{error}</div>
+    notFound()
   }
 
   const { user } = await getUser()

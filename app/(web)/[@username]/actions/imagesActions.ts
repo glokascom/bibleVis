@@ -293,18 +293,20 @@ export async function getRandomImagesExcluding(
   numberOfImages: number = 3
 ): Promise<Image[]> {
   try {
-    const { data: images, error: fetchError } = await supabaseService
-      .from('images')
-      .select('*')
-      .eq('user_id', userId)
+    const { data: images, error: fetchError } = await supabaseService.rpc(
+      'get_random_images',
+      { user_id: userId, limit_images: numberOfImages }
+    )
 
     if (fetchError) throw fetchError
 
-    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+    const filteredImages = images.filter(
+      (image: { id: number }) => image.id !== excludeImageId
+    )
     const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    const imagesWithPaths = randomImages.map((image) => {
+    const imagesWithPaths = randomImages.map((image: { original_file_path: unknown }) => {
       const imagePath = image.original_file_path
         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
         : null

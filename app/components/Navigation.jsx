@@ -127,7 +127,6 @@ function Navigation({ user }) {
                   <BVAvatar
                     as="button"
                     className="transition-transform"
-                    name={user.username}
                     size="md"
                     src={user.avatarUrl}
                   />
@@ -163,7 +162,7 @@ function Navigation({ user }) {
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
-                {user?.load ? (
+                {user?.is_creator ? (
                   <DropdownItem key="upload_image" href="/user/upload" showDivider>
                     Upload Image
                   </DropdownItem>
