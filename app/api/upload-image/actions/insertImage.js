@@ -1,3 +1,5 @@
+import { HfInference } from '@huggingface/inference'
+
 import { supabaseService } from '@/app/supabase/service'
 
 export const insertImage = async (imageData) => {
@@ -202,4 +204,39 @@ export async function getTagIdByName(tagName) {
   }
 
   return data.id
+}
+
+export async function updateSearchVector(imageId, title, description) {
+  const query = `${title} ${description}`
+  const hf = new HfInference(process.env.HUGGINGFACE_API_KEY)
+
+  const embeddings = await hf.featureExtraction({
+    model: 'sentence-transformers/all-MiniLM-L6-v2',
+    inputs: query,
+  })
+
+  console.log('Embeddings Response:', embeddings)
+
+  if (!Array.isArray(embeddings)) {
+    console.error('Embeddings is not an array:', embeddings)
+    return
+  }
+
+  let vectorArray = embeddings
+  if (Array.isArray(embeddings) && Array.isArray(embeddings[0])) {
+    vectorArray = embeddings[0]
+  }
+
+  const vectorString = `[${vectorArray.join(',')}]`
+
+  const { data, error } = await supabaseService
+    .from('images')
+    .update({ search_vector: vectorString })
+    .eq('id', imageId)
+
+  if (error) {
+    console.error('Ошибка при обновлении вектора:', error)
+  } else {
+    console.log('Вектор успешно обновлен:', data)
+  }
 }
