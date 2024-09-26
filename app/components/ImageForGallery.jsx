@@ -94,6 +94,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   }
 
   const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
     setDeleteError(null)
   }
