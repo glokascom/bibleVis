@@ -15,6 +15,7 @@ import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import PasswordStrengthMeter from './PasswordStrengthMeter'
 import SuccessSignUpForm from './SuccessSignUp'
 
 function AuthForm() {
@@ -319,7 +320,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'password')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-
+                <PasswordStrengthMeter password={passwordSignup} />
                 {signupErrors?.message && (
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
