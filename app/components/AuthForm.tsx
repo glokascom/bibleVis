@@ -319,7 +319,7 @@ function AuthForm() {
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
                 <p className="my-8 text-small text-secondary-200">
-                  This site is protected by reCAPTCHA and the Google{' '}
+                  This site is protected by the Google{' '}
                   <a
                     target="_blank"
                     href="/pages/privacy"
@@ -428,7 +428,7 @@ function AuthForm() {
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
                 <p className="my-8 text-small text-secondary-200">
-                  This site is protected by reCAPTCHA and the Google{' '}
+                  This site is protected by the Google{' '}
                   <a
                     target="_blank"
                     href="/pages/privacy"
