@@ -26,7 +26,7 @@ function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, total
   ]
 
   return (
-    <div className="my-5 flex flex-col gap-5 border-y-1 py-5 text-small">
+    <div className="mb-5 flex flex-col gap-5 border-b-1 py-5 text-small">
       <LikesCounter
         imageInfo={imageInfo}
         isLike={isLike}

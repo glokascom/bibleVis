@@ -48,6 +48,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     if (imageIndex !== -1) {
       allImages[imageIndex].fullInfo.isLike = !isLiked
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLiked, allImages, image.id])
 
   const handleLikeClick = async () => {
