@@ -283,6 +283,7 @@ function AuthForm() {
                   variant="bordered"
                   size="sm"
                   value={passwordSignup}
+                  className="mb-8"
                   onChange={(e) => setPasswordSignup(e.target.value)}
                   endContent={
                     <button
@@ -318,25 +319,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'password')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <p className="my-8 text-small text-secondary-200">
-                  This site is protected by the Google{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/privacy"
-                    className="text-primary hover:underline"
-                  >
-                    Privacy Policy
-                  </a>{' '}
-                  and{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/tos"
-                    className="text-primary hover:underline"
-                  >
-                    Terms of Service
-                  </a>{' '}
-                  apply.
-                </p>
+
                 {signupErrors?.message && (
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
