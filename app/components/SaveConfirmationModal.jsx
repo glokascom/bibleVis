@@ -31,7 +31,7 @@ function SaveConfirmationModal({
                 className="w-1/2 bg-primary"
                 isLoading={isLoading}
               >
-                Save
+                Publish
               </BVButton>
             </div>
           </div>
