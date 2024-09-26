@@ -5,6 +5,8 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
+import { checkIfSubscribed } from './userActions'
+
 type User = {
   username: string
 }
@@ -103,7 +105,9 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(username)', { count: 'exact' })
+      .select('*, users(id,username,avatar_file_path, total_followers)', {
+        count: 'exact',
+      })
 
     if (userId) {
       query = query.eq('user_id', userId)
@@ -135,6 +139,10 @@ export async function getUserImagesWithLikes(
 
     const imagesWithLikes = await Promise.all(
       images.map(async (image) => {
+        const avatarUrl = image.users?.avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+          : null
+
         const imagePath = image.original_file_path
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
@@ -147,6 +155,10 @@ export async function getUserImagesWithLikes(
 
         return {
           ...image,
+          users: {
+            ...image.users,
+            avatarUrl,
+          },
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           isOwnedByCurrentUser,
@@ -311,13 +323,11 @@ export async function getRandomImagesExcluding(
 }
 
 export interface ExtendedImage extends Image {
-  fullInfo: {
-    imageInfo: Image
-    relatedImages: Image[]
-    isLike: boolean
-    isFollowed: boolean
-    isCurrentUser: boolean
-  }
+  imageInfo: Image
+  relatedImages: Image[]
+  isLike: boolean
+  isFollowed: boolean
+  isCurrentUser: boolean
 }
 
 interface ExtendedImageResponse {
@@ -348,17 +358,14 @@ export const loadNextPage = async (
           ? checkIfLiked(image.id)
           : { existingLike: null, fetchError: null },
       ])
-
+      const isFollowed = await checkIfSubscribed(image.user_id)
       return {
-        ...image,
-        fullInfo: {
-          imageInfo: image,
-          relatedImages,
-          isLike: !!existingLike,
-          isFollowed: false,
-          isCurrentUser: currentUser?.id === image.user_id,
-        },
-      }
+        imageInfo: image,
+        relatedImages,
+        isLike: !!existingLike,
+        isFollowed,
+        isCurrentUser: currentUser?.id === image.user_id,
+      } as ExtendedImage
     })
   )
 
