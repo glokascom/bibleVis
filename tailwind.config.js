@@ -43,7 +43,6 @@ module.exports = {
           colors: {
             background: '#FFFFFF',
             foreground: '#2D2D2E',
-            warning: '#EAB54F',
             primary: {
               '50': '#e8fef3',
               '100': '#c6fdde',

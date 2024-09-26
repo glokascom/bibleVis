@@ -49,7 +49,7 @@ export default function PasswordStrengthMeter({ password }) {
 
   const colorClasses = {
     red: 'w-1/4 bg-danger',
-    yellow: 'w-2/4 bg-warning',
+    yellow: 'w-2/4 bg-[#EAB54F]',
     green: 'w-full bg-primary',
     gray: 'w-0',
   }
@@ -71,7 +71,7 @@ export default function PasswordStrengthMeter({ password }) {
                 color === 'red'
                   ? 'text-danger'
                   : color === 'yellow'
-                    ? 'text-warning'
+                    ? 'text-[#EAB54F]'
                     : 'text-primary'
               }
             >
