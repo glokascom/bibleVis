@@ -17,6 +17,7 @@ import {
   removeImageTags,
   tagImage,
   updateImage,
+  updateSearchVector,
 } from './actions/insertImage'
 
 interface Software {
@@ -118,6 +119,8 @@ export async function POST(
     if (!imageId) {
       throw new Error('Failed to insert image into database.')
     }
+
+    await updateSearchVector(imageId, title, description)
 
     try {
       await Promise.all(
