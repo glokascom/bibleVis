@@ -95,12 +95,13 @@ export async function getUserImagesWithLikes(
   page: number = 1,
   pageSize: number = 10,
   currentUserId?: string | null,
-  searchQuery?: string | null
+  searchQuery?: string | null,
+  imageFilter?: boolean | null,
+  orientationFilter?: number | 0
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
-
     let query = supabaseService
       .from('images')
       .select('*, users(username)', { count: 'exact' })
@@ -114,6 +115,25 @@ export async function getUserImagesWithLikes(
         .filter((word) => word.trim().length > 0)
         .join(' | ')
       query = query.textSearch('fts', formattedQuery)
+    }
+
+    if (imageFilter === true) {
+      query = query.eq('is_ai_generated', true)
+    } else if (imageFilter === false) {
+      query = query.eq('is_ai_generated', false)
+    }
+
+    let formattedOrientationFilter
+    if (orientationFilter === 0) {
+      formattedOrientationFilter = null
+    } else if (orientationFilter === 1) {
+      formattedOrientationFilter = 'landscape'
+    } else if (orientationFilter === 2) {
+      formattedOrientationFilter = 'portrait'
+    }
+
+    if (formattedOrientationFilter) {
+      query = query.eq('orientation', formattedOrientationFilter)
     }
 
     const {
@@ -332,6 +352,8 @@ export const loadNextPage = async (
   userId: string | null,
   page: number,
   searchQuery: string | null,
+  imageFilter: boolean | null,
+  orientationFilter: number | 0,
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
   const { user: currentUser } = await getUser()
@@ -340,7 +362,9 @@ export const loadNextPage = async (
     page,
     pageSize,
     currentUser?.id,
-    searchQuery
+    searchQuery,
+    imageFilter,
+    orientationFilter
   )
 
   const extendedImages = await Promise.all(

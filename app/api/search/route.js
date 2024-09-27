@@ -11,8 +11,6 @@ export async function GET(req) {
     .filter((word) => word.trim().length > 0)
     .join(' | ')
 
-  console.log(formattedQuery, 8)
-
   const { data, error } = await supabaseService
     .from('images')
     .select()

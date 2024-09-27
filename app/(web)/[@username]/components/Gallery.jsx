@@ -30,6 +30,8 @@ function Gallery({
   isMainPage = false,
   isShowHeader = true,
   searchQuery = null,
+  imageFilter = null,
+  orientationFilter = null,
 }) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
@@ -40,7 +42,7 @@ function Gallery({
   useEffect(() => {
     loadMoreImages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery])
+  }, [searchQuery, imageFilter, orientationFilter])
 
   const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
@@ -49,7 +51,9 @@ function Gallery({
     const { images: newImages, totalCount } = await loadNextPage(
       profileUserId,
       page,
-      searchQuery
+      searchQuery,
+      imageFilter,
+      orientationFilter
     )
 
     setImages((prevImages) => {
@@ -67,7 +71,7 @@ function Gallery({
 
     isLoadingRef.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileUserId, page, hasMore, searchQuery])
+  }, [profileUserId, page, hasMore, searchQuery, imageFilter, orientationFilter])
 
   const resetAndReloadImages = async () => {
     setPage(1)
