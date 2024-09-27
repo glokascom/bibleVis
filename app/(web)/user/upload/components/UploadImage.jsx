@@ -246,40 +246,33 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
         <div className="my-5 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 p-5 text-secondary-50 md:gap-12">
           <div className="flex md:gap-4">
             <Image
-              as={NextImage}
               src="/error.svg"
               alt="error"
-              width={100}
-              height={100}
-              className="hidden md:block"
+              className="hidden h-20 w-20 md:block 2xl:h-24 2xl:w-24"
             />
             <div className="w-44 max-w-96 md:w-auto">
-              <p className="mb-5 text-xlarge leading-6 md:text-mega md:leading-10">
+              <h2 className="mb-2 text-xlarge leading-6 md:text-semimega md:leading-10 2xl:mb-5 2xl:text-mega">
                 Error
+              </h2>
+              <p className="text-balance text-small md:text-medium 2xl:text-large">
+                {error}
               </p>
-              <p className="text-balance text-small md:text-large">{error}</p>
             </div>
           </div>
           {errorImage && (
             <div className="relative overflow-hidden rounded-medium">
               <div className="absolute inset-0 z-0">
                 <Image
-                  as={NextImage}
                   src={errorImage}
                   alt="Background blur"
-                  width={179}
-                  height={115}
-                  className="object-cover blur"
+                  className="h-24 w-40 object-cover blur 2xl:h-28 2xl:w-44"
                 />
               </div>
               <div className="relative z-10">
                 <Image
-                  width={179}
-                  height={115}
-                  as={NextImage}
                   src={errorImage}
                   alt="Error image"
-                  className="object-contain"
+                  className="h-24 w-40 object-contain 2xl:h-28 2xl:w-44"
                 />
               </div>
             </div>
