@@ -2,35 +2,40 @@
 
 import { useState } from 'react'
 
+import Image from 'next/image'
+
 export default function Home() {
   const [query, setQuery] = useState('')
-  const handleSearch = async (e) => {
+  const [results, setResults] = useState([])
+
+  const searchImages = async (e) => {
     e.preventDefault()
-    setLoading(true)
 
-    const res = await fetch('/api/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
-    })
-
+    const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`)
     const data = await res.json()
-    console.log(data, 22)
-    setResults(data.images || [])
-    setLoading(false)
+    console.log(data)
+    setResults(data)
   }
 
   return (
     <div>
-      <form onSubmit={handleSearch}>
+      <form onSubmit={searchImages}>
         <input
           type="text"
-          placeholder="Введите запрос..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          placeholder="Поиск изображений..."
         />
         <button type="submit">Поиск</button>
       </form>
+      <div>
+        {results.map((result) => (
+          <div key={result.id}>
+            <h3>{result.title}</h3>
+            <Image src={result.url} alt={result.title} width={300} height={200} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
