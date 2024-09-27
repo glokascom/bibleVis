@@ -1,3 +1,5 @@
+//TODO: delete on release. This is just for testing
+
 import { NextResponse } from 'next/server'
 
 import { supabaseService } from '@/app/supabase/service'
