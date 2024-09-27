@@ -29,15 +29,24 @@ function HeroBlock() {
       }}
     >
       <div className="relative z-10 flex flex-col items-center justify-center px-6">
-        <h2 className="mb-8 max-w-[750px] text-center text-3xl font-[600] text-white md:text-4xl">
-          Лучшие бесплатные стоковые христианские изображения
-        </h2>
+        <p className="mb-5 max-w-3xl text-balance text-center text-2xl font-semibold text-white md:whitespace-normal md:text-4xl">
+          <span className="md:inline-block md:w-full">
+            BibleVis offers stunning, royalty-free,
+          </span>
+          <span className="md:inline-block md:w-full">
+            AI-generated Bible and Christian images.
+          </span>
+        </p>
+        <p className="mb-10 text-center text-semixlarge text-white">
+          Discover and share high-quality visuals inspired by Scripture.
+        </p>
+
         <BVInput
           classNames={{
-            base: 'max-w-[670px] w-full',
-            input: 'text-small md:text-medium',
+            base: 'max-w-xl w-full',
+            input: 'text-medium',
           }}
-          placeholder="Search free Bible and Christian Images"
+          placeholder="Search for free images"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
@@ -50,7 +59,7 @@ function HeroBlock() {
               viewBox="0 0 18 18"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 shrink-0 cursor-pointer py-3 pl-3 pr-4"
+              className="h-14 w-12 shrink-0 cursor-pointer py-3 pl-3 pr-4"
               onClick={handleSearch}
             >
               <path

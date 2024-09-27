@@ -12,6 +12,8 @@ import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
+import BVButton from './BVButton'
+
 function ImagePageContent({
   imageInfo,
   relatedImages,
@@ -32,7 +34,9 @@ function ImagePageContent({
     <div
       className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}
     >
-      <div className="flex flex-col md:flex-row md:items-start">
+      <div
+        className={`flex flex-col md:flex-row md:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
+      >
         <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
           {imageInfo.imagePath ? (
             <>
@@ -80,25 +84,40 @@ function ImagePageContent({
           )}
         </div>
 
-        <div className="my-2.5 flex justify-between md:hidden">
-          <button
-            onClick={onPrevImage}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
-          >
-            <Image src="/polygon.svg" alt="previous image" />
-          </button>
-          <button
-            onClick={onNextImage}
-            className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
-          >
-            <Image src="/polygon.svg" alt="next image" />
-          </button>
-        </div>
+        {isModal && (
+          <div className="my-2.5 flex justify-between md:hidden">
+            <button
+              onClick={onPrevImage}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
+            >
+              <Image src="/polygon.svg" alt="previous image" />
+            </button>
+            <button
+              onClick={onNextImage}
+              className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+            >
+              <Image src="/polygon.svg" alt="next image" />
+            </button>
+          </div>
+        )}
 
         <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
           <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
             <div className="rounded-medium border bg-background p-5 shadow-small">
               <Download imageInfo={imageInfo} onDownload={incrementDownloads} />
+
+              {isCurrentUser && (
+                <BVButton
+                  as={Link}
+                  href={`/user/${imageInfo.id}`}
+                  fullWidth
+                  color="secondary"
+                  className="mt-5"
+                >
+                  Edit image
+                </BVButton>
+              )}
+
               <Description
                 imageInfo={imageInfo}
                 totalDownloads={totalDownloads}

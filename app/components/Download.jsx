@@ -60,7 +60,7 @@ function Download({ imageInfo = {}, onDownload }) {
   }
 
   return (
-    <div>
+    <div className="border-b-1 pb-5">
       <ButtonGroup radius="full" fullWidth ref={buttonGroupRef}>
         <Button
           className="h-14 w-4/5 justify-start bg-primary pl-12 text-medium font-semibold text-white"

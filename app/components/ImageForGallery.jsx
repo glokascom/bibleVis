@@ -231,7 +231,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           </div>
           {isAuthenticated && (
             <button
-              className={`absolute right-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'} md:p-3`}
+              className={`absolute right-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'}`}
               onClick={handleLikeClick}
               disabled={isLoading}
             >
@@ -254,7 +254,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
             >
               <DropdownTrigger>
                 <button
-                  className={`absolute left-4 top-5 z-10 cursor-pointer rounded-full bg-background p-2 transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} md:p-3`}
+                  className={`absolute left-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background transition-opacity duration-300 md:h-11 md:w-11 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                 >
                   <Image src="/pencil.svg" alt="edit" className="rounded-none" />
                 </button>
