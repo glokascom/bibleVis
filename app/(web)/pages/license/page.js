@@ -1,25 +1,25 @@
 import { Image } from '@nextui-org/react'
 
+const allowedRules = [
+  'Images on BibleVis are free to use',
+  'Attribution is not mandatory, but giving credit to BibleVis and author of the image is appreciated',
+  'You can modify the images from BibleVis. Feel free to be creative and edit them as you wish.',
+]
+
+const notAllowedRules = [
+  'Identifiable people must not be depicted in a negative or offensive manner.',
+  'Do not sell unaltered copies of an image, such as posters, prints, or on physical products, without making modifications first.',
+  'Do not imply endorsement of your product by people or brands featured in the images',
+  'Do not redistribute or sell the images on other stock photo or wallpaper platforms',
+  'Do not use the images as part of a trademark, design mark, trade name, business name, or service mark.',
+  'Collecting images from BibleVis to create a similar or competing service.',
+]
+
 export default function License() {
-  const allowedRules = [
-    'Images on BibleVis are free to use',
-    'Attribution is not mandatory, but giving credit to BibleVis and author of the image is appreciated',
-    'You can modify the images from BibleVis. Feel free to be creative and edit them as you wish.',
-  ]
-
-  const notAllowedRules = [
-    'Identifiable people must not be depicted in a negative or offensive manner.',
-    'Do not sell unaltered copies of an image, such as posters, prints, or on physical products, without making modifications first.',
-    'Do not imply endorsement of your product by people or brands featured in the images',
-    'Do not redistribute or sell the images on other stock photo or wallpaper platforms',
-    'Do not use the images as part of a trademark, design mark, trade name, business name, or service mark.',
-    'Collecting images from BibleVis to create a similar or competing service.',
-  ]
-
   return (
     <div className="flex min-h-screen flex-col">
       <div className="mx-auto w-full max-w-[1096px] flex-grow px-6 text-center md:px-12">
-        <p className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</p>
+        <h2 className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</h2>
 
         <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:gap-5">
           <RuleColumn
@@ -40,7 +40,7 @@ export default function License() {
 
       <div className="mt-auto w-full text-balance bg-secondary-50 px-6 pb-10 text-center">
         <div className="mx-auto w-full max-w-xl">
-          <p className="pb-5 pt-10 text-4xl md:text-5xl">Important</p>
+          <h2 className="pb-5 pt-10 text-4xl font-medium md:text-5xl">Important</h2>
           <p className="text-small text-secondary-500">
             BibleVis provides an irrevocable, nonexclusive, worldwide copyright license
             allowing you to download, copy, modify, distribute, perform, and use images
