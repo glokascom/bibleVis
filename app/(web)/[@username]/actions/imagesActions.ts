@@ -108,9 +108,12 @@ export async function getUserImagesWithLikes(
     if (userId) {
       query = query.eq('user_id', userId)
     }
-
     if (searchQuery) {
-      query = query.ilike('title', `%${searchQuery}%`)
+      const formattedQuery = searchQuery
+        .split(/[-,]+/)
+        .filter((word) => word.trim().length > 0)
+        .join(' | ')
+      query = query.textSearch('fts', formattedQuery)
     }
 
     const {
