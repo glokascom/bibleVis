@@ -119,7 +119,6 @@ export async function POST(
       throw new Error('Failed to insert image into database.')
     }
 
-
     try {
       await Promise.all(
         software.map(async (soft) => {
