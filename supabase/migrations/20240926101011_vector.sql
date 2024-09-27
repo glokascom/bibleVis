@@ -1,31 +1,78 @@
-CREATE EXTENSION IF NOT EXISTS vector;
+alter table images
+add column fts tsvector;
 
-ALTER TABLE public.images
-ADD COLUMN search_vector vector(384 ); -- размер вектора для gte-small модели
+create or replace function update_images_fts() 
+returns trigger as $$
+begin
+  new.fts := to_tsvector('russian', 
+    coalesce(new.description, '') || ' ' || 
+    coalesce(new.title, '') || ' ' || 
+    coalesce(
+      (
+        select string_agg(t.name, ' ')
+        from image_tags it
+        join tags t on t.id = it.tag_id
+        where it.image_id = new.id
+      ), ''
+    )
+  ) ||
+  to_tsvector('english', 
+    coalesce(new.description, '') || ' ' || 
+    coalesce(new.title, '') || ' ' ||
+    coalesce(
+      (
+        select string_agg(t.name, ' ')
+        from image_tags it
+        join tags t on t.id = it.tag_id
+        where it.image_id = new.id
+      ), ''
+    )
+  );
+  return new;
+end;
+$$ language plpgsql;
 
+create trigger trigger_update_images_fts
+before insert or update on images
+for each row
+execute function update_images_fts();
 
-CREATE OR REPLACE FUNCTION search_images(query_embedding vector(384), threshold float)
-RETURNS TABLE (
-  id int,
-  title text,
-  description text,
-  url_slug text
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT images.id, images.title::text, images.description::text, images.url_slug::text
-  FROM public.images
---   WHERE search_vector <=> query_embedding < threshold  -- Порог точности
---   ORDER BY search_vector <=> query_embedding
-  LIMIT 10;
-END;
-$$;
+create or replace function update_image_fts_on_tag_change() 
+returns trigger as $$
+begin
+  update images
+  set fts = to_tsvector('russian', 
+    coalesce(description, '') || ' ' || 
+    coalesce(title, '') || ' ' || 
+    coalesce(
+      (
+        select string_agg(t.name, ' ')
+        from image_tags it
+        join tags t on t.id = it.tag_id
+        where it.image_id = images.id
+      ), ''
+    )
+  ) ||
+  to_tsvector('english', 
+    coalesce(description, '') || ' ' || 
+    coalesce(title, '') || ' ' ||
+    coalesce(
+      (
+        select string_agg(t.name, ' ')
+        from image_tags it
+        join tags t on t.id = it.tag_id
+        where it.image_id = images.id
+      ), ''
+    )
+  )
+  where id = new.image_id;
+  return new;
+end;
+$$ language plpgsql;
 
+create trigger trigger_update_image_fts_on_tag_insert
+after insert or delete on image_tags
+for each row
+execute function update_image_fts_on_tag_change();
 
-
-
-CREATE INDEX IF NOT EXISTS idx_images_search_vector 
-ON public.images
-USING ivfflat (search_vector);
+create index images_fts on images using gin (fts);
