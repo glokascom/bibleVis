@@ -241,9 +241,9 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   }
 
   return (
-    <>
+    <div className="flex flex-col">
       {error ? (
-        <div className="mb-7 mt-14 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 px-5 py-6 text-secondary-50 md:mb-5 md:mt-20 md:gap-12 md:p-6">
+        <div className="my-5 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 p-5 text-secondary-50 md:gap-12">
           <div className="flex md:gap-4">
             <Image
               as={NextImage}
@@ -286,8 +286,8 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           )}
         </div>
       ) : (
-        <div className="mb-5 mt-20 text-balance text-center md:mb-7 md:mt-16 md:w-2/5 md:self-center">
-          <p className="text-xxlarge md:text-mega">Upload your image</p>
+        <div className="my-5 text-balance text-center md:w-2/5 md:self-center 2xl:mb-7 2xl:mt-20">
+          <p className="text-xxlarge 2xl:text-mega">Upload your image</p>
           <p className="my-5 text-small text-secondary-400">
             Join our community of creators and showcase your talent by uploading your
             media! Learn more about the BibleVis{' '}
@@ -301,7 +301,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
 
       <ImageUploadDragDrop onImageChange={handleImageChange} />
 
-      <div className="mb-24 mt-10 flex flex-col gap-10 md:mt-12 md:w-3/4 md:flex-row md:self-center">
+      <div className="mt-12 flex flex-col gap-10 pb-16 md:w-3/4 md:flex-row md:self-center 2xl:pb-24">
         <p className="md:w-1/3">
           <span className="font-bold">File Formats and Size:</span> Acceptable formats are
           JPG and PNG, with a maximum file size of 4MB and at least 1920 pixels on one
@@ -316,6 +316,6 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           containing graphic nudity, violence, or hate speech.
         </p>
       </div>
-    </>
+    </div>
   )
 }

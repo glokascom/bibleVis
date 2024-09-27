@@ -10,12 +10,10 @@ export default async function EditUser() {
 
   const user = (await getUser()).user
   return (
-    <>
-      <UploadImage
-        user={user}
-        softwareOptions={softwareOptions}
-        tagsOptions={tagsOptions}
-      />
-    </>
+    <UploadImage
+      user={user}
+      softwareOptions={softwareOptions}
+      tagsOptions={tagsOptions}
+    />
   )
 }
