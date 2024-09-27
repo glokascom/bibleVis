@@ -18,7 +18,7 @@ export default function License() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="mx-auto w-full max-w-[1806px] flex-grow px-6 text-center md:px-12">
+      <div className="mx-auto w-full max-w-[1096px] flex-grow px-6 text-center md:px-12">
         <p className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</p>
 
         <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:gap-5">
@@ -30,6 +30,7 @@ export default function License() {
           />
           <RuleColumn
             title="What is not allowed?"
+            isDanger={true}
             rules={notAllowedRules}
             iconSrc="/close-red.svg"
             iconAlt="close"
@@ -54,7 +55,7 @@ export default function License() {
   )
 }
 
-const RuleColumn = ({ title, rules, iconSrc, iconAlt }) => (
+const RuleColumn = ({ title, rules, iconSrc, iconAlt, isDanger = false }) => (
   <div className="md:w-1/2">
     <div className="mb-5 flex items-center justify-center gap-2.5 text-xlarge font-medium md:mb-10 md:text-semimega">
       <p>{title}</p>
@@ -64,7 +65,9 @@ const RuleColumn = ({ title, rules, iconSrc, iconAlt }) => (
       {rules.map((rule, index) => (
         <p
           key={index}
-          className="min-h-20 content-center rounded-medium border border-primary-400 px-5 py-2.5"
+          className={`min-h-20 content-center rounded-medium border ${
+            isDanger ? 'border-danger-200' : 'border-primary-200'
+          } px-5 py-2.5`}
         >
           {rule}
         </p>
