@@ -146,7 +146,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
 
           <Link
             href={`/user/${imageId}`}
-            className="absolute left-2.5 top-2.5 z-10 rounded-full bg-background p-3 md:left-5 md:top-5"
+            className="absolute left-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background md:left-5 md:top-5 md:h-11 md:w-11"
           >
             <Image
               removeWrapper

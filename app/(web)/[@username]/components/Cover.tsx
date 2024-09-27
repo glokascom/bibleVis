@@ -18,7 +18,7 @@ function Cover({ isCurrentUser, profileUser }: CoverProps) {
       />
       {isCurrentUser && (
         <BVLink
-          className="absolute right-2.5 top-2.5 z-10 rounded-full bg-secondary-50 p-3 md:left-8 md:right-auto md:top-8"
+          className="absolute right-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-secondary-50 md:left-8 md:right-auto md:top-8 md:h-11 md:w-11"
           href="/user/edit"
         >
           <Image src="/pencil.svg" alt="edit" width={18} height={18} />
