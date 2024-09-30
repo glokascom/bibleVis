@@ -9,13 +9,18 @@ function SaveConfirmationModal({
   closeModal,
   handleFormSubmit,
   isLoading,
+  isNewImage = true,
 }) {
   return (
     <>
       {isSaveModalOpen && (
         <Modal closeModal={isLoading ? () => {} : closeModal}>
           <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-            <p>Are you sure you want to upload file?</p>
+            {isNewImage ? (
+              <p>Are you sure you want to upload file?</p>
+            ) : (
+              <p>Are you sure you want to save edited?</p>
+            )}
             <div className="mt-12 flex justify-center gap-2">
               <BVButton
                 className="w-1/2 bg-secondary-50 text-inherit"
@@ -31,7 +36,7 @@ function SaveConfirmationModal({
                 className="w-1/2 bg-primary"
                 isLoading={isLoading}
               >
-                Save
+                {isNewImage ? <p>Publish</p> : <p>Yes</p>}
               </BVButton>
             </div>
           </div>
