@@ -6,6 +6,7 @@ import Image from 'next/image'
 
 import { BVButton } from '@/app/components/BVButton'
 import { BVInput } from '@/app/components/BVInput'
+import PasswordStrengthMeter from '@/app/components/PasswordStrengthMeter'
 
 function Password({ userInfo }) {
   const [currentPassword, setCurrentPassword] = useState('')
@@ -117,6 +118,8 @@ function Password({ userInfo }) {
           isRequired
         />
       </div>
+      <PasswordStrengthMeter password={newPassword} />
+
       <div>
         <label htmlFor="confirmPassword" className="mb-2 text-medium font-medium">
           Confirm Password

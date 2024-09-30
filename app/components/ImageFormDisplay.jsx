@@ -310,6 +310,7 @@ function ImageFormDisplay({
             closeModal={closeModal}
             handleFormSubmit={handleFormSubmit}
             isLoading={isLoading}
+            isNewImage={!initialFormData}
           />
         </form>
       </div>

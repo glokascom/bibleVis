@@ -15,6 +15,7 @@ import { login, signup } from '../actions/actionsSupabase'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import PasswordStrengthMeter from './PasswordStrengthMeter'
 import SuccessSignUpForm from './SuccessSignUp'
 
 function AuthForm() {
@@ -318,25 +319,9 @@ function AuthForm() {
                     .filter((error) => error.field === 'password')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <p className="my-8 text-small text-secondary-200">
-                  This site is protected by reCAPTCHA and the Google{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/privacy"
-                    className="text-primary hover:underline"
-                  >
-                    Privacy Policy
-                  </a>{' '}
-                  and{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/tos"
-                    className="text-primary hover:underline"
-                  >
-                    Terms of Service
-                  </a>{' '}
-                  apply.
-                </p>
+                <div className="mb-5">
+                  <PasswordStrengthMeter password={passwordSignup} />
+                </div>
                 {signupErrors?.message && (
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
@@ -427,25 +412,7 @@ function AuthForm() {
                     .filter((error) => error.field === 'password')
                     .map((error) => <p key={error.message}>{error.message}</p>)}
                 />
-                <p className="my-8 text-small text-secondary-200">
-                  This site is protected by reCAPTCHA and the Google{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/privacy"
-                    className="text-primary hover:underline"
-                  >
-                    Privacy Policy
-                  </a>{' '}
-                  and{' '}
-                  <a
-                    target="_blank"
-                    href="/pages/tos"
-                    className="text-primary hover:underline"
-                  >
-                    Terms of Service
-                  </a>{' '}
-                  apply.
-                </p>
+
                 {loginErrors?.message && (
                   <p className="my-4 text-small text-danger">{loginErrors.message}</p>
                 )}

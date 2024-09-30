@@ -76,7 +76,7 @@ function Navigation({ user }) {
               base: 'max-w-[670px] w-full',
               input: 'text-small md:text-medium',
             }}
-            placeholder="Search free Bible and Christian Images"
+            placeholder="Search for free images"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => {
