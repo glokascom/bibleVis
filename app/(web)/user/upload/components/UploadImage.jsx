@@ -166,7 +166,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           {`Great, ${user.username || 'User'}! Your image has been uploaded successfully`}
         </p>
 
-        <div className="flex justify-center gap-2">
+        <div className="mb-10 flex justify-center gap-2">
           <BVButton
             as={Link}
             href={`/@${user.username}`}
