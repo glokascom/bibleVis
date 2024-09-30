@@ -66,13 +66,13 @@ function ImageUploadDragDrop({ onImageChange }) {
 
   return (
     <div
-      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-9'} h-full rounded-medium shadow-small`}
+      className={`${isOverDropZone ? '' : 'border border-dashed p-2.5 md:p-6 2xl:p-9'} rounded-medium shadow-small`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 py-14 text-center md:pb-32 md:pt-24">
+      <div className="flex flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 py-14 text-center md:pb-20 md:pt-14 2xl:pb-32 2xl:pt-24">
         {isOverDropZone ? (
           <>
             <Image
@@ -93,15 +93,13 @@ function ImageUploadDragDrop({ onImageChange }) {
             <div className="hidden flex-col items-center justify-center font-medium md:flex">
               <Image
                 removeWrapper
-                as={NextImage}
-                height={93}
-                width={93}
+                className="h-16 w-16 2xl:h-24 2xl:w-24"
                 src="/star.svg"
                 alt="Star"
                 radius="none"
               />
-              <p className="mt-5 text-mega leading-9">Drag and Drop</p>
-              <p className="my-7 text-xlarge">or</p>
+              <p className="mt-5 text-xxlarge leading-9 2xl:text-mega">Drag and Drop</p>
+              <p className="my-5 text-xlarge 2xl:my-7">or</p>
             </div>
 
             <BVButton size="lg" onClick={openFileDialog}>
