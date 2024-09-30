@@ -76,3 +76,20 @@ for each row
 execute function update_image_fts_on_tag_change();
 
 create index images_fts on images using gin (fts);
+
+
+
+CREATE OR REPLACE FUNCTION calculate_popularity()
+RETURNS TABLE (
+  image_id INTEGER,
+  popularity DOUBLE PRECISION
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    images.id AS image_id,
+    ((COALESCE(images.total_likes, 0) * 1.5 + COALESCE(images.total_views, 0) * 0.5) * 30) / (1 + DATE_PART('day', NOW() - images.uploaded_at)) AS popularity
+  FROM images;
+END;
+$$ LANGUAGE plpgsql;
+
