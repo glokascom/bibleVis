@@ -99,14 +99,16 @@ export async function getUserImagesWithLikes(
   currentUserId?: string | null,
   searchQuery?: string | null,
   imageFilter?: boolean | null,
-  orientationFilter?: number | 0
+  orientationFilter?: number | 0,
+  sortDirection?: number | 2
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
+
     let query = supabaseService
       .from('images')
-      .select('*, users(id,username,avatar_file_path, total_followers)', {
+      .select('*, users(id, username, avatar_file_path, total_followers)', {
         count: 'exact',
       })
 
@@ -140,15 +142,64 @@ export async function getUserImagesWithLikes(
       query = query.eq('orientation', formattedOrientationFilter)
     }
 
-    const {
-      data: images,
-      count,
-      error,
-    } = await query.range(rangeStart, rangeEnd).order('uploaded_at', { ascending: false })
+    // If sorting by popularity, call the RPC function
+    let images
+    let count
 
-    if (error) throw error
+    if (sortDirection === 2) {
+      // Call the RPC function for popularity sorting
+      const { data: popularityData, error: popularityError } = await supabaseService
+        .rpc('calculate_popularity')
+        .range(rangeStart, rangeEnd)
+
+      if (popularityError) throw popularityError
+
+      const popularityIds = popularityData.map((item) => item.image_id)
+
+      // Query the images with their popularity values and user data
+      const {
+        data: popularImages,
+        count: totalCount,
+        error: imagesError,
+      } = await supabaseService
+        .from('images')
+        .select('*, users(id, username, avatar_file_path, total_followers)')
+        .in('id', popularityIds)
+
+      if (imagesError) throw imagesError
+
+      images = popularImages.map((image) => ({
+        ...image,
+        popularity:
+          popularityData.find((popItem) => popItem.image_id === image.id)?.popularity ||
+          0,
+      }))
+      count = totalCount
+    } else {
+      // For other sorts (newest or oldest), use regular order
+      if (sortDirection === 0) {
+        // Sort by newest
+        query = query.order('uploaded_at', { ascending: false })
+      } else if (sortDirection === 1) {
+        // Sort by oldest
+        query = query.order('uploaded_at', { ascending: true })
+      }
+
+      const {
+        data: normalImages,
+        count: normalCount,
+        error,
+      } = await query.range(rangeStart, rangeEnd)
+
+      if (error) throw error
+
+      images = normalImages
+      count = normalCount
+    }
+
     if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
 
+    // Logic for liked images
     let likedImages = new Set()
     if (currentUserId) {
       const { data: likes, error: likesError } = await supabaseService
@@ -186,6 +237,7 @@ export async function getUserImagesWithLikes(
           imagePath,
           isOwnedByCurrentUser,
           total_likes,
+          popularity: image.popularity || 0,
         }
       })
     )
@@ -364,6 +416,7 @@ export const loadNextPage = async (
   searchQuery: string | null,
   imageFilter: boolean | null,
   orientationFilter: number | 0,
+  sortDirection: number | 2,
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
   const { user: currentUser } = await getUser()
@@ -374,7 +427,8 @@ export const loadNextPage = async (
     currentUser?.id,
     searchQuery,
     imageFilter,
-    orientationFilter
+    orientationFilter,
+    sortDirection
   )
 
   const extendedImages = await Promise.all(

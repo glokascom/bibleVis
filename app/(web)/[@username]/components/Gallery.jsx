@@ -32,6 +32,7 @@ function Gallery({
   searchQuery = null,
   imageFilter = null,
   orientationFilter = null,
+  sortDirection = 2,
 }) {
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
@@ -53,7 +54,8 @@ function Gallery({
       page,
       searchQuery,
       imageFilter,
-      orientationFilter
+      orientationFilter,
+      sortDirection
     )
 
     setImages((prevImages) => {

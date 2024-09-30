@@ -12,10 +12,11 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   const [imageFilter, setImageFilter] = useState(null)
   const [key, setKey] = useState(0)
   const [orientation, setOrientation] = useState(0)
+  const [sortDirection, setSortDirection] = useState(2)
 
   useEffect(() => {
     setKey((prevKey) => prevKey + 1)
-  }, [activeButton, imageFilter, orientation])
+  }, [activeButton, imageFilter, orientation, sortDirection])
 
   if (!searchQuery) {
     return <p className="text-danger-500">Invalid URL format</p>
@@ -44,6 +45,10 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
 
   const handleOrientationChange = (newOrientation) => {
     setOrientation(newOrientation === 'All Orientations' ? null : newOrientation)
+  }
+
+  const handleSortChange = (newSortDirection) => {
+    setSortDirection(newSortDirection)
   }
 
   const getButtonStyle = (buttonName) => {
@@ -88,7 +93,12 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
         />
       </div>
 
-      <BVDropdown defaultSelectedKey={2} items={popularityItems} useCustomWidth={true} />
+      <BVDropdown
+        defaultSelectedKey={2}
+        items={popularityItems}
+        useCustomWidth={true}
+        onAction={handleSortChange}
+      />
 
       <div className="mt-10">
         <Gallery
@@ -97,6 +107,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
           searchQuery={searchQuery}
           imageFilter={imageFilter}
           orientationFilter={orientation}
+          sortDirection={sortDirection}
         />
       </div>
     </main>
