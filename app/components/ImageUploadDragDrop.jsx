@@ -81,10 +81,10 @@ function ImageUploadDragDrop({ onImageChange }) {
       onDrop={handleDrop}
     >
       <div
-        className={`flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r py-14 text-center ${isOverDropZone ? 'from-[#73ABC2]/50 to-primary-500/50 md:pb-14' : 'from-[#73ABC2]/30 to-primary-500/30 md:pb-20'} md:pt-14 2xl:pb-32 2xl:pt-24`}
+        className={`flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r py-10 text-center md:py-14 ${isOverDropZone ? 'from-[#73ABC2]/50 to-primary-500/50' : 'from-[#73ABC2]/30 to-primary-500/30'} 2xl:pb-32 2xl:pt-24`}
       >
         <div
-          className={`pointer-events-none absolute left-1/2 -translate-x-1/2 transform transition-all duration-300 ease-in-out ${isOverDropZone ? 'top-1/2 -translate-y-1/2' : 'top-20'}`}
+          className={`pointer-events-none absolute left-1/2 hidden -translate-x-1/2 transform transition-all duration-300 ease-in-out md:block ${isOverDropZone ? 'top-1/2 -translate-y-1/2' : 'top-20'}`}
         >
           <div className="relative h-24 w-24 2xl:h-32">
             <svg
@@ -116,27 +116,32 @@ function ImageUploadDragDrop({ onImageChange }) {
             </svg>
           </div>
         </div>
-        <div>
-          {isOverDropZone ? (
-            <>
-              <p className="mt-72 text-mega font-medium text-white 2xl:mt-96">Drop</p>
-            </>
-          ) : (
-            <>
-              <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
 
-              <div className="group hidden flex-col items-center justify-center font-medium md:flex">
-                <p className="mt-28 text-xxlarge leading-9 2xl:text-mega">
-                  Drag and Drop
-                </p>
-                <p className="my-5 text-xlarge 2xl:my-7">or</p>
-              </div>
+        <p
+          className={`absolute bottom-10 left-1/2 -translate-x-1/2 transform transition-all duration-300 ease-in-out 2xl:bottom-20 ${
+            isOverDropZone
+              ? 'text-mega font-medium text-white opacity-100'
+              : 'pointer-events-none opacity-0'
+          }`}
+        >
+          Drop
+        </p>
 
-              <BVButton size="lg" onClick={openFileDialog}>
-                Browse file
-              </BVButton>
-            </>
-          )}
+        <div
+          className={`transform transition-all duration-300 ease-in-out ${
+            isOverDropZone ? 'pointer-events-none opacity-0' : 'opacity-100'
+          }`}
+        >
+          <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
+
+          <div className="group hidden flex-col items-center justify-center font-medium md:flex">
+            <p className="mt-28 text-xxlarge leading-9 2xl:text-mega">Drag and Drop</p>
+            <p className="my-5 text-xlarge 2xl:my-7">or</p>
+          </div>
+
+          <BVButton size="lg" onClick={openFileDialog}>
+            Browse file
+          </BVButton>
         </div>
 
         <input
