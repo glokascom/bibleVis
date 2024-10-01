@@ -114,12 +114,19 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].imageInfo.id)
+    updateCountView(newIndex)
   }
 
   const handleNextImage = async () => {
     const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].imageInfo.id)
+    updateCountView(newIndex)
+  }
+
+  const updateCountView = async (index) => {
+    const { totalViews } = await getImageStats(allImages[index].imageInfo.id)
+    allImages[index].imageInfo.total_views = totalViews
   }
 
   const updateUrl = (imageId) => {
