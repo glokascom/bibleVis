@@ -146,7 +146,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
 
   const incrementImage = async (index) => {
     allImages[index].imageInfo.total_views++
-    if (!(await incrementImageViews(image.imageInfo.id))) {
+    if (!(await incrementImageViews(allImages[index].imageInfo.id))) {
       allImages[index].imageInfo.total_views--
     }
   }
