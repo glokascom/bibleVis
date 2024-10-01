@@ -4,8 +4,11 @@ import { useState } from 'react'
 
 import { useParams } from 'next/navigation'
 
+import { Button, Image } from '@nextui-org/react'
+
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
+import { Chevron } from '@/app/components/Chevron'
 
 import Gallery from '../../[@username]/components/Gallery'
 
@@ -14,6 +17,7 @@ export default function SearchPage() {
   const decodedTitle = title ? decodeURIComponent(title) : null
 
   const [activeButton, setActiveButton] = useState('AI Generated')
+  const [isOpenFilters, setIsOpenFilters] = useState(false)
 
   if (!decodedTitle) {
     return <p className="text-danger-500">Invalid URL format</p>
@@ -61,15 +65,36 @@ export default function SearchPage() {
           ))}
         </div>
 
-        <div className="hidden w-full px-6 md:block md:w-auto md:min-w-52 md:px-0">
-          <BVDropdown items={orientationItems} />
+        <div className="hidden px-6 md:block md:px-0">
+          <Button
+            onClick={() => setIsOpenFilters(!isOpenFilters)}
+            startContent={<Image src={'/filter.svg'} alt="filter" radius="none" />}
+            endContent={
+              <Chevron
+                className={`transition-transform ${isOpenFilters ? 'rotate-180' : ''}`}
+              />
+            }
+            className="border bg-background py-6 text-medium font-semibold md:flex md:justify-between md:p-7"
+          >
+            Filters
+          </Button>
         </div>
       </div>
 
-      <div className="mb-5 md:hidden">
-        <BVDropdown items={orientationItems} useCustomWidth={true} />
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpenFilters ? 'md:max-h-16 md:opacity-100' : 'md:max-h-0 md:opacity-0'
+        }`}
+      >
+        <div className="flex flex-col gap-5 md:flex-row">
+          <BVDropdown items={orientationItems} useCustomWidth={true} />
+          <BVDropdown
+            defaultSelectedKey={2}
+            items={popularityItems}
+            useCustomWidth={true}
+          />
+        </div>
       </div>
-      <BVDropdown defaultSelectedKey={2} items={popularityItems} useCustomWidth={true} />
 
       <div className="mt-10">
         <Gallery isShowHeader={false} searchQuery={decodedTitle} />
