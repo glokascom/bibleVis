@@ -83,47 +83,35 @@ function ImageUploadDragDrop({ onImageChange }) {
       onDrop={handleDrop}
     >
       <div className="flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r from-[#73ABC2]/30 to-primary-500/30 py-14 text-center md:pb-20 md:pt-14 2xl:pb-32 2xl:pt-24">
-        <div className="transform transition-all duration-300 ease-in-out">
+        <div>
           {isOverDropZone ? (
             <>
               <Image
                 removeWrapper
-                className="h-56 w-56 transition-all duration-300 ease-in-out"
+                className="h-44 w-44 2xl:h-56 2xl:w-56"
                 src="/star-white.svg"
                 alt="white star"
                 radius="none"
               />
-              <p className="mt-20 text-mega font-medium text-white transition-all duration-300 ease-in-out">
-                Drop
-              </p>
+              <p className="mt-10 text-mega font-medium text-white 2xl:mt-20">Drop</p>
             </>
           ) : (
             <>
-              <p className="mb-7 text-xxlarge font-medium transition-all duration-300 ease-in-out md:hidden">
-                Add a file
-              </p>
+              <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
 
-              <div className="hidden flex-col items-center justify-center font-medium transition-all duration-300 ease-in-out md:flex">
+              <div className="hidden flex-col items-center justify-center font-medium md:flex">
                 <Image
                   removeWrapper
-                  className="h-16 w-16 transition-all duration-300 ease-in-out 2xl:h-24 2xl:w-24"
+                  className="h-16 w-16 2xl:h-24 2xl:w-24"
                   src="/star.svg"
                   alt="Star"
                   radius="none"
                 />
-                <p className="mt-5 text-xxlarge leading-9 transition-all duration-300 ease-in-out 2xl:text-mega">
-                  Drag and Drop
-                </p>
-                <p className="my-5 text-xlarge transition-all duration-300 ease-in-out 2xl:my-7">
-                  or
-                </p>
+                <p className="mt-5 text-xxlarge leading-9 2xl:text-mega">Drag and Drop</p>
+                <p className="my-5 text-xlarge 2xl:my-7">or</p>
               </div>
 
-              <BVButton
-                size="lg"
-                onClick={openFileDialog}
-                className="transition-all duration-300 ease-in-out"
-              >
+              <BVButton size="lg" onClick={openFileDialog}>
                 Browse file
               </BVButton>
             </>
