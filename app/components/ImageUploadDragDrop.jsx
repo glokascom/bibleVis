@@ -118,10 +118,8 @@ function ImageUploadDragDrop({ onImageChange }) {
         </div>
 
         <p
-          className={`absolute bottom-10 left-1/2 -translate-x-1/2 transform transition-all duration-300 ease-in-out 2xl:bottom-20 ${
-            isOverDropZone
-              ? 'text-mega font-medium text-white opacity-100'
-              : 'pointer-events-none opacity-0'
+          className={`absolute bottom-10 left-1/2 -translate-x-1/2 transform text-mega font-medium text-white transition-all duration-300 ease-in-out 2xl:bottom-20 ${
+            isOverDropZone ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
         >
           Drop
