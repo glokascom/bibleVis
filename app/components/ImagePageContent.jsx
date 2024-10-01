@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 import { Link } from '@nextui-org/react'
@@ -15,6 +15,58 @@ import TagList from '@/app/components/TagList'
 import { getImageStats } from '../(web)/[@username]/actions/imagesActions'
 import BVButton from './BVButton'
 
+const useImageStats = (imageInfo) => {
+  const [totalDownloads, setTotalDownloads] = useState(imageInfo?.total_downloads || 0)
+  const [views, setViews] = useState(imageInfo?.total_views || 0)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const signal = controller.signal
+
+    const fetchImageStats = async () => {
+      if (imageInfo?.id) {
+        let { totalViews } = await getImageStats(imageInfo.id)
+        totalViews++
+        setViews(totalViews)
+      }
+    }
+
+    const incrementViews = async () => {
+      if (imageInfo?.id) {
+        try {
+          const response = await fetch('/api/increment-views', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageId: imageInfo.id }),
+            signal,
+          })
+          const data = await response.json()
+
+          if (!data.success) {
+            setViews((prevViews) => prevViews - 1)
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError') {
+            console.error('Error incrementing image views:', error)
+          }
+        }
+      }
+    }
+
+    fetchImageStats().then(incrementViews)
+
+    return () => {
+      controller.abort()
+    }
+  }, [imageInfo])
+
+  const incrementDownloads = () => {
+    setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
+  }
+
+  return { views, totalDownloads, incrementDownloads }
+}
+
 function ImagePageContent({
   imageInfo,
   relatedImages,
@@ -27,55 +79,27 @@ function ImagePageContent({
   isAuthenticated,
   isModal = false,
 }) {
-  const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
-  const [views, setViews] = useState(imageInfo.total_views || 0)
+  const { views, totalDownloads, incrementDownloads } = useImageStats(imageInfo)
 
-  const incrementDownloads = () => {
-    setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const fetchImageStats = async () => {
-      if (imageInfo?.id) {
-        const { totalViews } = await getImageStats(imageInfo.id)
-        if (isMounted) {
-          setViews(totalViews)
-        }
-      }
-    }
-
-    const incrementViews = async () => {
-      if (imageInfo?.id) {
-        try {
-          const response = await fetch('/api/increment-views', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ imageId: imageInfo.id }),
-          })
-
-          const data = await response.json()
-
-          if (data.success) {
-            setViews((prevViews) => prevViews + 1)
-          } else {
-            console.error('Failed to increment image views:', data.message)
-          }
-        } catch (error) {
-          console.error('Error incrementing image views:', error)
-        }
-      }
-    }
-
-    fetchImageStats().then(incrementViews)
-
-    return () => {
-      isMounted = false
-    }
-  }, [imageInfo])
+  const modalNavigationButtons = useMemo(
+    () => (
+      <div className="my-2.5 flex justify-between md:hidden">
+        <button
+          onClick={onPrevImage}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
+        >
+          <Image src="/polygon.svg" alt="previous image" />
+        </button>
+        <button
+          onClick={onNextImage}
+          className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+        >
+          <Image src="/polygon.svg" alt="next image" />
+        </button>
+      </div>
+    ),
+    [onPrevImage, onNextImage]
+  )
 
   return (
     <div
@@ -85,7 +109,7 @@ function ImagePageContent({
         className={`flex flex-col md:flex-row md:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
       >
         <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
-          {imageInfo.imagePath ? (
+          {imageInfo?.imagePath ? (
             <>
               <Image
                 src={imageInfo.imagePath}
@@ -131,22 +155,7 @@ function ImagePageContent({
           )}
         </div>
 
-        {isModal && (
-          <div className="my-2.5 flex justify-between md:hidden">
-            <button
-              onClick={onPrevImage}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
-            >
-              <Image src="/polygon.svg" alt="previous image" />
-            </button>
-            <button
-              onClick={onNextImage}
-              className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
-            >
-              <Image src="/polygon.svg" alt="next image" />
-            </button>
-          </div>
-        )}
+        {isModal && modalNavigationButtons}
 
         <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
           <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
