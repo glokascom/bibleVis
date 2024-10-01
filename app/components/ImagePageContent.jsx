@@ -28,7 +28,7 @@ function ImagePageContent({
   isModal = false,
 }) {
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
-  const [views, setViews] = useState(imageInfo.total_views)
+  const [views, setViews] = useState(imageInfo.total_views || 0)
 
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
@@ -36,6 +36,15 @@ function ImagePageContent({
 
   useEffect(() => {
     let isMounted = true
+
+    const fetchImageStats = async () => {
+      if (imageInfo?.id) {
+        const { totalViews } = await getImageStats(imageInfo.id)
+        if (isMounted) {
+          setViews(totalViews)
+        }
+      }
+    }
 
     const incrementViews = async () => {
       if (imageInfo?.id) {
@@ -61,16 +70,7 @@ function ImagePageContent({
       }
     }
 
-    incrementViews()
-
-    const fetchImageStats = async () => {
-      const { totalViews } = await getImageStats(imageInfo.id)
-      if (isMounted) {
-        setViews(totalViews)
-      }
-    }
-
-    fetchImageStats()
+    fetchImageStats().then(incrementViews)
 
     return () => {
       isMounted = false
