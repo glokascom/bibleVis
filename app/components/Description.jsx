@@ -14,9 +14,16 @@ function formatDate(dateString) {
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
 
-function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, totalLikes }) {
+function Description({
+  imageInfo,
+  isLike,
+  totalDownloads,
+  isAuthenticated,
+  totalLikes,
+  total_views,
+}) {
   const statistics = [
-    { label: 'Views', value: imageInfo.total_views },
+    { label: 'Views', value: total_views },
     { label: 'Downloads', value: totalDownloads },
     {
       label: 'Resolution',

@@ -17,7 +17,6 @@ import {
   deleteImage,
   getImageStats,
   getLikeCountForImage,
-  incrementImageViews,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
 import {
@@ -41,13 +40,12 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
+  const pathname = usePathname()
+  const originalPathname = useRef(pathname)
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true)
     setIsDropdownOpen(false)
   }
-
-  const pathname = usePathname()
-  const originalPathname = useRef(pathname)
 
   const handleToggleLike = useCallback(() => {
     if (!isAuthenticated) return
@@ -116,16 +114,12 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].imageInfo.id)
-
-    await incrementImage(newIndex)
   }
 
   const handleNextImage = async () => {
     const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
     setCurrentImageIndex(newIndex)
     updateUrl(allImages[newIndex].imageInfo.id)
-
-    await incrementImage(newIndex)
   }
 
   const updateUrl = (imageId) => {
@@ -137,18 +131,6 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     setIsImageModalOpen(true)
     originalPathname.current = pathname
     updateUrl(image.imageInfo.id)
-
-    const imageIndex = allImages.findIndex(
-      (img) => img.imageInfo.id === image.imageInfo.id
-    )
-    await incrementImage(imageIndex)
-  }
-
-  const incrementImage = async (index) => {
-    allImages[index].imageInfo.total_views++
-    if (!(await incrementImageViews(allImages[index].imageInfo.id))) {
-      allImages[index].imageInfo.total_views--
-    }
   }
 
   const closeImageModal = async () => {

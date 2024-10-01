@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 import { Link } from '@nextui-org/react'
@@ -12,6 +12,7 @@ import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
+import { getImageStats } from '../(web)/[@username]/actions/imagesActions'
 import BVButton from './BVButton'
 
 function ImagePageContent({
@@ -27,9 +28,55 @@ function ImagePageContent({
   isModal = false,
 }) {
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
+  const [views, setViews] = useState(imageInfo.total_views)
+
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
+
+  useEffect(() => {
+    let isMounted = true
+
+    const incrementViews = async () => {
+      if (imageInfo?.id) {
+        try {
+          const response = await fetch('/api/increment-views', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ imageId: imageInfo.id }),
+          })
+
+          const data = await response.json()
+
+          if (data.success) {
+            setViews((prevViews) => prevViews + 1)
+          } else {
+            console.error('Failed to increment image views:', data.message)
+          }
+        } catch (error) {
+          console.error('Error incrementing image views:', error)
+        }
+      }
+    }
+
+    incrementViews()
+
+    const fetchImageStats = async () => {
+      const { totalViews } = await getImageStats(imageInfo.id)
+      if (isMounted) {
+        setViews(totalViews)
+      }
+    }
+
+    fetchImageStats()
+
+    return () => {
+      isMounted = false
+    }
+  }, [imageInfo])
+
   return (
     <div
       className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}
@@ -124,6 +171,7 @@ function ImagePageContent({
                 isLike={isLike}
                 isAuthenticated={isAuthenticated}
                 totalLikes={totalLikes}
+                total_views={views}
               />
               <CreatorDetails
                 creator={imageInfo.users}

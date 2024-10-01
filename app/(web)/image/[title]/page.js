@@ -45,11 +45,6 @@ export default async function ImagePage({ params }) {
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
 
-  imageInfo.total_views++
-  if (!(await incrementImageViews(imageInfo.id))) {
-    imageInfo.total_views--
-  }
-
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
       <ImagePageContent
@@ -59,6 +54,7 @@ export default async function ImagePage({ params }) {
         isLike={isLike}
         isCurrentUser={isCurrentUser}
         isAuthenticated={!!user}
+        incrementImageViews={incrementImageViews}
       />
     </main>
   )
