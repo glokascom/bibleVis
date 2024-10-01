@@ -120,6 +120,7 @@ function ImageUpload({
               width={previewSize.width}
               height={previewSize.height}
               layout="responsive"
+              sizes="(max-width: 640px) 100vw, 50vw"
               className="rounded-medium"
             />
           </div>

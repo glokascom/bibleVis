@@ -12,6 +12,7 @@ function Cover({ isCurrentUser, profileUser }: CoverProps) {
         src={profileUser.coverUrl}
         alt="cover"
         className="h-full object-cover"
+        sizes="(max-width: 640px) 100vw, 50vw"
         width={1280}
         height={400}
       />
