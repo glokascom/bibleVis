@@ -1,13 +1,14 @@
 import { getUser } from '@/app/actions/getUser'
-import ImagePageContent from '@/app/components/ImagePageContent'
 
 import {
   checkIfLiked,
+  getImageStats,
   getRandomImagesExcluding,
   incrementImageViews,
 } from '../../[@username]/actions/imagesActions'
 import { checkIfSubscribed } from '../../[@username]/actions/userActions'
 import { getImageInfoById } from '../../user/[uuid]/actions/getImage'
+import ImageView from './components/ImageView'
 
 export default async function ImagePage({ params }) {
   const { title } = params
@@ -45,20 +46,19 @@ export default async function ImagePage({ params }) {
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
 
-  imageInfo.total_views++
-  if (!(await incrementImageViews(imageInfo.id))) {
-    imageInfo.total_views--
-  }
+  await incrementImageViews(imageInfo.id)
+  const { totalViews } = await getImageStats(imageInfo.id)
 
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
-      <ImagePageContent
+      <ImageView
         imageInfo={imageInfo}
         relatedImages={relatedImages}
         isFollowed={isFollowed}
         isLike={isLike}
         isCurrentUser={isCurrentUser}
         isAuthenticated={!!user}
+        totalViews={totalViews}
       />
     </main>
   )
