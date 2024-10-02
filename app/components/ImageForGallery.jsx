@@ -207,6 +207,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
             alt="image of gallery"
             removeWrapper={true}
             className="h-full w-full object-cover"
+            loading="lazy"
             onLoad={() => setIsImageLoaded(true)}
           />
           <div
