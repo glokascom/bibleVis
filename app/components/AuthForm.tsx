@@ -222,7 +222,7 @@ function AuthForm() {
                   onClick={() =>
                     push(
                       '/api/auth/google?redirectedFrom=' +
-                        searchParams.get('redirectedFrom')
+                        (searchParams.get('redirectedFrom') ?? '/')
                     )
                   }
                 >
