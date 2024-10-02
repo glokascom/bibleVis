@@ -11,7 +11,6 @@ import {
   DropdownTrigger,
 } from '@nextui-org/dropdown'
 import { Image } from '@nextui-org/image'
-import { Card, Skeleton } from '@nextui-org/react'
 
 import {
   checkIfLiked,
@@ -41,10 +40,6 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
-  const handleImageLoad = useCallback(() => {
-    setIsImageLoaded(true)
-  }, [])
 
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true)
@@ -201,20 +196,8 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
         image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
       } overflow-hidden`}
     >
-      {!isImageLoaded && (
-        <Card
-          className={`w-full ${image.orientation === 'portrait' ? 'h-[146%]' : 'h-[60%]'}`}
-        >
-          <Skeleton className="rounded-lg">
-            <div
-              className={`h-full w-full ${image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'}`}
-            ></div>
-          </Skeleton>
-        </Card>
-      )}
-
       <div
-        className={`group absolute h-full w-full cursor-pointer ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className="group absolute h-full w-full cursor-pointer"
         onClick={openImageModal}
       >
         <Image
@@ -223,7 +206,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           removeWrapper={true}
           className="h-full w-full object-cover"
           loading="lazy"
-          onLoad={handleImageLoad}
+          onLoad={() => setIsImageLoaded(true)}
         />
         <div
           className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
