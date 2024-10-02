@@ -5,8 +5,7 @@ export default function SuccessSignUpForm() {
   return (
     <>
       <div className="z-50 flex h-[90vh] w-[90vw] flex-row overflow-hidden rounded-medium">
-        <Link href="/success-sign-up">Log in</Link>
-        <div className="flex h-full w-full shrink-0 flex-col items-center bg-background px-14 pb-0 pt-5 md:w-[400px] lg:w-[480px]">
+        <div className="flex h-full w-full shrink-0 flex-col items-center bg-background px-5 pb-0 pt-5 md:w-[400px] lg:w-[480px]">
           <Link href="/" className="mb-10">
             <Image src="/biblevis-logo.svg" alt="biblevis logo" width={181} height={45} />
           </Link>
