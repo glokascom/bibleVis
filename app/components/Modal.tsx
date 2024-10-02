@@ -15,10 +15,22 @@ export function Modal({ closeModal, showCloseButton = false, children }: ModalPr
     }
   }
 
+  const handleBackgroundClick = () => {
+    onDismiss()
+  }
+
+  const handleContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-black/50">
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-black/50"
+      onClick={handleBackgroundClick}
+    >
       <div
         className={`relative my-6 max-h-[90vh] lg:mx-0 ${showCloseButton ? 'mt-6 lg:mt-0' : ''}`}
+        onClick={handleContentClick}
       >
         <button
           onClick={onDismiss}
