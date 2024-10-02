@@ -11,6 +11,7 @@ import {
   DropdownTrigger,
 } from '@nextui-org/dropdown'
 import { Image } from '@nextui-org/image'
+import { Card, Skeleton } from '@nextui-org/react'
 
 import {
   checkIfLiked,
@@ -40,6 +41,10 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const handleImageLoad = useCallback(() => {
+    setIsImageLoaded(true)
+  }, [])
 
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true)
@@ -196,8 +201,20 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
         image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
       } overflow-hidden`}
     >
+      {!isImageLoaded && (
+        <Card
+          className={`w-full ${image.orientation === 'portrait' ? 'h-[146%]' : 'h-[60%]'}`}
+        >
+          <Skeleton className="rounded-lg">
+            <div
+              className={`h-full w-full ${image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'}`}
+            ></div>
+          </Skeleton>
+        </Card>
+      )}
+
       <div
-        className="group absolute h-full w-full cursor-pointer"
+        className={`group absolute h-full w-full cursor-pointer ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
         onClick={openImageModal}
       >
         <Image
@@ -205,7 +222,8 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
-          onLoad={() => setIsImageLoaded(true)}
+          loading="lazy"
+          onLoad={handleImageLoad}
         />
         <div
           className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
@@ -229,6 +247,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
               </div>
             </BVLink>
           </div>
+
           {isAuthenticated && (
             <button
               className={`absolute right-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'}`}
@@ -242,6 +261,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
               />
             </button>
           )}
+
           {image.isCurrentUser && (
             <Dropdown
               className="bg-secondary-50"
