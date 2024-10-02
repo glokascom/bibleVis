@@ -115,8 +115,9 @@ function Gallery({
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
-              <div key={image.id}>
+              <div key={`div-${image.id || index}`}>
                 <ImageForGallery
+                  key={`image-${image.id || index}`}
                   image={image}
                   allImages={images}
                   currentIndex={index}
