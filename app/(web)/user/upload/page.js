@@ -18,12 +18,10 @@ export default async function UploadImagePage() {
     redirect('/')
   }
   return (
-    <>
-      <UploadImage
-        user={user}
-        softwareOptions={softwareOptions}
-        tagsOptions={tagsOptions}
-      />
-    </>
+    <UploadImage
+      user={user}
+      softwareOptions={softwareOptions}
+      tagsOptions={tagsOptions}
+    />
   )
 }
