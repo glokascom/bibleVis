@@ -86,7 +86,7 @@ export default function SearchPage() {
           isOpenFilters ? 'md:max-h-16 md:opacity-100' : 'md:max-h-0 md:opacity-0'
         }`}
       >
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="flex gap-5">
           <BVDropdown items={orientationItems} useCustomWidth={true} />
           <BVDropdown
             defaultSelectedKey={2}
