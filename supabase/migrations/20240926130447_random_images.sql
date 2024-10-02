@@ -13,3 +13,6 @@ $$ LANGUAGE plpgsql;
 CREATE INDEX idx_user_id ON images (user_id);
 
 CREATE INDEX idx_url_slug ON images (url_slug);
+
+ALTER TABLE images
+ADD COLUMN preview text;

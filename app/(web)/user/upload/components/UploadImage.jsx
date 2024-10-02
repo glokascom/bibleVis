@@ -75,7 +75,8 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to upload image.')
+        const errorResponse = await response.json()
+        throw new Error(errorResponse.message || 'Failed to upload image.')
       }
 
       const {
@@ -86,7 +87,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
       setSubmittedImageUrl(URL.createObjectURL(validImage))
     } catch (error) {
       setError(error.message)
-      showToastError('An error occurred while uploading the image.')
+      showToastError(error.message)
     } finally {
       setIsLoading(false)
     }
@@ -304,7 +305,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
       <div className="mb-24 mt-10 flex flex-col gap-10 md:mt-12 md:w-3/4 md:flex-row md:self-center">
         <p className="md:w-1/3">
           <span className="font-bold">File Formats and Size:</span> Acceptable formats are
-          JPG and PNG, with a maximum file size of 4MB and at least 1920 pixels on one
+          JPG and PNG, with a maximum file size of 4MB and at least 1000 pixels on one
           side.
         </p>
         <p className="md:w-1/3">

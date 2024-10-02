@@ -1,16 +1,16 @@
 import { notFound } from 'next/navigation'
 
-import { getUser } from '@/app/actions/getUser'
-import ImagePageContent from '@/app/components/ImagePageContent'
-import ServerImage from '@/app/components/ServerImage'
-
 import {
   checkIfLiked,
   getRandomImagesExcluding,
   incrementImageViews,
-} from '../../[@username]/actions/imagesActions'
-import { checkIfSubscribed } from '../../[@username]/actions/userActions'
-import { getImageInfoBySlug } from '../../user/[uuid]/actions/getImage'
+} from '@/app/(web)/[@username]/actions/imagesActions'
+import { checkIfSubscribed } from '@/app/(web)/[@username]/actions/userActions'
+import { getImageInfoBySlug } from '@/app/(web)/user/[uuid]/actions/getImage'
+import { getUser } from '@/app/actions/getUser'
+import ImagePageContent from '@/app/components/ImagePageContent'
+import { Modal } from '@/app/components/Modal'
+import ServerImage from '@/app/components/ServerImage'
 
 export default async function ImagePage({ params }) {
   const { title } = params
@@ -49,7 +49,7 @@ export default async function ImagePage({ params }) {
   }
 
   return (
-    <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">
+    <Modal>
       <ImagePageContent
         imageInfo={imageInfo}
         relatedImages={relatedImages}
@@ -57,9 +57,10 @@ export default async function ImagePage({ params }) {
         isLike={isLike}
         isCurrentUser={isCurrentUser}
         isAuthenticated={!!user}
+        isModal
       >
         <ServerImage image={imageInfo} />
       </ImagePageContent>
-    </main>
+    </Modal>
   )
 }

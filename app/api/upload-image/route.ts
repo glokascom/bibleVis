@@ -92,7 +92,8 @@ export async function POST(
       sizesImages.medium = { width: mediumWidth, height: calculateHeight(mediumWidth) }
     }
 
-    const originalFilePath = await uploadOriginalImage(validImage)
+    const { uploadedPath: originalFilePath, blurPreview } =
+      await uploadOriginalImage(validImage)
 
     if (!originalFilePath) {
       return NextResponse.json<ApiError>(
@@ -106,6 +107,7 @@ export async function POST(
       description,
       prompt,
       is_ai_generated,
+      preview: blurPreview,
       user_id: user.id,
       original_file_path: originalFilePath,
       file_type: validImage.type,

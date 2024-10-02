@@ -41,7 +41,7 @@ export default async function ProfileUserPage({ params }) {
           />
         </div>
       </div>
-      <Gallery profileUserId={profileUser.id} />
+      <Gallery profileUserId={profileUser.id} backUrl={`/@${profileUser.username}`} />
     </main>
   )
 }

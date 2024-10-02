@@ -8,7 +8,7 @@ export async function GET(request) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${request.nextUrl.origin}/api/auth/google/callback?next=${request.nextUrl.searchParams.get('redirectedFrom')}`,
+      redirectTo: `${request.nextUrl.origin}/api/auth/google/callback?next=${request.nextUrl.searchParams.get('redirectedFrom') ?? '/'}`,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',

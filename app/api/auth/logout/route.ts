@@ -6,7 +6,7 @@ import { ApiError, ApiResponse } from '@/app/types/api'
 import { jsonResponse } from '../../response'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const redirectTo = request.nextUrl.searchParams.get('redirectedFrom')
+  const redirectTo = request.nextUrl.searchParams.get('redirectedFrom') ?? '/'
 
   const supabase = createClient()
   const { error } = await supabase.auth.signOut()
@@ -17,5 +17,5 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
     return jsonResponse(errorResponse, 500)
   }
-  return NextResponse.redirect(`${request.nextUrl.origin}/${redirectTo ?? ''}`)
+  return NextResponse.redirect(`${request.nextUrl.origin}${redirectTo}`)
 }

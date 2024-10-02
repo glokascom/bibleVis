@@ -10,8 +10,8 @@ import BVDropdown from '@/app/components/BVDropdown'
 import Gallery from '../../[@username]/components/Gallery'
 
 export default function SearchPage() {
-  const { title } = useParams()
-  const decodedTitle = title ? decodeURIComponent(title) : null
+  const { query } = useParams()
+  const decodedTitle = query ? decodeURIComponent(query) : null
 
   const [activeButton, setActiveButton] = useState('AI Generated')
 
@@ -72,7 +72,11 @@ export default function SearchPage() {
       <BVDropdown defaultSelectedKey={2} items={popularityItems} useCustomWidth={true} />
 
       <div className="mt-10">
-        <Gallery isShowHeader={false} searchQuery={decodedTitle} />
+        <Gallery
+          isShowHeader={false}
+          searchQuery={decodedTitle}
+          backUrl={`/s/${query}`}
+        />
       </div>
     </main>
   )

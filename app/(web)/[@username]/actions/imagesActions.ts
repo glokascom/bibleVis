@@ -5,8 +5,6 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-import { checkIfSubscribed } from './userActions'
-
 type User = {
   username: string
 }
@@ -105,7 +103,7 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(id,username,avatar_file_path, total_followers)', {
+      .select('*, users(id,username,avatar_file_path,total_followers)', {
         count: 'exact',
       })
 
@@ -151,8 +149,6 @@ export async function getUserImagesWithLikes(
           ? image.user_id === currentUserId
           : false
 
-        const total_likes = await getLikeCountForImage(image.id)
-
         return {
           ...image,
           users: {
@@ -162,7 +158,6 @@ export async function getUserImagesWithLikes(
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           isOwnedByCurrentUser,
-          total_likes,
         }
       })
     )
@@ -325,7 +320,6 @@ export async function getRandomImagesExcluding(
 }
 
 export interface ExtendedImage extends Image {
-  imageInfo: Image
   relatedImages: Image[]
   isLike: boolean
   isFollowed: boolean
@@ -360,12 +354,10 @@ export const loadNextPage = async (
           ? checkIfLiked(image.id)
           : { existingLike: null, fetchError: null },
       ])
-      const isFollowed = await checkIfSubscribed(image.user_id)
       return {
-        imageInfo: image,
+        ...image,
         relatedImages,
         isLike: !!existingLike,
-        isFollowed,
         isCurrentUser: currentUser?.id === image.user_id,
       } as ExtendedImage
     })

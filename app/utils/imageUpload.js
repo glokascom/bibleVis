@@ -1,6 +1,6 @@
 const widthLimit = 1000
 const heightLimit = 1000
-const maxSize = 7
+const maxSize = 4
 
 export const validateAndLoadImage = (file, onImageChange) => {
   const validTypes = ['image/jpeg', 'image/png']
