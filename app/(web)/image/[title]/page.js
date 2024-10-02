@@ -46,8 +46,8 @@ export default async function ImagePage({ params }) {
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
 
-  await incrementImageViews(imageInfo.id)
   const { totalViews } = await getImageStats(imageInfo.id)
+  await incrementImageViews(imageInfo.id)
 
   return (
     <main className="mx-auto mt-7 w-full max-w-[1806px] md:px-12">

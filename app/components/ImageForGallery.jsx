@@ -114,24 +114,24 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
 
   const handlePrevImage = async () => {
     const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
-    setCurrentImageIndex(newIndex)
-    const newImageId = allImages[newIndex].imageInfo.id
 
-    await incrementImageViews(newImageId)
-    updateUrl(newImageId)
-    const { totalViews } = await getImageStats(image.imageInfo.id)
-    allImages[newIndex].imageInfo.total_views = totalViews
+    await updateInfoImage(newIndex)
   }
 
   const handleNextImage = async () => {
     const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
-    setCurrentImageIndex(newIndex)
-    const newImageId = allImages[newIndex].imageInfo.id
 
-    await incrementImageViews(newImageId)
+    await updateInfoImage(newIndex)
+  }
+
+  const updateInfoImage = async (index) => {
+    const newImageId = allImages[index].imageInfo.id
     updateUrl(newImageId)
-    const { totalViews } = await getImageStats(image.imageInfo.id)
-    allImages[newIndex].imageInfo.total_views = totalViews
+
+    const { totalViews } = await getImageStats(newImageId)
+    allImages[index].imageInfo.total_views = totalViews
+    setCurrentImageIndex(index)
+    await incrementImageViews(newImageId)
   }
 
   const updateUrl = (imageId) => {
@@ -142,34 +142,25 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const openImageModal = async () => {
     setIsImageModalOpen(true)
     originalPathname.current = pathname
-    updateUrl(image.imageInfo.id)
-
-    const { totalViews } = await getImageStats(image.imageInfo.id)
-
-    await incrementImageViews(image.imageInfo.id)
 
     const index = allImages.findIndex((img) => img.imageInfo.id === image.imageInfo.id)
-
-    allImages[index].imageInfo.total_views = totalViews
+    updateInfoImage(index)
   }
 
   const closeImageModal = async () => {
     setIsImageModalOpen(false)
     setCurrentImageIndex(currentIndex)
     window.history.pushState(null, '', originalPathname.current)
-
     const { existingLike } = await checkIfLiked(image.imageInfo.id)
     setIsLiked(!!existingLike)
-
     const index = allImages.findIndex((img) => img.imageInfo.id === image.imageInfo.id)
     allImages[index].imageInfo.total_likes = await getLikeCountForImage(
       image.imageInfo.id
     )
-
     allImages[index].isLike = !!existingLike
-
-    const { totalDownloads } = await getImageStats(image.imageInfo.id)
+    const { totalDownloads, totalViews } = await getImageStats(image.imageInfo.id)
     allImages[index].imageInfo.total_downloads = totalDownloads
+    allImages[index].imageInfo.total_views = totalViews
 
     await updateUserFollowersAndFollowStatus(image.imageInfo.user_id)
   }
