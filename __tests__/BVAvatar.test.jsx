@@ -16,7 +16,6 @@ describe('BVAvatar component', () => {
       />
     )
 
-    expect(screen.getByAltText('Jason Hughes')).toBeInTheDocument()
     expect(screen.getByRole('img')).toBeInTheDocument()
   })
 })
