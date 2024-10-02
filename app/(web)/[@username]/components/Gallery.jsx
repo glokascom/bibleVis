@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { BVButton } from '@/app/components/BVButton'
 import ImageForGallery from '@/app/components/ImageForGallery'
+import { ImageViewProvider } from '@/app/components/ImageViewProvider'
 
 import { loadNextPage } from '../actions/imagesActions'
 
@@ -116,13 +117,15 @@ function Gallery({
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.id}>
-                <ImageForGallery
-                  image={image}
-                  allImages={images}
-                  currentIndex={index}
-                  isAuthenticated={isAuthenticated}
-                  onDelete={handleImageDelete}
-                />
+                <ImageViewProvider>
+                  <ImageForGallery
+                    image={image}
+                    allImages={images}
+                    currentIndex={index}
+                    isAuthenticated={isAuthenticated}
+                    onDelete={handleImageDelete}
+                  />
+                </ImageViewProvider>
               </div>
             ))}
           </Masonry>
