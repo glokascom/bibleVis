@@ -1,4 +1,7 @@
+'use client'
+
 import CopyButton from './CopyButton'
+import { useImageView } from './ImageViewProvider'
 import LikesCounter from './LikesCounter'
 
 const StatItem = ({ label, value }) => (
@@ -15,8 +18,11 @@ function formatDate(dateString) {
 }
 
 function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, totalLikes }) {
+  const { imageViews } = useImageView()
+  const imageId = imageInfo.id
+  const currentViews = imageViews[imageId]
   const statistics = [
-    { label: 'Views', value: imageInfo.total_views },
+    { label: 'Views', value: currentViews },
     { label: 'Downloads', value: totalDownloads },
     {
       label: 'Resolution',

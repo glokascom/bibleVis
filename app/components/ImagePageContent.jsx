@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Image } from '@nextui-org/image'
 import { Link } from '@nextui-org/react'
@@ -13,6 +13,7 @@ import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
 import BVButton from './BVButton'
+import { useImageView } from './ImageViewProvider'
 
 function ImagePageContent({
   imageInfo,
@@ -24,12 +25,21 @@ function ImagePageContent({
   onPrevImage,
   onNextImage,
   isAuthenticated,
+  totalViews,
   isModal = false,
 }) {
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
+  const { setViews, incrementView } = useImageView()
+
+  useEffect(() => {
+    setViews(imageInfo.id, totalViews)
+    incrementView(imageInfo.id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageInfo])
+
   return (
     <div
       className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}

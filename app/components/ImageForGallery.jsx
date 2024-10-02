@@ -115,17 +115,23 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   const handlePrevImage = async () => {
     const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : allImages.length - 1
     setCurrentImageIndex(newIndex)
-    updateUrl(allImages[newIndex].imageInfo.id)
+    const newImageId = allImages[newIndex].imageInfo.id
 
-    await incrementImage(newIndex)
+    await incrementImageViews(newImageId)
+    updateUrl(newImageId)
+    const { totalViews } = await getImageStats(image.imageInfo.id)
+    allImages[newIndex].imageInfo.total_views = totalViews
   }
 
   const handleNextImage = async () => {
     const newIndex = currentImageIndex < allImages.length - 1 ? currentImageIndex + 1 : 0
     setCurrentImageIndex(newIndex)
-    updateUrl(allImages[newIndex].imageInfo.id)
+    const newImageId = allImages[newIndex].imageInfo.id
 
-    await incrementImage(newIndex)
+    await incrementImageViews(newImageId)
+    updateUrl(newImageId)
+    const { totalViews } = await getImageStats(image.imageInfo.id)
+    allImages[newIndex].imageInfo.total_views = totalViews
   }
 
   const updateUrl = (imageId) => {
@@ -138,17 +144,13 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
     originalPathname.current = pathname
     updateUrl(image.imageInfo.id)
 
-    const imageIndex = allImages.findIndex(
-      (img) => img.imageInfo.id === image.imageInfo.id
-    )
-    await incrementImage(imageIndex)
-  }
+    const { totalViews } = await getImageStats(image.imageInfo.id)
 
-  const incrementImage = async (index) => {
-    allImages[index].imageInfo.total_views++
-    if (!(await incrementImageViews(allImages[index].imageInfo.id))) {
-      allImages[index].imageInfo.total_views--
-    }
+    await incrementImageViews(image.imageInfo.id)
+
+    const index = allImages.findIndex((img) => img.imageInfo.id === image.imageInfo.id)
+
+    allImages[index].imageInfo.total_views = totalViews
   }
 
   const closeImageModal = async () => {
@@ -166,8 +168,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
 
     allImages[index].isLike = !!existingLike
 
-    const { totalViews, totalDownloads } = await getImageStats(image.imageInfo.id)
-    allImages[index].imageInfo.total_views = totalViews
+    const { totalDownloads } = await getImageStats(image.imageInfo.id)
     allImages[index].imageInfo.total_downloads = totalDownloads
 
     await updateUserFollowersAndFollowStatus(image.imageInfo.user_id)
@@ -191,121 +192,124 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
   }
 
   return (
-    <div
-      className={`group relative h-0 w-full ${
-        image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
-      } overflow-hidden`}
-    >
+    <div onClick={openImageModal}>
       <div
-        className="group absolute h-full w-full cursor-pointer"
-        onClick={openImageModal}
+        className={`group relative h-0 w-full ${
+          image.orientation === 'portrait' ? 'pb-[146%]' : 'pb-[60%]'
+        } overflow-hidden`}
       >
-        <Image
-          src={image.imageInfo.imagePath}
-          alt="image of gallery"
-          removeWrapper={true}
-          className="h-full w-full object-cover"
-          onLoad={() => setIsImageLoaded(true)}
-        />
         <div
-          className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-        ></div>
-      </div>
-
-      {isImageLoaded && (
-        <>
-          <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            <div className="ml-12 group-hover:opacity-80">{image.imageInfo.title}</div>
-            <BVLink
-              className="flex items-center gap-2"
-              href={`/@${image.imageInfo.users.username}`}
-            >
-              <BVAvatar
-                className="h-8 w-8 md:h-10 md:w-10"
-                src={image.imageInfo.users.avatarUrl}
-              />
-              <div className="text-large font-bold text-background">
-                @{image.imageInfo.users.username}
-              </div>
-            </BVLink>
-          </div>
-          {isAuthenticated && (
-            <button
-              className={`absolute right-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'}`}
-              onClick={handleLikeClick}
-              disabled={isLoading}
-            >
-              <Image
-                src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
-                alt="heart"
-                radius="none"
-              />
-            </button>
-          )}
-          {image.isCurrentUser && (
-            <Dropdown
-              className="bg-secondary-50"
-              classNames={{
-                content: 'py-1 px-2 shadow-none',
-              }}
-              placement="right-start"
-              onOpenChange={(open) => setIsDropdownOpen(open)}
-              isOpen={isDropdownOpen}
-            >
-              <DropdownTrigger>
-                <button
-                  className={`absolute left-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background transition-opacity duration-300 md:h-11 md:w-11 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                >
-                  <Image src="/pencil.svg" alt="edit" className="rounded-none" />
-                </button>
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Image Actions"
-                closeOnSelect={false}
-                variant="light"
-                as="div"
-                color="primary"
-                classNames={{ list: 'divide-y-1 divide-secondary-100' }}
-                itemClasses={{
-                  title: 'font-[600] text-medium',
-                  base: 'py-2.5 rounded-none',
-                }}
-              >
-                <DropdownItem key="edit">
-                  <BVLink href={`/user/${image.imageInfo.id}`}>Edit Image</BVLink>
-                </DropdownItem>
-                <DropdownItem key="delete" onClick={openDeleteModal}>
-                  Delete
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          )}
-        </>
-      )}
-
-      <DeleteConfirmationModal
-        isDeleteModalOpen={isDeleteModalOpen}
-        closeModal={closeDeleteModal}
-        handleDelete={handleDeleteImage}
-        isDeleteSuccess={isDeleteSuccess}
-        deleteError={deleteError}
-      />
-      {isImageModalOpen && (
-        <Modal showCloseButton={true} closeModal={closeImageModal}>
-          <ImagePageContent
-            isModal={true}
-            imageInfo={allImages[currentImageIndex].imageInfo}
-            relatedImages={allImages[currentImageIndex].relatedImages}
-            isFollowed={allImages[currentImageIndex].isFollowed}
-            isLike={allImages[currentImageIndex].isLike}
-            totalLikes={allImages[currentImageIndex].imageInfo.totalLikes}
-            isCurrentUser={allImages[currentImageIndex].isCurrentUser}
-            onPrevImage={handlePrevImage}
-            onNextImage={handleNextImage}
-            isAuthenticated={isAuthenticated}
+          className="group absolute h-full w-full cursor-pointer"
+          onClick={openImageModal}
+        >
+          <Image
+            src={image.imageInfo.imagePath}
+            alt="image of gallery"
+            removeWrapper={true}
+            className="h-full w-full object-cover"
+            onLoad={() => setIsImageLoaded(true)}
           />
-        </Modal>
-      )}
+          <div
+            className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+          ></div>
+        </div>
+
+        {isImageLoaded && (
+          <>
+            <div className="absolute bottom-4 left-5 z-10 flex flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div className="ml-12 group-hover:opacity-80">{image.imageInfo.title}</div>
+              <BVLink
+                className="flex items-center gap-2"
+                href={`/@${image.imageInfo.users.username}`}
+              >
+                <BVAvatar
+                  className="h-8 w-8 md:h-10 md:w-10"
+                  src={image.imageInfo.users.avatarUrl}
+                />
+                <div className="text-large font-bold text-background">
+                  @{image.imageInfo.users.username}
+                </div>
+              </BVLink>
+            </div>
+            {isAuthenticated && (
+              <button
+                className={`absolute right-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'}`}
+                onClick={handleLikeClick}
+                disabled={isLoading}
+              >
+                <Image
+                  src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
+                  alt="heart"
+                  radius="none"
+                />
+              </button>
+            )}
+            {image.isCurrentUser && (
+              <Dropdown
+                className="bg-secondary-50"
+                classNames={{
+                  content: 'py-1 px-2 shadow-none',
+                }}
+                placement="right-start"
+                onOpenChange={(open) => setIsDropdownOpen(open)}
+                isOpen={isDropdownOpen}
+              >
+                <DropdownTrigger>
+                  <button
+                    className={`absolute left-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background transition-opacity duration-300 md:h-11 md:w-11 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                  >
+                    <Image src="/pencil.svg" alt="edit" className="rounded-none" />
+                  </button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Image Actions"
+                  closeOnSelect={false}
+                  variant="light"
+                  as="div"
+                  color="primary"
+                  classNames={{ list: 'divide-y-1 divide-secondary-100' }}
+                  itemClasses={{
+                    title: 'font-[600] text-medium',
+                    base: 'py-2.5 rounded-none',
+                  }}
+                >
+                  <DropdownItem key="edit">
+                    <BVLink href={`/user/${image.imageInfo.id}`}>Edit Image</BVLink>
+                  </DropdownItem>
+                  <DropdownItem key="delete" onClick={openDeleteModal}>
+                    Delete
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            )}
+          </>
+        )}
+
+        <DeleteConfirmationModal
+          isDeleteModalOpen={isDeleteModalOpen}
+          closeModal={closeDeleteModal}
+          handleDelete={handleDeleteImage}
+          isDeleteSuccess={isDeleteSuccess}
+          deleteError={deleteError}
+        />
+        {isImageModalOpen && (
+          <Modal showCloseButton={true} closeModal={closeImageModal}>
+            <ImagePageContent
+              isModal={true}
+              imageInfo={allImages[currentImageIndex].imageInfo}
+              relatedImages={allImages[currentImageIndex].relatedImages}
+              isFollowed={allImages[currentImageIndex].isFollowed}
+              isLike={allImages[currentImageIndex].isLike}
+              totalLikes={allImages[currentImageIndex].imageInfo.totalLikes}
+              totalViews={allImages[currentImageIndex].imageInfo.total_views}
+              isCurrentUser={allImages[currentImageIndex].isCurrentUser}
+              onPrevImage={handlePrevImage}
+              onNextImage={handleNextImage}
+              isAuthenticated={isAuthenticated}
+            />
+          </Modal>
+        )}
+      </div>
     </div>
   )
 }
