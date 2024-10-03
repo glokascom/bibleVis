@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Button, Image } from '@nextui-org/react'
 
@@ -18,6 +18,16 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   const [sortDirection, setSortDirection] = useState(2)
   const [isOpenFilters, setIsOpenFilters] = useState(false)
 
+  const buttonData = useMemo(() => {
+    const safeCounters = counters || { total: 0, aiGenerated: 0, humanMade: 0 }
+
+    return [
+      { name: 'All', result: safeCounters.total.toString() },
+      { name: 'AI Generated', result: safeCounters.aiGenerated.toString() },
+      { name: 'Made by human', result: safeCounters.humanMade.toString() },
+    ]
+  }, [counters])
+
   useEffect(() => {
     setKey((prevKey) => prevKey + 1)
   }, [activeButton, imageFilter, orientation, sortDirection])
@@ -25,12 +35,6 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   if (!searchQuery) {
     return <p className="text-danger-500">Invalid URL format</p>
   }
-
-  const buttonData = [
-    { name: 'All', result: counters.total.toString() },
-    { name: 'AI Generated', result: counters.aiGenerated.toString() },
-    { name: 'Made by human', result: counters.humanMade.toString() },
-  ]
 
   const orientationItems = ['All Orientations', 'Horizontal', 'Vertical']
   const popularityItems = ['New', 'Old', 'Popular']
