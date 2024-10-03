@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Image,
+  useDisclosure,
 } from '@nextui-org/react'
 
 import { Chevron } from './Chevron'
@@ -23,6 +24,7 @@ const BVDropdown = ({
     new Set([defaultSelectedKey.toString()])
   )
   const buttonRef = useRef(null)
+  const { isOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
     const updateWidthAndScreenSize = () => {
@@ -53,6 +55,8 @@ const BVDropdown = ({
   return (
     <Dropdown
       className="bg-secondary-50"
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
       classNames={{
         content: 'shadow-none p-0',
         trigger:
@@ -63,8 +67,13 @@ const BVDropdown = ({
         <Button
           ref={buttonRef}
           className="w-full border bg-background py-6 text-medium font-semibold md:flex md:justify-between md:p-7"
+          endContent={
+            <Chevron
+              className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+            />
+          }
         >
-          <p>{selectedValue}</p> <Chevron />
+          {selectedValue}
         </Button>
       </DropdownTrigger>
       <DropdownMenu

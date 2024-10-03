@@ -205,6 +205,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
           alt="image of gallery"
           removeWrapper={true}
           className="h-full w-full object-cover"
+          loading="lazy"
           onLoad={() => setIsImageLoaded(true)}
         />
         <div
@@ -229,6 +230,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
               </div>
             </BVLink>
           </div>
+
           {isAuthenticated && (
             <button
               className={`absolute right-4 top-5 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background opacity-0 transition-opacity duration-300 ${isLiked ? 'opacity-100' : 'group-hover:opacity-100'}`}
@@ -242,6 +244,7 @@ function ImageForGallery({ image, onDelete, allImages, currentIndex, isAuthentic
               />
             </button>
           )}
+
           {image.isCurrentUser && (
             <Dropdown
               className="bg-secondary-50"
