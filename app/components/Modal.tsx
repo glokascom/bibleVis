@@ -2,14 +2,18 @@
 
 import { useRouter } from 'next/navigation'
 
+import { useGallery } from '../GaleryContext'
 import { ModalProps } from '../types/api'
 
 export function Modal({ closeModal, showCloseButton = false, children }: ModalProps) {
   const router = useRouter()
+  const { basePageUrl } = useGallery()
 
   function onDismiss() {
     if (closeModal) {
       closeModal()
+    } else if (basePageUrl) {
+      router.push(basePageUrl)
     } else {
       router.back()
     }

@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'kgskpeyfzedphcanbnjz.supabase.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'ucaeytwttilbcovyvutf.supabase.co',
+      },
     ],
   },
   transpilePackages: ['react-syntax-highlighter', 'swagger-client', 'swagger-ui-react'],

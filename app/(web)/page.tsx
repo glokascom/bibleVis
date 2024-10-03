@@ -2,13 +2,7 @@ import { getUser } from '../actions/getUser'
 import HeroBlock from '../components/HeroBlock'
 import Gallery from './[@username]/components/Gallery'
 
-interface PageProps {
-  params: {
-    lng: string
-  }
-}
-
-const Page: React.FC<PageProps> = async () => {
+const Page: React.FC = async () => {
   const { user: currentUser } = await getUser()
 
   return (

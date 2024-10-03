@@ -9,7 +9,11 @@ import Gallery from './components/Gallery'
 import UserInfo from './components/UserInfo'
 
 export default async function ProfileUserPage({ params }) {
-  const profileUsername = decodeURIComponent(params['@username']).replace('@', '')
+  const username = decodeURIComponent(params['@username'])
+  if (!username.startsWith('@')) {
+    notFound()
+  }
+  const profileUsername = username.slice(1)
   const { user: currentUser } = await getUser()
 
   const isCurrentUser = profileUsername === currentUser?.username
@@ -37,7 +41,7 @@ export default async function ProfileUserPage({ params }) {
           />
         </div>
       </div>
-      <Gallery profileUserId={profileUser.id} />
+      <Gallery profileUserId={profileUser.id} backUrl={`/@${profileUser.username}`} />
     </main>
   )
 }
