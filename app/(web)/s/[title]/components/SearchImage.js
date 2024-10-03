@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
+import { Button, Image } from '@nextui-org/react'
+
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
+import { Chevron } from '@/app/components/Chevron'
 
 import Gallery from '../../../[@username]/components/Gallery'
 
@@ -13,6 +16,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   const [key, setKey] = useState(0)
   const [orientation, setOrientation] = useState(0)
   const [sortDirection, setSortDirection] = useState(2)
+  const [isOpenFilters, setIsOpenFilters] = useState(false)
 
   useEffect(() => {
     setKey((prevKey) => prevKey + 1)
@@ -80,25 +84,41 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
           ))}
         </div>
 
-        <div className="hidden w-full px-6 md:block md:w-auto md:min-w-52 md:px-0">
-          <BVDropdown items={orientationItems} onAction={handleOrientationChange} />
+        <div className="hidden px-6 md:block md:px-0">
+          <Button
+            onClick={() => setIsOpenFilters(!isOpenFilters)}
+            startContent={<Image src={'/filter.svg'} alt="filter" radius="none" />}
+            endContent={
+              <Chevron
+                className={`transition-transform ${isOpenFilters ? 'rotate-180' : ''}`}
+              />
+            }
+            className="border bg-background py-6 text-medium font-semibold md:flex md:justify-between md:p-7"
+          >
+            Filters
+          </Button>
         </div>
       </div>
 
-      <div className="mb-5 md:hidden">
-        <BVDropdown
-          items={orientationItems}
-          useCustomWidth={true}
-          onAction={handleOrientationChange}
-        />
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpenFilters ? 'md:max-h-16 md:opacity-100' : 'md:max-h-0 md:opacity-0'
+        }`}
+      >
+        <div className="flex gap-5">
+          <BVDropdown
+            items={orientationItems}
+            useCustomWidth={true}
+            onAction={handleOrientationChange}
+          />
+          <BVDropdown
+            defaultSelectedKey={2}
+            items={popularityItems}
+            useCustomWidth={true}
+            onAction={handleSortChange}
+          />
+        </div>
       </div>
-
-      <BVDropdown
-        defaultSelectedKey={2}
-        items={popularityItems}
-        useCustomWidth={true}
-        onAction={handleSortChange}
-      />
 
       <div className="mt-10">
         <Gallery
