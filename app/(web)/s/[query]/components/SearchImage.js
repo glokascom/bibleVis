@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { notFound, useRouter, useSearchParams } from 'next/navigation'
 
 import { Button, Image } from '@nextui-org/react'
 
@@ -11,7 +11,11 @@ import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
 import { Chevron } from '@/app/components/Chevron'
 
-export default function SearchPage({ searchQuery = null, counters = null }) {
+export default function SearchPage({
+  searchQuery = null,
+  counters = null,
+  isAuthenticated = false,
+}) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -34,7 +38,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   }, [searchParams])
 
   if (!searchQuery) {
-    return <p className="text-danger-500">Invalid URL format</p>
+    notFound()
   }
 
   const orientationItems = ['All Orientations', 'Horizontal', 'Vertical']
@@ -148,6 +152,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
       <div className="mt-10">
         <Gallery
           key={key}
+          isAuthenticated={isAuthenticated}
           isShowHeader={false}
           searchQuery={`${searchQuery}?${searchParams}`}
           backUrl={`/s/${searchQuery}`}
