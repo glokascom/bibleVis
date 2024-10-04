@@ -42,8 +42,8 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
 
   const orientationMap = {
     0: 'all',
-    1: 'horizontal',
-    2: 'vertical',
+    1: 'landscape',
+    2: 'portrait',
   }
 
   const sortMap = {
