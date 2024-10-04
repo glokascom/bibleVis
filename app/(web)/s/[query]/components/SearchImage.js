@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
+import { useRouter, useSearchParams } from 'next/navigation'
+
 import { Button, Image } from '@nextui-org/react'
 
 import Gallery from '@/app/(web)/[@username]/components/Gallery'
@@ -10,16 +12,16 @@ import BVDropdown from '@/app/components/BVDropdown'
 import { Chevron } from '@/app/components/Chevron'
 
 export default function SearchPage({ searchQuery = null, counters = null }) {
-  const [activeButton, setActiveButton] = useState('All')
-  const [imageFilter, setImageFilter] = useState(null)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [activeButton, setActiveButton] = useState(searchParams.get('filter') || 'All')
+
   const [key, setKey] = useState(0)
-  const [orientation, setOrientation] = useState(0)
-  const [sortDirection, setSortDirection] = useState(2)
   const [isOpenFilters, setIsOpenFilters] = useState(false)
 
   const buttonData = useMemo(() => {
     const safeCounters = counters || { total: 0, aiGenerated: 0, humanMade: 0 }
-
     return [
       { name: 'All', result: safeCounters.total.toString() },
       { name: 'AI Generated', result: safeCounters.aiGenerated.toString() },
@@ -29,7 +31,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
 
   useEffect(() => {
     setKey((prevKey) => prevKey + 1)
-  }, [activeButton, imageFilter, orientation, sortDirection])
+  }, [searchParams])
 
   if (!searchQuery) {
     return <p className="text-danger-500">Invalid URL format</p>
@@ -38,24 +40,45 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
   const orientationItems = ['All Orientations', 'Horizontal', 'Vertical']
   const popularityItems = ['New', 'Old', 'Popular']
 
-  const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName)
-
-    if (buttonName === 'AI Generated') {
-      setImageFilter(true)
-    } else if (buttonName === 'Made by human') {
-      setImageFilter(false)
-    } else {
-      setImageFilter(null)
-    }
+  const orientationMap = {
+    0: 'all',
+    1: 'horizontal',
+    2: 'vertical',
   }
 
-  const handleOrientationChange = (newOrientation) => {
-    setOrientation(newOrientation === 'All Orientations' ? null : newOrientation)
+  const sortMap = {
+    0: 'newest',
+    1: 'latest',
+    2: 'popularity',
   }
 
   const handleSortChange = (newSortDirection) => {
-    setSortDirection(newSortDirection)
+    const sortText = sortMap[newSortDirection] || 'latest'
+    updateUrlParams({ sort: sortText })
+  }
+
+  const handleOrientationChange = (newOrientation) => {
+    const orientationText = orientationMap[newOrientation] || 'all'
+    updateUrlParams({
+      orientation: orientationText,
+    })
+  }
+
+  const handleButtonClick = (buttonName) => {
+    setActiveButton(buttonName)
+    updateUrlParams({ filter: buttonName })
+  }
+
+  const updateUrlParams = (params) => {
+    const newParams = new URLSearchParams(searchParams.toString())
+    Object.keys(params).forEach((key) => {
+      if (params[key] === null || params[key] === undefined) {
+        newParams.delete(key)
+      } else {
+        newParams.set(key, params[key])
+      }
+    })
+    router.push(`/s/${searchQuery}?${newParams.toString()}`)
   }
 
   const getButtonStyle = (buttonName) => {
@@ -115,7 +138,6 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
             onAction={handleOrientationChange}
           />
           <BVDropdown
-            defaultSelectedKey={2}
             items={popularityItems}
             useCustomWidth={true}
             onAction={handleSortChange}
@@ -127,10 +149,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
         <Gallery
           key={key}
           isShowHeader={false}
-          searchQuery={searchQuery}
-          imageFilter={imageFilter}
-          orientationFilter={orientation}
-          sortDirection={sortDirection}
+          searchQuery={`${searchQuery}?${searchParams}`}
           backUrl={`/s/${searchQuery}`}
         />
       </div>
