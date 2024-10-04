@@ -4,11 +4,10 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Button, Image } from '@nextui-org/react'
 
+import Gallery from '@/app/(web)/[@username]/components/Gallery'
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
 import { Chevron } from '@/app/components/Chevron'
-
-import Gallery from '../../../[@username]/components/Gallery'
 
 export default function SearchPage({ searchQuery = null, counters = null }) {
   const [activeButton, setActiveButton] = useState('All')
@@ -132,6 +131,7 @@ export default function SearchPage({ searchQuery = null, counters = null }) {
           imageFilter={imageFilter}
           orientationFilter={orientation}
           sortDirection={sortDirection}
+          backUrl={`/s/${searchQuery}`}
         />
       </div>
     </main>
