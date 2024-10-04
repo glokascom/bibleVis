@@ -98,11 +98,10 @@ export default async function searchImages(
   page = 1,
   pageSize = 10
 ) {
-  console.log(query, filter, orientation, sort, 99)
   const { data, error } = await supabaseService.rpc('search_images', {
     query,
     filter,
-    orientation,
+    orientation_param: orientation,
     sort,
     page,
     page_size: pageSize,
@@ -118,117 +117,86 @@ export default async function searchImages(
     return []
   }
 
-  console.log(data, 118)
-  return data
+  return { images: data, totalCount: data.length }
 }
 
 export async function getImagesSearch(
   page: number = 1,
   pageSize: number = 10,
+  currentUserId?: string | null,
   searchQuery?: string | null
 ): Promise<ImageResponse> {
-  // try {
-  console.log(searchQuery, 11)
-  // const rangeStart = (page - 1) * pageSize
-  // const rangeEnd = page * pageSize - 1
+  try {
+    let query = ''
+    let filter = 'All'
+    let orientation = 'all'
+    let sort = 'newest'
 
-  // Default values
-  let query = ''
-  let filter = '11' // Значение по умолчанию
-  let orientation = 'all' // Значение по умолчанию
-  let sort = 'newest' // Значение по умолчанию
+    if (searchQuery) {
+      const [queryPart, queryParams] = searchQuery.split('?')
 
-  if (searchQuery) {
-    // Разделяем строку на query (что перед ?) и queryParams (после ?)
-    const [queryPart, queryParams] = searchQuery.split('?')
+      query = queryPart || ''
 
-    // Присваиваем query значение queryPart, если оно есть
-    query = queryPart || ''
+      if (queryParams) {
+        const searchParams = new URLSearchParams(queryParams)
 
-    if (queryParams) {
-      const searchParams = new URLSearchParams(queryParams)
-
-      // Извлекаем параметры filter, orientation и sort из queryParams
-      filter = searchParams.get('filter') || filter
-      orientation = searchParams.get('orientation') || orientation
-      sort = searchParams.get('sort') || sort
+        filter = searchParams.get('filter') || filter
+        orientation = searchParams.get('orientation') || orientation
+        sort = searchParams.get('sort') || sort
+      }
     }
+
+    const { images, error } = await searchImages(
+      query,
+      filter,
+      orientation,
+      sort,
+      page,
+      pageSize
+    )
+
+    if (error) throw error
+    if (!images || images.length === 0) return { images: [] }
+
+    let likedImages = new Set<string>()
+    if (currentUserId) {
+      const { data: likes, error: likesError } = await supabaseService
+        .from('likes')
+        .select('image_id')
+        .eq('user_id', currentUserId)
+
+      if (likesError) throw likesError
+      likedImages = new Set(likes?.map((like) => like.image_id))
+    }
+
+    const imagesWithLikes = await Promise.all(
+      images.map(async (image) => {
+        const avatarUrl = image?.users_avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users_avatar_file_path}`
+          : null
+
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
+
+        return {
+          ...image,
+          users: {
+            id: image.users_id,
+            username: image.users_username,
+            avatarUrl,
+          },
+          liked_by_current_user: likedImages.has(image.id),
+          imagePath,
+        }
+      })
+    )
+
+    return { images: imagesWithLikes }
+  } catch (error) {
+    console.error('Error fetching user images:', (error as Error).message)
+    return { images: [], totalCount: 0 }
   }
-  console.log(query, filter, orientation, sort, 185)
-  searchImages(query, filter, orientation, sort, page, pageSize)
-  //   let query = supabaseService
-  //     .from('images')
-  //     .select(
-  //       'id, title, preview, url_slug, orientation, uploaded_at, file_sizes, original_file_path, users(id,username,avatar_file_path)',
-  //       {
-  //         count: 'exact',
-  //       }
-  //     )
-
-  //   // If filter is specified, adjust the query accordingly
-  //   if (filter) {
-  //     if (filter === 'AI Generated') {
-  //       // Adjust query for AI Generated images if necessary
-  //       query = query.eq('is_ai_generated', true) // Example: assuming there's a column to check if image is AI generated
-  //     } else if (filter === 'Made by human') {
-  //       // Adjust query for human-made images if necessary
-  //       query = query.eq('is_ai_generated', false) // Example
-  //     }
-  //   }
-
-  //   // Apply orientation filter if specified
-  //   if (orientation) {
-  //     query = query.eq('orientation', orientation)
-  //   }
-
-  //   // Execute the query
-  //   const {
-  //     data: images,
-  //     count,
-  //     error,
-  //   } = await query.range(rangeStart, rangeEnd).order('uploaded_at', { ascending: false })
-
-  //   if (error) throw error
-  //   if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
-
-  //   let likedImages = new Set<string>()
-  //   if (currentUserId) {
-  //     const { data: likes, error: likesError } = await supabaseService
-  //       .from('likes')
-  //       .select('image_id')
-  //       .eq('user_id', currentUserId)
-
-  //     if (likesError) throw likesError
-  //     likedImages = new Set(likes?.map((like) => like.image_id))
-  //   }
-
-  //   const imagesWithLikes = await Promise.all(
-  //     images.map(async (image) => {
-  //       const avatarUrl = image.users?.avatar_file_path
-  //         ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
-  //         : null
-
-  //       const imagePath = image.original_file_path
-  //         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
-  //         : null
-
-  //       return {
-  //         ...image,
-  //         users: {
-  //           ...image.users,
-  //           avatarUrl,
-  //         },
-  //         liked_by_current_user: likedImages.has(image.id),
-  //         imagePath,
-  //       }
-  //     })
-  //   )
-
-  //   return { images: imagesWithLikes, totalCount: count || 0 }
-  // } catch (error) {
-  //   console.error('Error fetching user images:', (error as Error).message)
-  //   return { images: [], totalCount: 0 }
-  // }
 }
 
 export async function getUserImagesWithLikes(
@@ -480,7 +448,12 @@ export const loadNextPage = async (
   let images, totalCount
 
   if (searchQuery) {
-    ;({ images, totalCount } = await getImagesSearch(page, pageSize, searchQuery))
+    ;({ images, totalCount } = await getImagesSearch(
+      page,
+      pageSize,
+      currentUser?.id,
+      searchQuery
+    ))
   } else {
     ;({ images, totalCount } = await getUserImagesWithLikes(
       userId,
@@ -489,7 +462,6 @@ export const loadNextPage = async (
       currentUser?.id
     ))
   }
-
   const extendedImages = await Promise.all(
     images.map(async (image) => {
       return {
