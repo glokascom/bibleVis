@@ -98,20 +98,23 @@ LIMIT 100 OFFSET 0;
 CREATE OR REPLACE FUNCTION public.search_images(
     query TEXT,
     filter TEXT DEFAULT NULL,
-    orientation TEXT DEFAULT NULL,
+    orientation_param TEXT DEFAULT NULL,
     sort TEXT DEFAULT 'newest',
     page INTEGER DEFAULT 1,  
-    page_size INTEGER DEFAULT 20  
+    page_size INTEGER DEFAULT 10  
 ) 
 RETURNS TABLE (
     id INTEGER,
-    url_slug VARCHAR(10),
-    user_id UUID,
     title VARCHAR(140),
-    description VARCHAR(280),
-    total_views INTEGER,
-    total_likes INTEGER,
-    uploaded_at TIMESTAMP
+    preview TEXT, 
+    url_slug VARCHAR(10),
+    orientation VARCHAR, 
+    uploaded_at TIMESTAMP,
+    file_sizes JSONB, 
+    original_file_path VARCHAR,
+    users_id UUID,
+    users_username TEXT,  
+    users_avatar_file_path TEXT 
 ) AS $$
 DECLARE
     order_field TEXT := 'popularity_cached';
@@ -128,17 +131,21 @@ BEGIN
     RETURN QUERY
     SELECT 
         images.id,
-        images.url_slug,
-        images.user_id,
         images.title,
-        images.description,
-        images.total_views,
-        images.total_likes,
-        images.uploaded_at
+        images.preview, 
+        images.url_slug,
+        images.orientation, 
+        images.uploaded_at,
+        images.file_sizes,
+        images.original_file_path,
+        users.id AS users_id, 
+        users.username AS users_username,  
+        users.avatar_file_path AS users_avatar_file_path 
     FROM public.images
+    JOIN public.users ON images.user_id = users.id 
     WHERE 
         images.fts @@ to_tsquery('russian', query)
-        AND (search_images.orientation IS NULL OR search_images.orientation = 'all' OR images.orientation = search_images.orientation) -- Игнорирование фильтра orientation
+        AND (orientation_param IS NULL OR orientation_param = 'all' OR images.orientation = orientation_param)
         AND (filter IS NULL OR filter = 'All' OR (filter = 'AI Generated' AND images.is_ai_generated = TRUE) 
         OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) 
     ORDER BY 
