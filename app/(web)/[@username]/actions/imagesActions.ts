@@ -103,9 +103,12 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(id,username,avatar_file_path,total_followers)', {
-        count: 'exact',
-      })
+      .select(
+        'id, title, preview, url_slug, orientation, uploaded_at, file_sizes, original_file_path, users(id,username,avatar_file_path)',
+        {
+          count: 'exact',
+        }
+      )
 
     if (userId) {
       query = query.eq('user_id', userId)
@@ -124,7 +127,7 @@ export async function getUserImagesWithLikes(
     if (error) throw error
     if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
 
-    let likedImages = new Set()
+    let likedImages = new Set<string>()
     if (currentUserId) {
       const { data: likes, error: likesError } = await supabaseService
         .from('likes')
@@ -145,10 +148,6 @@ export async function getUserImagesWithLikes(
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
 
-        const isOwnedByCurrentUser = currentUserId
-          ? image.user_id === currentUserId
-          : false
-
         return {
           ...image,
           users: {
@@ -157,7 +156,6 @@ export async function getUserImagesWithLikes(
           },
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
-          isOwnedByCurrentUser,
         }
       })
     )
@@ -348,17 +346,9 @@ export const loadNextPage = async (
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
-      const [relatedImages, { existingLike }] = await Promise.all([
-        getRandomImagesExcluding(image.user_id, image.id),
-        currentUser?.id
-          ? checkIfLiked(image.id)
-          : { existingLike: null, fetchError: null },
-      ])
       return {
         ...image,
-        relatedImages,
-        isLike: !!existingLike,
-        isCurrentUser: currentUser?.id === image.user_id,
+        isCurrentUser: currentUser?.id === image.users.id,
       } as ExtendedImage
     })
   )
