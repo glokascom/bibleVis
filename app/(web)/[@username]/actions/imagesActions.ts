@@ -96,39 +96,13 @@ export default async function searchImages(
   orientation = null,
   sort = 'newest'
 ) {
-  let orderField = 'popularity_cached'
-  let ascending = false
-
-  if (sort === 'newest') {
-    orderField = 'uploaded_at'
-    ascending = false
-  } else if (sort === 'oldest') {
-    orderField = 'uploaded_at'
-    ascending = true
-  }
-
-  let queryBuilder = supabaseService
-    .from('images')
-    .select('*')
-    .textSearch('fts', query, {
-      config: 'russian',
-    })
-    .order(orderField, { ascending })
-    .limit(20)
-
-  if (orientation !== 'all') {
-    queryBuilder = queryBuilder.eq('orientation', orientation)
-  }
-
-  if (filter) {
-    if (filter === 'AI Generated') {
-      queryBuilder = queryBuilder.eq('is_ai_generated', true)
-    } else if (filter === 'Made by human') {
-      queryBuilder = queryBuilder.eq('is_ai_generated', false)
-    }
-  }
-
-  const { data, error } = await queryBuilder
+  console.log(query, filter, orientation, sort, 99)
+  const { data, error } = await supabaseService.rpc('search_images', {
+    query,
+    filter,
+    orientation,
+    sort,
+  })
 
   if (error) {
     console.error('Ошибка поиска:', error)

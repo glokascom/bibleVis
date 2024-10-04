@@ -93,3 +93,58 @@ SELECT
 FROM images
 ORDER BY popularity DESC
 LIMIT 100 OFFSET 0;
+
+
+CREATE OR REPLACE FUNCTION public.search_images(
+    query TEXT,
+    filter TEXT DEFAULT NULL,
+    orientation TEXT DEFAULT NULL,
+    sort TEXT DEFAULT 'newest'
+) 
+RETURNS TABLE (
+    id INTEGER,
+    url_slug VARCHAR(10),
+    user_id UUID,
+    title VARCHAR(140),
+    description VARCHAR(280),
+    total_views INTEGER,
+    total_likes INTEGER,
+    uploaded_at TIMESTAMP
+) AS $$
+DECLARE
+    order_field TEXT := 'popularity_cached';
+    ascending BOOLEAN := FALSE;
+BEGIN
+    IF sort = 'newest' THEN
+        order_field := 'uploaded_at';
+        ascending := FALSE;
+    ELSIF sort = 'oldest' THEN
+        order_field := 'uploaded_at';
+        ascending := TRUE;
+    END IF;
+
+    RETURN QUERY
+    SELECT 
+        images.id,
+        images.url_slug,
+        images.user_id,
+        images.title,
+        images.description,
+        images.total_views,
+        images.total_likes,
+        images.uploaded_at
+    FROM public.images
+    WHERE 
+        images.fts @@ to_tsquery('russian', query)
+        AND (search_images.orientation IS NULL OR search_images.orientation = 'all' OR images.orientation = search_images.orientation) -- Игнорирование фильтра orientation
+        AND (filter IS NULL OR filter = 'All' OR (filter = 'AI Generated' AND images.is_ai_generated = TRUE) 
+        OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) -- Игнорирование фильтра filter
+    ORDER BY 
+        CASE WHEN order_field = 'uploaded_at' THEN images.uploaded_at END
+        NULLS LAST,
+        CASE WHEN order_field = 'popularity_cached' THEN images.popularity_cached END
+        DESC
+    LIMIT 20;
+END;
+$$ LANGUAGE plpgsql;
+
