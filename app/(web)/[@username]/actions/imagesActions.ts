@@ -5,34 +5,38 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
+interface UserImagesWithLikesResponse {
+  images: Image[]
+  totalCount: number
+}
+
+interface ImagesSearchResponse {
+  images: Image[]
+  totalCount: number
+  error: PostgrestError | null
+}
+
 type User = {
-  username: string
+  id: string | null | undefined
+  username: string | null | undefined
+  avatarUrl: string | null
+  avatar_file_path?: string | null
 }
 
 type Image = {
-  id: number
+  id: string
   url_slug: string
   title: string
-  description: string
+  file_sizes: object
   original_file_path: string
-  medium_file_path: string
-  small_file_path: string
-  file_type: string
-  total_views: number
-  total_downloads: number
-  total_likes: number
   orientation: 'portrait' | 'landscape'
   uploaded_at: string
-  user_id: string
-  users: User
+  users: User // Убедитесь, что это объект типа User, а не массив
+  users_id?: string | null // Это поле может быть лишним
   liked_by_current_user?: boolean
-  imagePath: string
-  isOwnedByCurrentUser?: boolean
-}
-
-interface ImageResponse {
-  images: Image[]
-  totalCount: number
+  imagePath: string | null
+  users_avatar_file_path?: string | null // Добавлено свойство
+  users_username?: string | null // Добавлено свойство
 }
 
 export async function getLikeCountForImage(imageId: number): Promise<number> {
@@ -91,13 +95,13 @@ export async function incrementImageViews(imageId: number) {
 }
 
 export default async function searchImages(
-  query,
-  filter = null,
-  orientation = null,
+  query = '',
+  filter = 'All',
+  orientation = 'all',
   sort = 'newest',
   page = 1,
   pageSize = 10
-) {
+): Promise<{ images: Image[]; totalCount: number; error: PostgrestError | null }> {
   const { data, error } = await supabaseService.rpc('search_images', {
     query,
     filter,
@@ -109,15 +113,15 @@ export default async function searchImages(
 
   if (error) {
     console.error('Ошибка поиска:', error)
-    return []
+    return { images: [], totalCount: 0, error: error as PostgrestError }
   }
 
   if (!data) {
     console.warn('Нет данных, соответствующих запросу')
-    return []
+    return { images: [], totalCount: 0, error }
   }
 
-  return { images: data, totalCount: data.length }
+  return { images: data, totalCount: data.length, error: null }
 }
 
 export async function getImagesSearch(
@@ -125,7 +129,7 @@ export async function getImagesSearch(
   pageSize: number = 10,
   currentUserId?: string | null,
   searchQuery?: string | null
-): Promise<ImageResponse> {
+): Promise<ImagesSearchResponse> {
   try {
     let query = ''
     let filter = 'All'
@@ -146,7 +150,7 @@ export async function getImagesSearch(
       }
     }
 
-    const { images, error } = await searchImages(
+    const { images, totalCount, error } = await searchImages(
       query,
       filter,
       orientation,
@@ -155,8 +159,12 @@ export async function getImagesSearch(
       pageSize
     )
 
-    if (error) throw error
-    if (!images || images.length === 0) return { images: [] }
+    if (error) {
+      console.error('Ошибка поиска:', error)
+      return { images: [], totalCount: 0, error: error as PostgrestError }
+    }
+
+    if (!images || images.length === 0) return { images: [], totalCount: 0, error: null }
 
     let likedImages = new Set<string>()
     if (currentUserId) {
@@ -192,10 +200,10 @@ export async function getImagesSearch(
       })
     )
 
-    return { images: imagesWithLikes }
+    return { images: imagesWithLikes, totalCount, error: null }
   } catch (error) {
     console.error('Error fetching user images:', (error as Error).message)
-    return { images: [], totalCount: 0 }
+    return { images: [], totalCount: 0, error: null }
   }
 }
 
@@ -205,7 +213,7 @@ export async function getUserImagesWithLikes(
   pageSize: number = 10,
   currentUserId?: string | null,
   searchQuery?: string | null
-): Promise<ImageResponse> {
+): Promise<UserImagesWithLikesResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
@@ -213,7 +221,7 @@ export async function getUserImagesWithLikes(
     let query = supabaseService
       .from('images')
       .select(
-        'id, title, preview, url_slug, orientation, uploaded_at, file_sizes, original_file_path, users(id,username,avatar_file_path)',
+        'id, title, preview, url_slug, orientation, uploaded_at, file_sizes, original_file_path, users(id, username, avatar_file_path)',
         {
           count: 'exact',
         }
@@ -249,22 +257,27 @@ export async function getUserImagesWithLikes(
 
     const imagesWithLikes = await Promise.all(
       images.map(async (image) => {
-        const avatarUrl = image.users?.avatar_file_path
-          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+        const typedImage = image as unknown as Image
+        const avatarUrl = typedImage.users?.avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${typedImage.users.avatar_file_path}`
           : null
 
         const imagePath = image.original_file_path
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
 
+        const user: User = {
+          id: typedImage.users.id,
+          username: typedImage.users.username,
+          avatar_file_path: typedImage.users.avatar_file_path,
+          avatarUrl,
+        }
+
         return {
           ...image,
-          users: {
-            ...image.users,
-            avatarUrl,
-          },
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
+          users: user,
         }
       })
     )
