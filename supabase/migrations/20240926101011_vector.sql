@@ -99,7 +99,9 @@ CREATE OR REPLACE FUNCTION public.search_images(
     query TEXT,
     filter TEXT DEFAULT NULL,
     orientation TEXT DEFAULT NULL,
-    sort TEXT DEFAULT 'newest'
+    sort TEXT DEFAULT 'newest',
+    page INTEGER DEFAULT 1,  
+    page_size INTEGER DEFAULT 20  
 ) 
 RETURNS TABLE (
     id INTEGER,
@@ -138,13 +140,12 @@ BEGIN
         images.fts @@ to_tsquery('russian', query)
         AND (search_images.orientation IS NULL OR search_images.orientation = 'all' OR images.orientation = search_images.orientation) -- Игнорирование фильтра orientation
         AND (filter IS NULL OR filter = 'All' OR (filter = 'AI Generated' AND images.is_ai_generated = TRUE) 
-        OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) -- Игнорирование фильтра filter
+        OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) 
     ORDER BY 
         CASE WHEN order_field = 'uploaded_at' THEN images.uploaded_at END
         NULLS LAST,
         CASE WHEN order_field = 'popularity_cached' THEN images.popularity_cached END
         DESC
-    LIMIT 20;
+    LIMIT page_size OFFSET (page - 1) * page_size; 
 END;
 $$ LANGUAGE plpgsql;
-

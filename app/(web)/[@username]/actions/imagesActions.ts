@@ -94,7 +94,9 @@ export default async function searchImages(
   query,
   filter = null,
   orientation = null,
-  sort = 'newest'
+  sort = 'newest',
+  page = 1,
+  pageSize = 10
 ) {
   console.log(query, filter, orientation, sort, 99)
   const { data, error } = await supabaseService.rpc('search_images', {
@@ -102,6 +104,8 @@ export default async function searchImages(
     filter,
     orientation,
     sort,
+    page,
+    page_size: pageSize,
   })
 
   if (error) {
@@ -125,8 +129,8 @@ export async function getImagesSearch(
 ): Promise<ImageResponse> {
   // try {
   console.log(searchQuery, 11)
-  const rangeStart = (page - 1) * pageSize
-  const rangeEnd = page * pageSize - 1
+  // const rangeStart = (page - 1) * pageSize
+  // const rangeEnd = page * pageSize - 1
 
   // Default values
   let query = ''
@@ -151,7 +155,7 @@ export async function getImagesSearch(
     }
   }
   console.log(query, filter, orientation, sort, 185)
-  searchImages(query, filter, orientation, sort)
+  searchImages(query, filter, orientation, sort, page, pageSize)
   //   let query = supabaseService
   //     .from('images')
   //     .select(
