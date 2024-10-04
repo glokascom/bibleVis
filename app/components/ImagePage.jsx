@@ -38,11 +38,13 @@ export default async function ImagePageComponent({ title, isModal }) {
   const isFollowed = await checkIfSubscribed(imageInfo.users.id)
   const { existingLike: isLike } = await checkIfLiked(imageInfo.id)
 
-  const { totalViews } = await getImageStats(imageInfo.id)
+  const { totalViews, totalDownloads } = await getImageStats(imageInfo.id)
   const username = imageInfo.users.username
   const isCurrentUser = user?.username === username
 
   imageInfo.total_views = totalViews
+  imageInfo.total_downloads = totalDownloads
+
   imageInfo.total_views++
   if (!(await incrementImageViews(imageInfo.id))) {
     imageInfo.total_views--
