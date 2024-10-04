@@ -5,30 +5,36 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-import { checkIfSubscribed } from './userActions'
-
 type User = {
-  id: string
   username: string
-  avatar_file_path: string | null
-  total_followers: number
 }
 
 type Image = {
-  id: string
-  user_id: string
-  original_file_path: string | null
-  is_ai_generated: boolean
-  orientation: string | null
+  id: number
+  url_slug: string
+  title: string
+  description: string
+  original_file_path: string
+  medium_file_path: string
+  small_file_path: string
+  file_type: string
+  total_views: number
+  total_downloads: number
+  total_likes: number
+  orientation: 'portrait' | 'landscape'
   uploaded_at: string
+  user_id: string
   users: User
-  popularity?: number
+  liked_by_current_user?: boolean
+  imagePath: string
+  isOwnedByCurrentUser?: boolean
 }
 
-type ImageResponse = {
-  images: Array<ProcessedImage>
+interface ImageResponse {
+  images: Image[]
   totalCount: number
 }
+
 export async function getLikeCountForImage(imageId: number): Promise<number> {
   try {
     const { count, error } = await supabaseService
@@ -84,170 +90,77 @@ export async function incrementImageViews(imageId: number) {
   }
 }
 
-type ProcessedImage = Image & {
-  liked_by_current_user: boolean
-  imagePath: string | null
-  isOwnedByCurrentUser: boolean
-  total_likes: number
-  users: {
-    avatarUrl: string | null
-  }
-}
-
-function buildQuery(
-  userId: string | null,
-  searchQuery: string | null,
-  imageFilter: boolean | null,
-  orientationFilter: number | 0
-) {
-  let query = supabaseService
-    .from('images')
-    .select('*, users(id, username, avatar_file_path, total_followers)', {
-      count: 'exact',
-    })
-
-  if (userId) {
-    query = query.eq('user_id', userId)
-  }
-
-  if (searchQuery) {
-    const formattedQuery = searchQuery
-      .split(/[-,]+/)
-      .filter((word) => word.trim().length > 0)
-      .join(' | ')
-    query = query.textSearch('fts', formattedQuery)
-  }
-
-  if (imageFilter !== null) {
-    query = query.eq('is_ai_generated', imageFilter)
-  }
-
-  if (orientationFilter !== 0) {
-    const orientationMap: { [key: number]: string } = { 1: 'landscape', 2: 'portrait' }
-    query = query.eq('orientation', orientationMap[orientationFilter])
-  }
-
-  return query
-}
-
-async function getPopularityMap(): Promise<Map<string, number>> {
-  const { data: popularityData, error: popularityError } =
-    await supabaseService.rpc('calculate_popularity')
-  if (popularityError) throw popularityError
-  return new Map(
-    popularityData.map((item: { image_id: string; popularity: number }) => [
-      item.image_id,
-      item.popularity,
-    ])
-  )
-}
-
-function sortImages(
-  images: Image[],
-  sortDirection: number,
-  popularityMap: Map<string, number> | null
-): Image[] {
-  if (sortDirection === 2 && popularityMap) {
-    return images
-      .filter((image) => popularityMap.has(image.id))
-      .map((image) => ({
-        ...image,
-        popularity: popularityMap.get(image.id) || 0,
-      }))
-      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
-  }
-
-  return images.sort((a, b) => {
-    const dateA = new Date(a.uploaded_at).getTime()
-    const dateB = new Date(b.uploaded_at).getTime()
-    return sortDirection === 0 ? dateB - dateA : dateA - dateB
-  })
-}
-
-async function getImagesWithLikes(
-  images: Image[],
-  currentUserId: string | null
-): Promise<ProcessedImage[]> {
-  let likedImages = new Set<string>()
-
-  if (currentUserId) {
-    const { data: likes, error: likesError } = await supabaseService
-      .from('likes')
-      .select('image_id')
-      .eq('user_id', currentUserId)
-
-    if (likesError) throw likesError
-    likedImages = new Set(likes.map((like: { image_id: string }) => like.image_id))
-  }
-
-  return Promise.all(
-    images.map(async (image) => {
-      const avatarUrl = image.users?.avatar_file_path
-        ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
-        : null
-
-      const imagePath = image.original_file_path
-        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
-        : null
-
-      const total_likes = await getLikeCountForImage(Number(image.id))
-
-      return {
-        ...image,
-        users: {
-          ...image.users,
-          avatarUrl,
-        },
-        liked_by_current_user: likedImages.has(image.id),
-        imagePath,
-        isOwnedByCurrentUser: image.user_id === currentUserId,
-        total_likes,
-        popularity: image.popularity || 0,
-      }
-    })
-  )
-}
-
 export async function getUserImagesWithLikes(
   userId: string | null,
   page: number = 1,
   pageSize: number = 10,
   currentUserId?: string | null,
-  searchQuery?: string | null,
-  imageFilter?: boolean | null,
-  orientationFilter?: number | 0,
-  sortDirection?: number | 2
+  searchQuery?: string | null
 ): Promise<ImageResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
 
-    const query = buildQuery(
-      userId ?? null,
-      searchQuery ?? null,
-      imageFilter ?? null,
-      orientationFilter ?? 0
-    )
+    let query = supabaseService
+      .from('images')
+      .select('*, users(id,username,avatar_file_path,total_followers)', {
+        count: 'exact',
+      })
 
-    const {
-      data: filteredImages,
-      count: filteredCount,
-      error: filteredError,
-    } = await query
-    if (filteredError) throw filteredError
-    if (!filteredImages || filteredImages.length === 0) {
-      return { images: [], totalCount: filteredCount || 0 }
+    if (userId) {
+      query = query.eq('user_id', userId)
     }
 
-    let images = filteredImages as Image[]
-    const count = filteredCount
+    if (searchQuery) {
+      query = query.ilike('title', `%${searchQuery}%`)
+    }
 
-    const popularityMap = sortDirection === 2 ? await getPopularityMap() : null
-    images = sortImages(images, sortDirection ?? 0, popularityMap)
+    const {
+      data: images,
+      count,
+      error,
+    } = await query.range(rangeStart, rangeEnd).order('uploaded_at', { ascending: false })
 
-    images = images.slice(rangeStart, rangeEnd + 1)
+    if (error) throw error
+    if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
 
-    const imagesWithLikes = await getImagesWithLikes(images, currentUserId ?? null)
+    let likedImages = new Set()
+    if (currentUserId) {
+      const { data: likes, error: likesError } = await supabaseService
+        .from('likes')
+        .select('image_id')
+        .eq('user_id', currentUserId)
+
+      if (likesError) throw likesError
+      likedImages = new Set(likes?.map((like) => like.image_id))
+    }
+
+    const imagesWithLikes = await Promise.all(
+      images.map(async (image) => {
+        const avatarUrl = image.users?.avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+          : null
+
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
+
+        const isOwnedByCurrentUser = currentUserId
+          ? image.user_id === currentUserId
+          : false
+
+        return {
+          ...image,
+          users: {
+            ...image.users,
+            avatarUrl,
+          },
+          liked_by_current_user: likedImages.has(image.id),
+          imagePath,
+          isOwnedByCurrentUser,
+        }
+      })
+    )
 
     return { images: imagesWithLikes, totalCount: count || 0 }
   } catch (error) {
@@ -375,18 +288,20 @@ export async function getRandomImagesExcluding(
   numberOfImages: number = 3
 ): Promise<Image[]> {
   try {
-    const { data: images, error: fetchError } = await supabaseService
-      .from('images')
-      .select('*')
-      .eq('user_id', userId)
+    const { data: images, error: fetchError } = await supabaseService.rpc(
+      'get_random_images',
+      { user_id: userId, limit_images: numberOfImages }
+    )
 
     if (fetchError) throw fetchError
 
-    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+    const filteredImages = images.filter(
+      (image: { id: number }) => image.id !== excludeImageId
+    )
     const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    const imagesWithPaths = randomImages.map((image) => {
+    const imagesWithPaths = randomImages.map((image: { original_file_path: unknown }) => {
       const imagePath = image.original_file_path
         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
         : null
@@ -404,11 +319,10 @@ export async function getRandomImagesExcluding(
   }
 }
 
-type ExtendedImage = {
-  imageInfo: Image
+export interface ExtendedImage extends Image {
   relatedImages: Image[]
   isLike: boolean
-  isFollowed: boolean | null
+  isFollowed: boolean
   isCurrentUser: boolean
 }
 
@@ -421,9 +335,6 @@ export const loadNextPage = async (
   userId: string | null,
   page: number,
   searchQuery: string | null,
-  imageFilter: boolean | null,
-  orientationFilter: number | 0,
-  sortDirection: number | 2,
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
   const { user: currentUser } = await getUser()
@@ -432,32 +343,23 @@ export const loadNextPage = async (
     page,
     pageSize,
     currentUser?.id,
-    searchQuery,
-    imageFilter,
-    orientationFilter,
-    sortDirection
+    searchQuery
   )
 
   const extendedImages = await Promise.all(
     images.map(async (image) => {
       const [relatedImages, { existingLike }] = await Promise.all([
-        getRandomImagesExcluding(image.user_id, Number(image.id)),
+        getRandomImagesExcluding(image.user_id, image.id),
         currentUser?.id
-          ? checkIfLiked(Number(image.id))
+          ? checkIfLiked(image.id)
           : { existingLike: null, fetchError: null },
       ])
-
-      const isFollowed = await checkIfSubscribed(image.user_id)
-
-      const extendedImage: ExtendedImage = {
-        imageInfo: image,
+      return {
+        ...image,
         relatedImages,
         isLike: !!existingLike,
-        isFollowed,
         isCurrentUser: currentUser?.id === image.user_id,
-      }
-
-      return extendedImage
+      } as ExtendedImage
     })
   )
 

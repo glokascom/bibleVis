@@ -214,7 +214,7 @@ function ImageFormDisplay({
             <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
               <p className="md:w-1/3">
                 <span className="font-bold">File Formats and Size:</span> Acceptable
-                formats are JPG and PNG, with a maximum file size of 4MB and at least 1920
+                formats are JPG and PNG, with a maximum file size of 4MB and at least 1000
                 pixels on one side.
               </p>
               <p className="md:w-1/3">

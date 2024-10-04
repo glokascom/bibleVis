@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { BVButton } from '@/app/components/BVButton'
 import ImageForGallery from '@/app/components/ImageForGallery'
+import { useGallery } from '@/app/GaleryContext'
 
 import { loadNextPage } from '../actions/imagesActions'
 
@@ -27,13 +28,13 @@ const Masonry = dynamic(
 function Gallery({
   isAuthenticated,
   profileUserId = null,
+  backUrl = '/',
   isMainPage = false,
   isShowHeader = true,
   searchQuery = null,
-  imageFilter = null,
-  orientationFilter = null,
-  sortDirection = 2,
 }) {
+  const { setImages: setGalleryImages, setCurrentIndex, setBasePageUrl } = useGallery()
+
   const [images, setImages] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -42,8 +43,14 @@ function Gallery({
 
   useEffect(() => {
     loadMoreImages()
+    // TODO я думаю тут надо делать сброс страницы если поисковый запрос изменился. Тут больше бы подошло resetAndReloadImages
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, imageFilter, orientationFilter])
+  }, [searchQuery])
+
+  useEffect(() => {
+    setBasePageUrl(backUrl)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backUrl])
 
   const loadMoreImages = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
@@ -53,12 +60,11 @@ function Gallery({
       profileUserId,
       page,
       searchQuery,
-      imageFilter,
-      orientationFilter,
-      sortDirection
+      10
     )
 
     setImages((prevImages) => {
+      // TODO не до конца понимаю, для чего тут фильтруются картинки и откуда тут дубликаты
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
       return [...prevImages, ...filteredNewImages]
@@ -73,7 +79,12 @@ function Gallery({
 
     isLoadingRef.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileUserId, page, hasMore, searchQuery, imageFilter, orientationFilter])
+  }, [profileUserId, page, hasMore, searchQuery])
+
+  useEffect(() => {
+    setGalleryImages(images.map((image) => image.url_slug))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images])
 
   const resetAndReloadImages = async () => {
     setPage(1)
@@ -113,17 +124,23 @@ function Gallery({
 
       <InfiniteScroll
         dataLength={images.length}
+        className="mb-16"
         next={loadMoreImages}
         hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={<p>No more images</p>}
+        loader={
+          <div className="my-4 animate-pulse rounded-medium border border-secondary-200 p-4 text-center">
+            Loading ...
+          </div>
+        }
       >
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
-              <div key={image.id}>
+              <div key={image.url_slug}>
                 <ImageForGallery
                   image={image}
+                  onClick={() => setCurrentIndex(index)}
+                  setCurrentIndex={setCurrentIndex}
                   allImages={images}
                   currentIndex={index}
                   isAuthenticated={isAuthenticated}

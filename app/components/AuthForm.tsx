@@ -222,7 +222,7 @@ function AuthForm() {
                   onClick={() =>
                     push(
                       '/api/auth/google?redirectedFrom=' +
-                        searchParams.get('redirectedFrom')
+                        (searchParams.get('redirectedFrom') ?? '/')
                     )
                   }
                 >
@@ -247,6 +247,7 @@ function AuthForm() {
                   variant="bordered"
                   size="sm"
                   isRequired
+                  autoComplete="username"
                   value={usernameSignup}
                   onChange={(e) => setUsernameSignup(e.target.value)}
                   isInvalid={signupErrors?.fields.some(
@@ -265,6 +266,7 @@ function AuthForm() {
                   type="email"
                   variant="bordered"
                   size="sm"
+                  autoComplete="email"
                   isRequired
                   value={emailSignup}
                   onChange={(e) => setEmailSignup(e.target.value)}
@@ -286,11 +288,7 @@ function AuthForm() {
                   value={passwordSignup}
                   onChange={(e) => setPasswordSignup(e.target.value)}
                   endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleSignupVisibility}
-                    >
+                    <div onClick={toggleSignupVisibility}>
                       {isSignupVisible ? (
                         <Image
                           src={'/eye-open.svg'}
@@ -308,7 +306,7 @@ function AuthForm() {
                           className="mr-4 h-9 w-9 p-2"
                         />
                       )}
-                    </button>
+                    </div>
                   }
                   type={isSignupVisible ? 'text' : 'password'}
                   isRequired
@@ -360,6 +358,7 @@ function AuthForm() {
                   type="email"
                   variant="bordered"
                   size="sm"
+                  autoComplete="email"
                   value={emailLogin}
                   onChange={(e) => setEmailLogin(e.target.value)}
                   isRequired
@@ -379,11 +378,7 @@ function AuthForm() {
                   value={passwordLogin}
                   onChange={(e) => setPasswordLogin(e.target.value)}
                   endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleLoginVisibility}
-                    >
+                    <div onClick={toggleLoginVisibility}>
                       {isLoginVisible ? (
                         <Image
                           src={'/eye-open.svg'}
@@ -401,7 +396,7 @@ function AuthForm() {
                           className="mr-4 h-9 w-9 p-2"
                         />
                       )}
-                    </button>
+                    </div>
                   }
                   type={isLoginVisible ? 'text' : 'password'}
                   isRequired

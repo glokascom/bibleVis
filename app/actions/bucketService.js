@@ -214,7 +214,11 @@ async function uploadOriginalImage(imageFile) {
     throw new Error('Failed to upload original image: ' + uploadError.message)
   }
 
-  return uploadedPath
+  const buffer = await sharp(fileBuffer).resize(8, 8).toBuffer()
+
+  const base64Image = buffer.toString('base64')
+
+  return { uploadedPath, blurPreview: base64Image }
 }
 
 export { updateAvatar, updateCover, uploadOriginalImage }

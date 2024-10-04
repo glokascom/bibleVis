@@ -29,7 +29,6 @@ export async function getUser() {
       avatarUrl,
       coverUrl,
     }
-
     return { user, error: null }
   } catch (error) {
     return { user: null, error }
