@@ -133,7 +133,7 @@ function Gallery({
           </div>
         }
       >
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 700: 2, 1280: 3 }}>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 1280: 3 }}>
           <Masonry gutter="10px">
             {images.map((image, index) => (
               <div key={image.url_slug}>

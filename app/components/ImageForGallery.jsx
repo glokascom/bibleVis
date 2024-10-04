@@ -115,7 +115,7 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
           width={image.file_sizes.original.width}
           height={image.file_sizes.original.height}
           className="h-full w-full rounded-medium object-cover"
-          sizes="(max-width: 700px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          sizes="(max-width: 1280px) 50vw, 33vw"
         />
         <div
           className={`absolute inset-0 z-10 rounded-medium bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isDropdownOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}

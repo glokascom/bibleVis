@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
 
 type GalleryContextType = {
   images: string[]
@@ -8,7 +8,6 @@ type GalleryContextType = {
   basePageUrl: string
   setBasePageUrl: (url: string) => void
 }
-
 const GalleryContext = createContext<GalleryContextType | undefined>(undefined)
 
 export const useGallery = () => {
@@ -24,18 +23,17 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   const [images, setImages] = useState<string[]>([])
   const [basePageUrl, setBasePageUrl] = useState('/')
 
-  return (
-    <GalleryContext.Provider
-      value={{
-        images,
-        setImages,
-        currentIndex,
-        setCurrentIndex,
-        basePageUrl,
-        setBasePageUrl,
-      }}
-    >
-      {children}
-    </GalleryContext.Provider>
+  const value = useMemo(
+    () => ({
+      images,
+      setImages,
+      currentIndex,
+      setCurrentIndex,
+      basePageUrl,
+      setBasePageUrl,
+    }),
+    [images, setImages, currentIndex, setCurrentIndex, basePageUrl, setBasePageUrl]
   )
+
+  return <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
 }
