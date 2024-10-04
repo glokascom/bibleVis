@@ -31,12 +31,12 @@ type Image = {
   original_file_path: string
   orientation: 'portrait' | 'landscape'
   uploaded_at: string
-  users: User // Убедитесь, что это объект типа User, а не массив
-  users_id?: string | null // Это поле может быть лишним
+  users: User
+  users_id?: string | null
   liked_by_current_user?: boolean
   imagePath: string | null
-  users_avatar_file_path?: string | null // Добавлено свойство
-  users_username?: string | null // Добавлено свойство
+  users_avatar_file_path?: string | null
+  users_username?: string | null
 }
 
 export async function getLikeCountForImage(imageId: number): Promise<number> {
