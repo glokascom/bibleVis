@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION generate_fts_vector(
     image_id INT
 ) RETURNS TSVECTOR AS $$
 BEGIN
-  RETURN to_tsvector('russian', 
+  RETURN to_tsvector('english', 
     COALESCE(description, '') || ' ' || 
     COALESCE(title, '') || ' ' || 
     COALESCE(
@@ -144,7 +144,7 @@ BEGIN
     FROM public.images
     JOIN public.users ON images.user_id = users.id 
     WHERE 
-        images.fts @@ to_tsquery('russian', query)
+        images.fts @@ to_tsquery('english', query)
         AND (orientation_param IS NULL OR orientation_param = 'all' OR images.orientation = orientation_param)
         AND (filter IS NULL OR filter = 'All' OR (filter = 'AI Generated' AND images.is_ai_generated = TRUE) 
         OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) 
