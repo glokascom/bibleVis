@@ -8,7 +8,7 @@ const Page: React.FC = async () => {
   return (
     <>
       <HeroBlock />
-      <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
+      <main className="mx-auto w-full max-w-[1806px] flex-auto px-6 md:px-12">
         <Gallery isMainPage={true} isAuthenticated={!!currentUser} />
       </main>
     </>
