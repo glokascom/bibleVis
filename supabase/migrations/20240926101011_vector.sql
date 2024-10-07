@@ -23,24 +23,13 @@ BEGIN
         SELECT string_agg(t.name, ' ')
         FROM image_tags it
         JOIN tags t ON t.id = it.tag_id
-        WHERE it.image_id = generate_fts_vector.image_id
-      ), ''
-    )
-  ) ||
-  to_tsvector('english', 
-    COALESCE(description, '') || ' ' || 
-    COALESCE(title, '') || ' ' ||
-    COALESCE(
-      (
-        SELECT string_agg(t.name, ' ')
-        FROM image_tags it
-        JOIN tags t ON t.id = it.tag_id
-        WHERE it.image_id = generate_fts_vector.image_id
+        WHERE it.image_id = image_id
       ), ''
     )
   );
 END;
 $$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE FUNCTION update_images_fts() 
 RETURNS TRIGGER AS $$
