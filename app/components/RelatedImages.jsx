@@ -10,7 +10,7 @@ function RelatedImages({ relatedImages, username }) {
       <p className="font-bold">More by {username}</p>
       <div className="grid grid-cols-3 gap-2 md:mt-5">
         {relatedImages.map((image) => (
-          <Link key={image.url_slug} href={`/image/${image.url_slug}`}>
+          <Link key={image.url_slug} scroll={false} href={`/image/${image.url_slug}`}>
             <Image
               src={image.imagePath}
               alt={image.title}

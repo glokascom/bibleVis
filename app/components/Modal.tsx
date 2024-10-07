@@ -13,7 +13,7 @@ export function Modal({ closeModal, showCloseButton = false, children }: ModalPr
     if (closeModal) {
       closeModal()
     } else if (basePageUrl) {
-      router.push(basePageUrl)
+      router.push(basePageUrl, { scroll: false })
     } else {
       router.back()
     }
