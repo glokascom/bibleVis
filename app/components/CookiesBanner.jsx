@@ -34,7 +34,7 @@ function CookiesBanner() {
   return (
     <>
       {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-secondary-600 p-4 text-white">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-secondary-600/90 p-4 text-white">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-small">
               We use cookies to improve your experience and deliver personalized content.

@@ -60,7 +60,7 @@ function ImagePageContent({
           ) : (
             <p className="text-center">Image not available</p>
           )}
-          {images.length > 0 && isModal && (
+          {images.length > 1 && isModal && (
             <div className="hidden md:block">
               <Link
                 href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
@@ -86,7 +86,7 @@ function ImagePageContent({
           )}
         </div>
 
-        {isModal && (
+        {isModal && images.length > 1 && (
           <div className="my-2.5 flex justify-between md:hidden">
             <Link
               href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
