@@ -13,7 +13,7 @@ function Footer() {
           <Link href="/pages/about">About BibleVis</Link>
           <Link href="/pages/tou">Terms of Use</Link>
           <CookiesModal>
-            <div className="cursor-pointer">Customize Cookies</div>
+            <div className="cursor-pointer">Manage Cookies</div>
           </CookiesModal>
         </div>
       </div>

@@ -46,7 +46,7 @@ function CookiesBanner() {
             </p>
             <div className="mt-3 flex gap-4 md:mt-0">
               <CookiesModal handleAfterClick={() => setShowBanner(false)}>
-                <BVButton color="secondary">Customize Cookies</BVButton>
+                <BVButton color="secondary">Manage Cookies</BVButton>
               </CookiesModal>
               <BVButton color="primary" onClick={handleAcceptAll}>
                 Accept All

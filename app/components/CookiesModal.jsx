@@ -74,6 +74,7 @@ function CookiesModal({ handleAfterClick, children }) {
       {modal && (
         <Modal showCloseButton={true} closeModal={hideBanner}>
           <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium text-secondary">
+            <p className="mb-8 font-semibold">Manage Cookies</p>
             <div className="mb-5 flex items-center justify-between gap-4 text-medium">
               <p>Essential Cookies</p>
               <p className="mr-5 text-small">Always On</p>
