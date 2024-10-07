@@ -43,7 +43,7 @@ export default function SearchPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 pt-14 md:px-12 md:pt-24">
+    <main className="mx-auto w-full max-w-[1806px] flex-auto px-6 pt-14 md:px-12 md:pt-24">
       <h1 className="mb-10 text-5xl font-medium">Free {decodedTitle} Photos</h1>
 
       <div className="-mx-6 mb-5 flex overflow-x-auto scrollbar-hide md:mx-0 md:items-center md:justify-between">

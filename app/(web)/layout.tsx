@@ -1,6 +1,8 @@
 import React from 'react'
 
 import { getUser } from '../actions/getUser'
+import CookiesBanner from '../components/CookiesBanner'
+import Footer from '../components/Footer'
 import Navigation from '../components/Navigation'
 
 export const metadata = {
@@ -22,6 +24,8 @@ export default async function RootLayout(props: {
       {children}
       {modal}
       <div id="modal-root"></div>
+      <CookiesBanner />
+      <Footer />
     </>
   )
 }

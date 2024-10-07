@@ -1,6 +1,6 @@
 export default function PagesLayout({ children }) {
   return (
-    <main>
+    <main className="flex-auto">
       <section className="flex flex-col">{children}</section>
     </main>
   )
