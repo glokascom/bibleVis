@@ -12,7 +12,7 @@ import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
-import { incrementImageViews } from '../(web)/[@username]/actions/imagesActions'
+import { getImageStats } from '../(web)/[@username]/actions/imagesActions'
 import { useGallery } from '../GaleryContext'
 import BVButton from './BVButton'
 
@@ -24,7 +24,6 @@ function ImagePageContent({
   totalLikes,
   isCurrentUser,
   isAuthenticated,
-
   isModal = false,
   children,
 }) {
@@ -39,14 +38,14 @@ function ImagePageContent({
     const newIndex = currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
     setCurrentIndex(newIndex)
 
-    await incrementImageViews(imageInfo.id)
+    await getImageStats(imageInfo.id)
   }
 
   const handleNextImage = async () => {
     const newIndex = (currentIndex + 1) % images.length
     setCurrentIndex(newIndex)
 
-    await incrementImageViews(imageInfo.id)
+    await getImageStats(imageInfo.id)
   }
 
   return (
