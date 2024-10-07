@@ -85,8 +85,7 @@ SELECT
     ((COALESCE(images.total_likes, 0) * 1.5 + COALESCE(images.total_views, 0) * 0.5) * 30) / 
     (1 + DATE_PART('day', NOW() - images.uploaded_at)) AS popularity
 FROM images
-ORDER BY popularity DESC
-LIMIT 100 OFFSET 0;
+ORDER BY popularity DESC;
 
 
 CREATE OR REPLACE FUNCTION public.search_images(
