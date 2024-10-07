@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,9 +12,9 @@ import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
+import { incrementImageViews } from '../(web)/[@username]/actions/imagesActions'
 import { useGallery } from '../GaleryContext'
 import BVButton from './BVButton'
-import { useImageView } from './ImageViewProvider'
 
 function ImagePageContent({
   imageInfo,
@@ -24,22 +24,30 @@ function ImagePageContent({
   totalLikes,
   isCurrentUser,
   isAuthenticated,
-  totalViews,
+
   isModal = false,
   children,
 }) {
   const { images, currentIndex, setCurrentIndex } = useGallery()
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
+
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
-  const { setViews, incrementView } = useImageView()
 
-  useEffect(() => {
-    setViews(imageInfo.id, totalViews)
-    incrementView(imageInfo.id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageInfo])
+  const handlePreviousImage = async () => {
+    const newIndex = currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
+    setCurrentIndex(newIndex)
+
+    await incrementImageViews(imageInfo.id)
+  }
+
+  const handleNextImage = async () => {
+    const newIndex = (currentIndex + 1) % images.length
+    setCurrentIndex(newIndex)
+
+    await incrementImageViews(imageInfo.id)
+  }
 
   return (
     <div
@@ -74,20 +82,14 @@ function ImagePageContent({
             <div className="hidden md:block">
               <Link
                 href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
-                onClick={() => {
-                  setCurrentIndex(
-                    currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
-                  )
-                }}
+                onClick={handlePreviousImage}
                 className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
               >
                 <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
               </Link>
               <Link
                 href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
-                onClick={() => {
-                  setCurrentIndex((currentIndex + 1) % images.length)
-                }}
+                onClick={handleNextImage}
                 className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-secondary-50"
               >
                 <Image width={14} height={16} src="/polygon.svg" alt="next image" />
@@ -100,20 +102,14 @@ function ImagePageContent({
           <div className="my-2.5 flex justify-between md:hidden">
             <Link
               href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
-              onClick={() => {
-                setCurrentIndex(
-                  currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
-                )
-              }}
+              onClick={handlePreviousImage}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
             >
               <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
             </Link>
             <Link
               href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
-              onClick={() => {
-                setCurrentIndex((currentIndex + 1) % images.length)
-              }}
+              onClick={handleNextImage}
               className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
             >
               <Image width={14} height={16} src="/polygon.svg" alt="next image" />
