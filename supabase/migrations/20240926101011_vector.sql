@@ -23,7 +23,7 @@ BEGIN
         SELECT string_agg(t.name, ' ')
         FROM image_tags it
         JOIN tags t ON t.id = it.tag_id
-        WHERE it.image_id = image_id
+        WHERE it.image_id = generate_fts_vector.image_id
       ), ''
     )
   );
@@ -34,10 +34,15 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION update_images_fts() 
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.fts := generate_fts_vector(NEW.description, NEW.title, NEW.id);
+  IF NEW.description IS DISTINCT FROM OLD.description OR
+     NEW.title IS DISTINCT FROM OLD.title THEN
+    NEW.fts := generate_fts_vector(NEW.description, NEW.title, NEW.id);
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER trigger_update_images_fts
 BEFORE INSERT OR UPDATE ON images
