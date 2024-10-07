@@ -288,7 +288,7 @@ function AuthForm() {
                   value={passwordSignup}
                   onChange={(e) => setPasswordSignup(e.target.value)}
                   endContent={
-                    <div onClick={toggleSignupVisibility}>
+                    <div className="cursor-pointer" onClick={toggleSignupVisibility}>
                       {isSignupVisible ? (
                         <Image
                           src={'/eye-open.svg'}
@@ -378,7 +378,7 @@ function AuthForm() {
                   value={passwordLogin}
                   onChange={(e) => setPasswordLogin(e.target.value)}
                   endContent={
-                    <div onClick={toggleLoginVisibility}>
+                    <div className="cursor-pointer" onClick={toggleLoginVisibility}>
                       {isLoginVisible ? (
                         <Image
                           src={'/eye-open.svg'}

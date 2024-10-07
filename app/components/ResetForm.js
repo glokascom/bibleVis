@@ -133,7 +133,7 @@ export default function ResetForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   endContent={
-                    <div onClick={toggleVisibility}>
+                    <div className="cursor-pointer" onClick={toggleVisibility}>
                       {isVisible ? (
                         <Image
                           src={'/eye-open.svg'}
@@ -173,7 +173,7 @@ export default function ResetForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   endContent={
-                    <div onClick={toggleVisibilityConfirm}>
+                    <div className="cursor-pointer" onClick={toggleVisibilityConfirm}>
                       {isVisibleConfirm ? (
                         <Image
                           src={'/eye-open.svg'}
