@@ -50,8 +50,6 @@ export default async function ImagePageComponent({ title, isModal }) {
     imageInfo.total_views--
   }
 
-  //Выводиться только по одному разу на картинку
-  console.log(imageInfo.total_views, 47)
   return (
     <ImagePageContent
       imageInfo={imageInfo}
