@@ -5,7 +5,7 @@ export default async function ImagePage({ params }) {
   const { title } = params
 
   return (
-    <Modal showCloseButton>
+    <Modal>
       <ImagePageComponent title={title} isModal />
     </Modal>
   )

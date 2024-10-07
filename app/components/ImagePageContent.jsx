@@ -70,6 +70,7 @@ function ImagePageContent({
                   )
                 }}
                 className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
+                scroll={false}
               >
                 <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
               </Link>
@@ -79,6 +80,7 @@ function ImagePageContent({
                   setCurrentIndex((currentIndex + 1) % images.length)
                 }}
                 className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+                scroll={false}
               >
                 <Image width={14} height={16} src="/polygon.svg" alt="next image" />
               </Link>
@@ -95,6 +97,7 @@ function ImagePageContent({
                   currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
                 )
               }}
+              scroll={false}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
             >
               <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
@@ -104,6 +107,7 @@ function ImagePageContent({
               onClick={() => {
                 setCurrentIndex((currentIndex + 1) % images.length)
               }}
+              scroll={false}
               className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
             >
               <Image width={14} height={16} src="/polygon.svg" alt="next image" />
