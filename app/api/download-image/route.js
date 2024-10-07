@@ -64,7 +64,7 @@ async function incrementDownloads(src) {
 }
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url)
+  const { searchParams } = request.nextUrl
   const src = searchParams.get('src')
   const width = searchParams.get('width')
 

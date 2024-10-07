@@ -13,8 +13,8 @@ import { Chevron } from '@/app/components/Chevron'
 import Gallery from '../../[@username]/components/Gallery'
 
 export default function SearchPage() {
-  const { title } = useParams()
-  const decodedTitle = title ? decodeURIComponent(title) : null
+  const { query } = useParams()
+  const decodedTitle = query ? decodeURIComponent(query) : null
 
   const [activeButton, setActiveButton] = useState('AI Generated')
   const [isOpenFilters, setIsOpenFilters] = useState(false)
@@ -97,7 +97,11 @@ export default function SearchPage() {
       </div>
 
       <div className="mt-10">
-        <Gallery isShowHeader={false} searchQuery={decodedTitle} />
+        <Gallery
+          isShowHeader={false}
+          searchQuery={decodedTitle}
+          backUrl={`/s/${query}`}
+        />
       </div>
     </main>
   )

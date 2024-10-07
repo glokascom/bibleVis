@@ -8,7 +8,7 @@ export default async function ResetPassword({ searchParams }) {
   const host = headersList.get('host')
   const protocol = headersList.get('x-forwarded-proto') || 'http'
   const origin = `${protocol}://${host}`
-  const code = searchParams['code']
+  const code = searchParams['code'] ?? false
 
   if (!code) {
     return redirect(`${origin}/auth/auth-code-error`)

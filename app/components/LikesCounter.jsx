@@ -64,7 +64,7 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
             src={isLiked ? '/heart-filled.svg' : '/heart-empty.svg'}
             alt="heart"
             width={20}
-            height={20}
+            height={18}
             radius="none"
           />
         }

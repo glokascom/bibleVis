@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import { Image } from '@nextui-org/image'
 
@@ -23,12 +23,6 @@ function CreatorDetails({
   const [isLoading, setIsLoading] = useState(false)
   const containerRef = useRef(null)
   const resizeObserverRef = useRef(null)
-  const router = useRouter()
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -83,31 +77,28 @@ function CreatorDetails({
       setIsLoading(false)
     }
   }
-
-  const handleAvatarClick = () => {
-    if (isMounted) {
-      router.push(`/@${creator.username}`)
-    }
-  }
-
   return (
     <div
       ref={containerRef}
       className={`flex items-center ${isNarrow ? 'flex-col space-y-7' : 'flex-row justify-between pl-4'} text-large font-semibold`}
     >
       <div className="flex items-center gap-5">
-        <BVAvatar
-          as="button"
-          className="transition-transform"
-          name={creator.username}
-          size="md"
-          src={creator.avatarUrl}
-          onClick={handleAvatarClick}
-        />
+        <Link href={`/@${creator.username}`}>
+          <BVAvatar
+            as="button"
+            className="transition-transform"
+            size="md"
+            src={creator.avatarUrl}
+          />
+        </Link>
         <div className="max-w-32">
-          <p className="truncate" title={creator.username}>
+          <Link
+            className="truncate"
+            title={creator.username}
+            href={`/@${creator.username}`}
+          >
             {creator.username}
-          </p>
+          </Link>
           <p className="mt-2.5 text-small text-secondary-400">
             {totalFollowers} followers
           </p>

@@ -5,8 +5,6 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-import { checkIfSubscribed } from './userActions'
-
 type User = {
   username: string
 }
@@ -105,7 +103,7 @@ export async function getUserImagesWithLikes(
 
     let query = supabaseService
       .from('images')
-      .select('*, users(id,username,avatar_file_path, total_followers)', {
+      .select('*, users(id,username,avatar_file_path,total_followers)', {
         count: 'exact',
       })
 
@@ -151,8 +149,6 @@ export async function getUserImagesWithLikes(
           ? image.user_id === currentUserId
           : false
 
-        const total_likes = await getLikeCountForImage(image.id)
-
         return {
           ...image,
           users: {
@@ -162,7 +158,6 @@ export async function getUserImagesWithLikes(
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           isOwnedByCurrentUser,
-          total_likes,
         }
       })
     )
@@ -293,18 +288,20 @@ export async function getRandomImagesExcluding(
   numberOfImages: number = 3
 ): Promise<Image[]> {
   try {
-    const { data: images, error: fetchError } = await supabaseService
-      .from('images')
-      .select('*')
-      .eq('user_id', userId)
+    const { data: images, error: fetchError } = await supabaseService.rpc(
+      'get_random_images',
+      { user_id: userId, limit_images: numberOfImages }
+    )
 
     if (fetchError) throw fetchError
 
-    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+    const filteredImages = images.filter(
+      (image: { id: number }) => image.id !== excludeImageId
+    )
     const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    const imagesWithPaths = randomImages.map((image) => {
+    const imagesWithPaths = randomImages.map((image: { original_file_path: unknown }) => {
       const imagePath = image.original_file_path
         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
         : null
@@ -323,7 +320,6 @@ export async function getRandomImagesExcluding(
 }
 
 export interface ExtendedImage extends Image {
-  imageInfo: Image
   relatedImages: Image[]
   isLike: boolean
   isFollowed: boolean
@@ -358,12 +354,10 @@ export const loadNextPage = async (
           ? checkIfLiked(image.id)
           : { existingLike: null, fetchError: null },
       ])
-      const isFollowed = await checkIfSubscribed(image.user_id)
       return {
-        imageInfo: image,
+        ...image,
         relatedImages,
         isLike: !!existingLike,
-        isFollowed,
         isCurrentUser: currentUser?.id === image.user_id,
       } as ExtendedImage
     })
