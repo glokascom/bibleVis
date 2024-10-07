@@ -112,12 +112,12 @@ export default async function searchImages(
   })
 
   if (error) {
-    console.error('Ошибка поиска:', error)
+    console.error('Search error:', error)
     return { images: [], totalCount: 0, error: error as PostgrestError }
   }
 
   if (!data) {
-    console.warn('Нет данных, соответствующих запросу')
+    console.warn('There is no data matching the request')
     return { images: [], totalCount: 0, error }
   }
 
@@ -160,7 +160,7 @@ export async function getImagesSearch(
     )
 
     if (error) {
-      console.error('Ошибка поиска:', error)
+      console.error('Search error:', error)
       return { images: [], totalCount: 0, error: error as PostgrestError }
     }
 
