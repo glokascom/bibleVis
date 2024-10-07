@@ -106,6 +106,7 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
         className="group absolute h-full w-full cursor-pointer"
         href={`/image/${image.url_slug}`}
         onClick={onClick}
+        scroll={false}
       >
         <Image
           src={image.imagePath}

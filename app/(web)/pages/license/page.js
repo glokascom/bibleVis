@@ -17,7 +17,7 @@ const notAllowedRules = [
 
 export default function License() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
       <div className="mx-auto w-full max-w-[1096px] flex-grow px-6 text-center md:px-12">
         <h2 className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</h2>
 
@@ -51,7 +51,7 @@ export default function License() {
           </p>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
