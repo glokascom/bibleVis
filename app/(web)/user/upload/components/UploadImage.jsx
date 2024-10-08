@@ -295,7 +295,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
 
       <ImageUploadDragDrop onImageChange={handleImageChange} />
 
-      <div className="mt-12 flex flex-col gap-10 pb-16 md:w-3/4 md:flex-row md:self-center 2xl:pb-24">
+      <div className="mt-12 flex flex-col gap-10 md:w-11/12 md:flex-row md:self-center 2xl:w-2/3">
         <p className="md:w-1/3">
           <span className="font-bold">File Formats and Size:</span> Acceptable formats are
           JPG and PNG, with a maximum file size of 4MB and at least 1000 pixels on one
