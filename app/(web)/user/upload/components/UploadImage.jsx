@@ -242,9 +242,21 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
   }
 
   return (
-    <div className="flex flex-col">
-      {error ? (
-        <div className="my-5 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 p-5 text-secondary-50 md:gap-12">
+    <div className="flex flex-col pt-10">
+      <div className="my-10 text-balance text-center font-medium md:hidden">
+        <p className="text-xxlarge">Upload your image</p>
+        <p className="mt-5 text-wrap text-small text-secondary-400">
+          Join our community of creators and showcase your talent by uploading your media!
+          Learn more about the BibleVis{' '}
+          <a href="/pages/license" className="underline">
+            Content License
+          </a>
+          .
+        </p>
+      </div>
+
+      {error && (
+        <div className="mb-5 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 p-5 text-secondary-50 md:gap-12">
           <div className="flex md:gap-4">
             <Image
               src="/error.svg"
@@ -278,18 +290,6 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
               </div>
             </div>
           )}
-        </div>
-      ) : (
-        <div className="my-5 text-balance text-center md:w-2/5 md:self-center 2xl:mb-7 2xl:mt-20">
-          <p className="text-xxlarge 2xl:text-mega">Upload your image</p>
-          <p className="my-5 text-small text-secondary-400">
-            Join our community of creators and showcase your talent by uploading your
-            media! Learn more about the BibleVis{' '}
-            <a href="/pages/license" className="underline">
-              Content License
-            </a>
-            .
-          </p>
         </div>
       )}
 
