@@ -63,16 +63,16 @@ export async function POST(
       )
     }
 
-    if (!software.length) {
+    if (is_ai_generated && !prompt) {
       return NextResponse.json<ApiError>(
-        { status: 'error', message: 'Softwares is required' },
+        { status: 'error', message: 'Prompt is required' },
         { status: 400 }
       )
     }
 
-    if (!tags.length) {
+    if (!software.length) {
       return NextResponse.json<ApiError>(
-        { status: 'error', message: 'Tags is required' },
+        { status: 'error', message: 'Softwares is required' },
         { status: 400 }
       )
     }
@@ -241,16 +241,16 @@ export async function PUT(
       )
     }
 
-    if (!software.length) {
+    if (is_ai_generated && !prompt) {
       return NextResponse.json<ApiError>(
-        { status: 'error', message: 'Softwares is required' },
+        { status: 'error', message: 'Prompt is required' },
         { status: 400 }
       )
     }
 
-    if (!tags.length) {
+    if (!software.length) {
       return NextResponse.json<ApiError>(
-        { status: 'error', message: 'Tags is required' },
+        { status: 'error', message: 'Softwares is required' },
         { status: 400 }
       )
     }
