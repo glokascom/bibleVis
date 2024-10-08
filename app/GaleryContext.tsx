@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
 
+import { useSearchParams } from 'next/navigation'
+
 type GalleryContextType = {
   images: string[]
   setImages: (newImages: string[]) => void
@@ -7,6 +9,8 @@ type GalleryContextType = {
   setCurrentIndex: (index: number) => void
   basePageUrl: string
   setBasePageUrl: (url: string) => void
+  searchParams: URLSearchParams | null
+  setSearchParams: (params: URLSearchParams) => void
 }
 const GalleryContext = createContext<GalleryContextType | undefined>(undefined)
 
@@ -23,6 +27,11 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   const [images, setImages] = useState<string[]>([])
   const [basePageUrl, setBasePageUrl] = useState('/')
 
+  const initialSearchParams = useSearchParams()
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(
+    initialSearchParams
+  )
+
   const value = useMemo(
     () => ({
       images,
@@ -31,8 +40,10 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       setCurrentIndex,
       basePageUrl,
       setBasePageUrl,
+      searchParams,
+      setSearchParams,
     }),
-    [images, setImages, currentIndex, setCurrentIndex, basePageUrl, setBasePageUrl]
+    [images, currentIndex, basePageUrl, searchParams]
   )
 
   return <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
