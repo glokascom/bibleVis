@@ -19,13 +19,13 @@ export default async function RootLayout(props: {
   const { user } = await getUser()
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Navigation user={user} />
-      {children}
+      <main className="flex-grow">{children}</main>
       {modal}
       <div id="modal-root"></div>
       <CookiesBanner />
       <Footer />
-    </>
+    </div>
   )
 }
