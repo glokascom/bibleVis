@@ -139,7 +139,7 @@ export async function getImagesSearch(
     if (searchQuery) {
       const [queryPart, queryParams] = searchQuery.split('?')
 
-      query = queryPart ? queryPart.replace(/[^a-zA-Z0-9]+/g, ' | ') : ''
+      query = queryPart ? queryPart.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, ' | ') : ''
 
       if (queryParams) {
         const searchParams = new URLSearchParams(queryParams)
