@@ -8,7 +8,7 @@ import { Image } from '@nextui-org/image'
 
 import { toggleLike as toggleLikeAction } from '../(web)/[@username]/actions/imagesActions'
 import { BVButton } from './BVButton'
-import { useToast } from './ToastProvider'
+import ShareDropdown from './ShareDropdown'
 
 function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
   const [isLiked, setIsLiked] = useState(!!isLike)
@@ -17,7 +17,7 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
   const dropdownRef = useRef(null)
-  const { success } = useToast()
+
   const pathname = usePathname()
   const router = useRouter()
 
@@ -65,20 +65,6 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
   const handleShare = useCallback(() => {
     setIsDropdownOpen((prev) => !prev)
   }, [])
-
-  const copyLinkToClipboard = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(currentUrl)
-      success('Link copied to clipboard!')
-    }
-  }, [currentUrl, success])
-
-  const shareLinks = {
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(currentUrl)}`,
-    telegram: `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`,
-    x: `https://x.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`,
-  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -128,40 +114,11 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
         <Image src="/share.svg" alt="share" radius="none" width={20} height={20} />
       </BVButton>
 
-      {isDropdownOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute right-0 top-full z-10 mt-2 w-48 rounded-lg border bg-white shadow-lg"
-        >
-          <ul className="flex flex-col gap-2 p-2">
-            <li className="rounded-md p-2 hover:bg-blue-100">
-              <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">
-                Share on WhatsApp
-              </a>
-            </li>
-            <li className="rounded-md p-2 hover:bg-blue-100">
-              <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer">
-                Share on Telegram
-              </a>
-            </li>
-            <li className="rounded-md p-2 hover:bg-blue-100">
-              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer">
-                Share on Facebook
-              </a>
-            </li>
-            <li className="rounded-md p-2 hover:bg-blue-100">
-              <a href={shareLinks.x} target="_blank" rel="noopener noreferrer">
-                Share on X
-              </a>
-            </li>
-            <li className="rounded-md p-2 hover:bg-blue-100">
-              <button onClick={copyLinkToClipboard} className="w-full text-left">
-                Copy Link
-              </button>
-            </li>
-          </ul>
-        </div>
-      )}
+      <ShareDropdown
+        isDropdownOpen={isDropdownOpen}
+        setIsDropdownOpen={setIsDropdownOpen}
+        currentUrl={currentUrl}
+      />
     </div>
   )
 }
