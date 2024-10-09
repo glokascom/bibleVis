@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
 import Link from 'next/link'
@@ -29,6 +29,11 @@ function Navigation({ user }) {
   const [search, setSearch] = useState('')
   const pathname = usePathname()
   const { push } = useRouter()
+
+  useEffect(() => {
+    setSearch('')
+  }, [pathname])
+
   const handleSearch = () => {
     if (!search.trim()) return
     push(`/s/${formatSearchQuery(search.trim())}`)
