@@ -35,12 +35,14 @@ function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, total
       />
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
-        <p>{imageInfo.description}</p>
-        <div className="flex">
-          <p className="mr-4 font-bold">Prompt</p>
-          <CopyButton textToCopy={imageInfo.prompt} />
-        </div>
-        <p>{imageInfo.prompt}</p>
+        {imageInfo.description && <p>{imageInfo.description}</p>}
+        {imageInfo.prompt && (
+          <div className="flex">
+            <p className="mr-4 font-bold">Prompt</p>
+            <CopyButton textToCopy={imageInfo.prompt} />
+          </div>
+        )}
+        {imageInfo.prompt && <p>{imageInfo.prompt}</p>}
       </div>
 
       <div className="flex flex-col gap-3">
