@@ -40,7 +40,7 @@ export default function RootLayout(props: { children: React.ReactNode }): JSX.El
     <html lang="en" className="light">
       <body className={`${baseFont.className}`}>
         <Providers>
-          <div className="w-full">{children}</div>
+          <div className="flex min-h-screen w-full flex-col">{children}</div>
         </Providers>
         <Toaster />
       </body>

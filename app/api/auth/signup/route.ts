@@ -93,13 +93,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return jsonResponse(conflictResponse, 409)
     }
   }
-  const { origin } = new URL(request.url)
 
   const { error: signupError } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: (origin || 'https://biblevis.com') + '/api/auth/signup/confirm',
+      emailRedirectTo:
+        (request.nextUrl.origin || 'https://biblevis.com') + '/api/auth/signup/confirm',
       data: {
         username,
       },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import NextImage from 'next/image'
 import Link from 'next/link'
@@ -29,6 +29,11 @@ function Navigation({ user }) {
   const [search, setSearch] = useState('')
   const pathname = usePathname()
   const { push } = useRouter()
+
+  useEffect(() => {
+    setSearch('')
+  }, [pathname])
+
   const handleSearch = () => {
     if (!search.trim()) return
     push(`/s/${formatSearchQuery(search.trim())}`)
@@ -127,7 +132,6 @@ function Navigation({ user }) {
                   <BVAvatar
                     as="button"
                     className="transition-transform"
-                    name={user.username}
                     size="md"
                     src={user.avatarUrl}
                   />
@@ -163,7 +167,7 @@ function Navigation({ user }) {
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
-                {user?.load ? (
+                {user?.is_creator ? (
                   <DropdownItem key="upload_image" href="/user/upload" showDivider>
                     Upload Image
                   </DropdownItem>
@@ -192,6 +196,7 @@ function Navigation({ user }) {
                   as={Link}
                   href={`/login?redirectedFrom=${pathname}`}
                   className="hidden md:block"
+                  scroll={false}
                 >
                   Log in
                 </BVButton>
@@ -252,7 +257,9 @@ function Navigation({ user }) {
                       License
                     </DropdownItem>
                     <DropdownItem key="login" className="text-primary">
-                      <Link href={`/login?redirectedFrom=${pathname}`}>Log in</Link>
+                      <Link scroll={false} href={`/login?redirectedFrom=${pathname}`}>
+                        Log in
+                      </Link>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 
-import { Image } from '@nextui-org/image'
-import { Link } from '@nextui-org/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
@@ -12,6 +12,8 @@ import RelatedImages from '@/app/components/RelatedImages'
 import SoftwareUsed from '@/app/components/SoftwareUsed'
 import TagList from '@/app/components/TagList'
 
+import { getImageStats } from '../(web)/[@username]/actions/imagesActions'
+import { useGallery } from '../GaleryContext'
 import BVButton from './BVButton'
 
 function ImagePageContent({
@@ -21,18 +23,34 @@ function ImagePageContent({
   isLike,
   totalLikes,
   isCurrentUser,
-  onPrevImage,
-  onNextImage,
   isAuthenticated,
   isModal = false,
+  children,
 }) {
+  const { images, currentIndex, setCurrentIndex } = useGallery()
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
+
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
+
+  const handlePreviousImage = async () => {
+    const newIndex = currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
+    setCurrentIndex(newIndex)
+
+    await getImageStats(imageInfo.id)
+  }
+
+  const handleNextImage = async () => {
+    const newIndex = (currentIndex + 1) % images.length
+    setCurrentIndex(newIndex)
+
+    await getImageStats(imageInfo.id)
+  }
+
   return (
     <div
-      className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5'}`}
+      className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5 md:px-0'}`}
     >
       <div
         className={`flex flex-col md:flex-row md:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
@@ -40,24 +58,17 @@ function ImagePageContent({
         <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
           {imageInfo.imagePath ? (
             <>
-              <Image
-                src={imageInfo.imagePath}
-                alt={imageInfo.title}
-                className="w-full bg-secondary-50"
-                classNames={{
-                  img: 'w-full h-auto aspect-video object-contain',
-                }}
-              />
+              {children}
               {isCurrentUser && (
                 <Link
                   href={`/user/${imageInfo.id}`}
-                  className="absolute bottom-5 right-5 z-10 h-10 w-10 justify-center rounded-full bg-background"
+                  className="absolute bottom-5 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-background"
                 >
                   <Image
                     src="/pencil.svg"
                     alt="edit"
-                    width={18}
-                    height={18}
+                    width={17}
+                    height={17}
                     radius="none"
                   />
                 </Link>
@@ -66,38 +77,46 @@ function ImagePageContent({
           ) : (
             <p className="text-center">Image not available</p>
           )}
-          {isModal && (
+          {images.length > 1 && isModal && (
             <div className="hidden md:block">
-              <button
-                onClick={onPrevImage}
+              <Link
+                href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
+                onClick={handlePreviousImage}
                 className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
+                scroll={false}
               >
-                <Image src="/polygon.svg" alt="previous image" />
-              </button>
-              <button
-                onClick={onNextImage}
+                <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
+              </Link>
+              <Link
+                href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
+                onClick={handleNextImage}
                 className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-secondary-50"
+                scroll={false}
               >
-                <Image src="/polygon.svg" alt="next image" />
-              </button>
+                <Image width={14} height={16} src="/polygon.svg" alt="next image" />
+              </Link>
             </div>
           )}
         </div>
 
-        {isModal && (
+        {isModal && images.length > 1 && (
           <div className="my-2.5 flex justify-between md:hidden">
-            <button
-              onClick={onPrevImage}
+            <Link
+              href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
+              onClick={handlePreviousImage}
+              scroll={false}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
             >
-              <Image src="/polygon.svg" alt="previous image" />
-            </button>
-            <button
-              onClick={onNextImage}
+              <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
+            </Link>
+            <Link
+              href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
+              onClick={handleNextImage}
+              scroll={false}
               className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
             >
-              <Image src="/polygon.svg" alt="next image" />
-            </button>
+              <Image width={14} height={16} src="/polygon.svg" alt="next image" />
+            </Link>
           </div>
         )}
 
@@ -134,15 +153,17 @@ function ImagePageContent({
               />
             </div>
 
-            {!isModal && (
+            {!isModal && imageInfo.software?.length > 0 && (
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
             )}
 
-            <div className="rounded-medium border bg-background p-5 shadow-small">
-              <TagList tags={imageInfo.tags} />
-            </div>
+            {imageInfo.tags?.length > 0 && (
+              <div className="rounded-medium border bg-background p-5 shadow-small">
+                <TagList tags={imageInfo.tags} />
+              </div>
+            )}
 
             <div className="rounded-medium border bg-background p-5 shadow-small">
               <RelatedImages

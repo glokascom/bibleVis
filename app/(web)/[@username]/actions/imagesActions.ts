@@ -5,36 +5,38 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-import { checkIfSubscribed } from './userActions'
+interface UserImagesWithLikesResponse {
+  images: Image[]
+  totalCount: number
+}
+
+interface ImagesSearchResponse {
+  images: Image[]
+  totalCount: number
+  error: PostgrestError | null
+}
 
 type User = {
-  username: string
+  id: string | null | undefined
+  username: string | null | undefined
+  avatarUrl: string | null
+  avatar_file_path?: string | null
 }
 
 type Image = {
-  id: number
+  id: string
   url_slug: string
   title: string
-  description: string
+  file_sizes: object
   original_file_path: string
-  medium_file_path: string
-  small_file_path: string
-  file_type: string
-  total_views: number
-  total_downloads: number
-  total_likes: number
   orientation: 'portrait' | 'landscape'
   uploaded_at: string
-  user_id: string
   users: User
+  users_id?: string | null
   liked_by_current_user?: boolean
-  imagePath: string
-  isOwnedByCurrentUser?: boolean
-}
-
-interface ImageResponse {
-  images: Image[]
-  totalCount: number
+  imagePath: string | null
+  users_avatar_file_path?: string | null
+  users_username?: string | null
 }
 
 export async function getLikeCountForImage(imageId: number): Promise<number> {
@@ -92,22 +94,138 @@ export async function incrementImageViews(imageId: number) {
   }
 }
 
+export default async function searchImages(
+  query = '',
+  filter = 'All',
+  orientation = 'all',
+  sort = 'newest',
+  page = 1,
+  pageSize = 10
+): Promise<{ images: Image[]; totalCount: number; error: PostgrestError | null }> {
+  const { data, error } = await supabaseService.rpc('search_images', {
+    query,
+    filter,
+    orientation_param: orientation,
+    sort,
+    page,
+    page_size: pageSize,
+  })
+
+  if (error) {
+    console.error('Search error:', error)
+    return { images: [], totalCount: 0, error: error as PostgrestError }
+  }
+
+  if (!data) {
+    console.warn('There is no data matching the request')
+    return { images: [], totalCount: 0, error }
+  }
+
+  return { images: data, totalCount: data.length, error: null }
+}
+
+export async function getImagesSearch(
+  page: number = 1,
+  pageSize: number = 10,
+  currentUserId?: string | null,
+  searchQuery?: string | null
+): Promise<ImagesSearchResponse> {
+  try {
+    let query = ''
+    let filter = 'All'
+    let orientation = 'all'
+    let sort = 'newest'
+
+    if (searchQuery) {
+      const [queryPart, queryParams] = searchQuery.split('?')
+
+      query = queryPart ? queryPart.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, ' | ') : ''
+
+      if (queryParams) {
+        const searchParams = new URLSearchParams(queryParams)
+
+        filter = searchParams.get('filter') || filter
+        orientation = searchParams.get('orientation') || orientation
+        sort = searchParams.get('sort') || sort
+      }
+    }
+
+    const { images, totalCount, error } = await searchImages(
+      query,
+      filter,
+      orientation,
+      sort,
+      page,
+      pageSize
+    )
+
+    if (error) {
+      console.error('Search error:', error)
+      return { images: [], totalCount: 0, error: error as PostgrestError }
+    }
+
+    if (!images || images.length === 0) return { images: [], totalCount: 0, error: null }
+
+    let likedImages = new Set<string>()
+    if (currentUserId) {
+      const { data: likes, error: likesError } = await supabaseService
+        .from('likes')
+        .select('image_id')
+        .eq('user_id', currentUserId)
+
+      if (likesError) throw likesError
+      likedImages = new Set(likes?.map((like) => like.image_id))
+    }
+
+    const imagesWithLikes = await Promise.all(
+      images.map(async (image) => {
+        const avatarUrl = image?.users_avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users_avatar_file_path}`
+          : null
+
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
+
+        return {
+          ...image,
+          users: {
+            id: image.users_id,
+            username: image.users_username,
+            avatarUrl,
+          },
+          liked_by_current_user: likedImages.has(image.id),
+          imagePath,
+        }
+      })
+    )
+
+    return { images: imagesWithLikes, totalCount, error: null }
+  } catch (error) {
+    console.error('Error fetching user images:', (error as Error).message)
+    return { images: [], totalCount: 0, error: null }
+  }
+}
+
 export async function getUserImagesWithLikes(
   userId: string | null,
   page: number = 1,
   pageSize: number = 10,
   currentUserId?: string | null,
   searchQuery?: string | null
-): Promise<ImageResponse> {
+): Promise<UserImagesWithLikesResponse> {
   try {
     const rangeStart = (page - 1) * pageSize
     const rangeEnd = page * pageSize - 1
 
     let query = supabaseService
       .from('images')
-      .select('*, users(id,username,avatar_file_path, total_followers)', {
-        count: 'exact',
-      })
+      .select(
+        'id, title, preview, url_slug, orientation, uploaded_at, file_sizes, original_file_path, users(id, username, avatar_file_path)',
+        {
+          count: 'exact',
+        }
+      )
 
     if (userId) {
       query = query.eq('user_id', userId)
@@ -126,7 +244,7 @@ export async function getUserImagesWithLikes(
     if (error) throw error
     if (!images || images.length === 0) return { images: [], totalCount: count || 0 }
 
-    let likedImages = new Set()
+    let likedImages = new Set<string>()
     if (currentUserId) {
       const { data: likes, error: likesError } = await supabaseService
         .from('likes')
@@ -139,30 +257,27 @@ export async function getUserImagesWithLikes(
 
     const imagesWithLikes = await Promise.all(
       images.map(async (image) => {
-        const avatarUrl = image.users?.avatar_file_path
-          ? `${process.env.STORAGE_URL}/object/public/profile/${image.users.avatar_file_path}`
+        const typedImage = image as unknown as Image
+        const avatarUrl = typedImage.users?.avatar_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${typedImage.users.avatar_file_path}`
           : null
 
         const imagePath = image.original_file_path
           ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
           : null
 
-        const isOwnedByCurrentUser = currentUserId
-          ? image.user_id === currentUserId
-          : false
-
-        const total_likes = await getLikeCountForImage(image.id)
+        const user: User = {
+          id: typedImage.users.id,
+          username: typedImage.users.username,
+          avatar_file_path: typedImage.users.avatar_file_path,
+          avatarUrl,
+        }
 
         return {
           ...image,
-          users: {
-            ...image.users,
-            avatarUrl,
-          },
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
-          isOwnedByCurrentUser,
-          total_likes,
+          users: user,
         }
       })
     )
@@ -293,18 +408,20 @@ export async function getRandomImagesExcluding(
   numberOfImages: number = 3
 ): Promise<Image[]> {
   try {
-    const { data: images, error: fetchError } = await supabaseService
-      .from('images')
-      .select('*')
-      .eq('user_id', userId)
+    const { data: images, error: fetchError } = await supabaseService.rpc(
+      'get_random_images',
+      { user_id: userId, limit_images: numberOfImages }
+    )
 
     if (fetchError) throw fetchError
 
-    const filteredImages = images.filter((image) => image.id !== excludeImageId)
+    const filteredImages = images.filter(
+      (image: { id: number }) => image.id !== excludeImageId
+    )
     const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    const imagesWithPaths = randomImages.map((image) => {
+    const imagesWithPaths = randomImages.map((image: { original_file_path: unknown }) => {
       const imagePath = image.original_file_path
         ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
         : null
@@ -323,7 +440,6 @@ export async function getRandomImagesExcluding(
 }
 
 export interface ExtendedImage extends Image {
-  imageInfo: Image
   relatedImages: Image[]
   isLike: boolean
   isFollowed: boolean
@@ -342,29 +458,28 @@ export const loadNextPage = async (
   pageSize: number = 10
 ): Promise<ExtendedImageResponse> => {
   const { user: currentUser } = await getUser()
-  const { images, totalCount } = await getUserImagesWithLikes(
-    userId,
-    page,
-    pageSize,
-    currentUser?.id,
-    searchQuery
-  )
+  let images, totalCount
 
+  if (searchQuery) {
+    ;({ images, totalCount } = await getImagesSearch(
+      page,
+      pageSize,
+      currentUser?.id,
+      searchQuery
+    ))
+  } else {
+    ;({ images, totalCount } = await getUserImagesWithLikes(
+      userId,
+      page,
+      pageSize,
+      currentUser?.id
+    ))
+  }
   const extendedImages = await Promise.all(
     images.map(async (image) => {
-      const [relatedImages, { existingLike }] = await Promise.all([
-        getRandomImagesExcluding(image.user_id, image.id),
-        currentUser?.id
-          ? checkIfLiked(image.id)
-          : { existingLike: null, fetchError: null },
-      ])
-      const isFollowed = await checkIfSubscribed(image.user_id)
       return {
-        imageInfo: image,
-        relatedImages,
-        isLike: !!existingLike,
-        isFollowed,
-        isCurrentUser: currentUser?.id === image.user_id,
+        ...image,
+        isCurrentUser: currentUser?.id === image.users.id,
       } as ExtendedImage
     })
   )

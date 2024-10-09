@@ -56,6 +56,27 @@ export async function POST(
       )
     }
 
+    if (!description) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Description is required' },
+        { status: 400 }
+      )
+    }
+
+    if (is_ai_generated && !prompt) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Prompt is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!software.length) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Softwares is required' },
+        { status: 400 }
+      )
+    }
+
     if (!validImage) {
       return NextResponse.json<ApiError>(
         { status: 'error', message: 'Invalid or missing image file' },
@@ -92,7 +113,8 @@ export async function POST(
       sizesImages.medium = { width: mediumWidth, height: calculateHeight(mediumWidth) }
     }
 
-    const originalFilePath = await uploadOriginalImage(validImage)
+    const { uploadedPath: originalFilePath, blurPreview } =
+      await uploadOriginalImage(validImage)
 
     if (!originalFilePath) {
       return NextResponse.json<ApiError>(
@@ -106,6 +128,7 @@ export async function POST(
       description,
       prompt,
       is_ai_generated,
+      preview: blurPreview,
       user_id: user.id,
       original_file_path: originalFilePath,
       file_type: validImage.type,
@@ -207,6 +230,27 @@ export async function PUT(
     if (!title) {
       return NextResponse.json<ApiError>(
         { status: 'error', message: 'Title is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!description) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Description is required' },
+        { status: 400 }
+      )
+    }
+
+    if (is_ai_generated && !prompt) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Prompt is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!software.length) {
+      return NextResponse.json<ApiError>(
+        { status: 'error', message: 'Softwares is required' },
         { status: 400 }
       )
     }

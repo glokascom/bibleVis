@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation'
+
 import { getSoftwares, getTags } from '../upload/actions/getSoftwares'
 import { getImageInfoById } from './actions/getImage'
 import EditImage from './components/EditImage'
@@ -9,7 +11,7 @@ export default async function Page({ params }) {
   }
   const { error, data: imageInfo } = await getImageInfoById(uuid)
   if (error) {
-    return <div className="text-danger-500">{error}</div>
+    notFound()
   }
 
   const softwareOptions = (await getSoftwares()).data

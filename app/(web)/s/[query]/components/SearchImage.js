@@ -1,39 +1,88 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { useParams } from 'next/navigation'
+import { notFound, useRouter, useSearchParams } from 'next/navigation'
 
 import { Button, Image } from '@nextui-org/react'
 
+import Gallery from '@/app/(web)/[@username]/components/Gallery'
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
 import { Chevron } from '@/app/components/Chevron'
 
-import Gallery from '../../[@username]/components/Gallery'
+export default function SearchPage({
+  searchQuery = null,
+  counters = null,
+  isAuthenticated = false,
+}) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-export default function SearchPage() {
-  const { title } = useParams()
-  const decodedTitle = title ? decodeURIComponent(title) : null
+  const [activeButton, setActiveButton] = useState(searchParams.get('filter') || 'All')
 
-  const [activeButton, setActiveButton] = useState('AI Generated')
+  const [key, setKey] = useState(0)
   const [isOpenFilters, setIsOpenFilters] = useState(false)
 
-  if (!decodedTitle) {
-    return <p className="text-danger-500">Invalid URL format</p>
-  }
+  const buttonData = useMemo(() => {
+    const safeCounters = counters || { total: 0, aiGenerated: 0, humanMade: 0 }
+    return [
+      { name: 'All', result: safeCounters.total.toString() },
+      { name: 'AI Generated', result: safeCounters.aiGenerated.toString() },
+      { name: 'Made by human', result: safeCounters.humanMade.toString() },
+    ]
+  }, [counters])
 
-  const buttonData = [
-    { name: 'All', result: '1.2K' },
-    { name: 'AI Generated', result: '1.2K' },
-    { name: 'Made by human', result: '1.2K' },
-  ]
+  useEffect(() => {
+    setKey((prevKey) => prevKey + 1)
+  }, [searchParams])
+
+  if (!searchQuery) {
+    notFound()
+  }
 
   const orientationItems = ['All Orientations', 'Horizontal', 'Vertical']
   const popularityItems = ['New', 'Old', 'Popular']
 
+  const orientationMap = {
+    0: 'all',
+    1: 'landscape',
+    2: 'portrait',
+  }
+
+  const sortMap = {
+    0: 'newest',
+    1: 'oldest',
+    2: 'popularity',
+  }
+
+  const handleSortChange = (newSortDirection) => {
+    const sortText = sortMap[newSortDirection] || 'newest'
+    updateUrlParams({ sort: sortText })
+  }
+
+  const handleOrientationChange = (newOrientation) => {
+    const orientationText = orientationMap[newOrientation] || 'all'
+    updateUrlParams({
+      orientation: orientationText,
+    })
+  }
+
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName)
+    updateUrlParams({ filter: buttonName })
+  }
+
+  const updateUrlParams = (params) => {
+    const newParams = new URLSearchParams(searchParams.toString())
+    Object.keys(params).forEach((key) => {
+      if (params[key] === null || params[key] === undefined) {
+        newParams.delete(key)
+      } else {
+        newParams.set(key, params[key])
+      }
+    })
+    router.push(`/s/${searchQuery}?${newParams.toString()}`)
   }
 
   const getButtonStyle = (buttonName) => {
@@ -44,7 +93,7 @@ export default function SearchPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1806px] px-6 pt-14 md:px-12 md:pt-24">
-      <h1 className="mb-10 text-5xl font-medium">Free {decodedTitle} Photos</h1>
+      <h1 className="mb-10 text-5xl font-medium">Free {searchQuery} Photos</h1>
 
       <div className="-mx-6 mb-5 flex overflow-x-auto scrollbar-hide md:mx-0 md:items-center md:justify-between">
         <div className="flex h-12 gap-2.5 whitespace-nowrap px-6 md:px-0">
@@ -87,17 +136,27 @@ export default function SearchPage() {
         }`}
       >
         <div className="flex gap-5">
-          <BVDropdown items={orientationItems} useCustomWidth={true} />
           <BVDropdown
-            defaultSelectedKey={2}
+            items={orientationItems}
+            useCustomWidth={true}
+            onAction={handleOrientationChange}
+          />
+          <BVDropdown
             items={popularityItems}
             useCustomWidth={true}
+            onAction={handleSortChange}
           />
         </div>
       </div>
 
       <div className="mt-10">
-        <Gallery isShowHeader={false} searchQuery={decodedTitle} />
+        <Gallery
+          key={key}
+          isAuthenticated={isAuthenticated}
+          isShowHeader={false}
+          searchQuery={`${searchQuery}?${searchParams}`}
+          backUrl={`/s/${searchQuery}`}
+        />
       </div>
     </main>
   )

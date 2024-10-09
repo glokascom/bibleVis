@@ -9,7 +9,11 @@ import Gallery from './components/Gallery'
 import UserInfo from './components/UserInfo'
 
 export default async function ProfileUserPage({ params }) {
-  const profileUsername = decodeURIComponent(params['@username']).replace('@', '')
+  const username = decodeURIComponent(params['@username'])
+  if (!username.startsWith('@')) {
+    notFound()
+  }
+  const profileUsername = username.slice(1)
   const { user: currentUser } = await getUser()
 
   const isCurrentUser = profileUsername === currentUser?.username
@@ -23,7 +27,7 @@ export default async function ProfileUserPage({ params }) {
   const isFollowed = currentUser ? await checkIfSubscribed(profileUser.id) : false
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 md:px-12">
+    <main className="mx-auto w-full max-w-[1806px] flex-auto px-6 md:px-12">
       <div className="mb-12 mt-2.5 flex max-h-[400px] flex-col items-stretch gap-7 px-4 md:mt-9 md:flex-row md:gap-[10px] md:px-0">
         <div className="flex-initial md:flex-[2_0_0] xl:flex-[3_0_0]">
           <Cover isCurrentUser={isCurrentUser} profileUser={profileUser} />
@@ -37,7 +41,11 @@ export default async function ProfileUserPage({ params }) {
           />
         </div>
       </div>
-      <Gallery profileUserId={profileUser.id} />
+      <Gallery
+        isAuthenticated={!!currentUser}
+        profileUserId={profileUser.id}
+        backUrl={`/@${profileUser.username}`}
+      />
     </main>
   )
 }

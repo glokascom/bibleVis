@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 export default function PasswordStrengthMeter({ password }) {
   const getPasswordStrength = () => {
-    const allowedPattern = /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>[\]\\/'`~+=-]+$/
+    const allowedPattern = /^[A-Za-z0-9!@#$%^&*(),.?":;{}|<>[\]\\/'`~+=-]+$/
 
     if (password.length === 0) return { strength: '', message: '', color: 'gray' }
 
