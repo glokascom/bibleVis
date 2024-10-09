@@ -7,6 +7,8 @@ type GalleryContextType = {
   setCurrentIndex: (index: number) => void
   basePageUrl: string
   setBasePageUrl: (url: string) => void
+  searchParams: URLSearchParams | null
+  setSearchParams: (params: URLSearchParams) => void
 }
 const GalleryContext = createContext<GalleryContextType | undefined>(undefined)
 
@@ -23,6 +25,8 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
   const [images, setImages] = useState<string[]>([])
   const [basePageUrl, setBasePageUrl] = useState('/')
 
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null)
+
   const value = useMemo(
     () => ({
       images,
@@ -31,8 +35,10 @@ export const GalleryProvider = ({ children }: { children: ReactNode }) => {
       setCurrentIndex,
       basePageUrl,
       setBasePageUrl,
+      searchParams,
+      setSearchParams,
     }),
-    [images, setImages, currentIndex, setCurrentIndex, basePageUrl, setBasePageUrl]
+    [images, currentIndex, basePageUrl, searchParams]
   )
 
   return <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

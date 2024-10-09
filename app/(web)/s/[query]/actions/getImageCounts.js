@@ -2,10 +2,9 @@ import { supabaseService } from '@/app/supabase/service'
 
 export const getImageCounts = async (query) => {
   try {
-    const formattedQuery = query
-      .split(/[\s,]+/)
-      .filter((word) => word.trim().length > 0)
-      .join(' | ')
+    let formattedQuery = ''
+
+    formattedQuery = query ? query.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, ' | ') : ''
 
     const { data: totalImages, error: totalError } = await supabaseService
       .from('images')

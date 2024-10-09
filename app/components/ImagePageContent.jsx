@@ -153,15 +153,17 @@ function ImagePageContent({
               />
             </div>
 
-            {!isModal && (
+            {!isModal && imageInfo.software?.length > 0 && (
               <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
             )}
 
-            <div className="rounded-medium border bg-background p-5 shadow-small">
-              <TagList tags={imageInfo.tags} />
-            </div>
+            {imageInfo.tags?.length > 0 && (
+              <div className="rounded-medium border bg-background p-5 shadow-small">
+                <TagList tags={imageInfo.tags} />
+              </div>
+            )}
 
             <div className="rounded-medium border bg-background p-5 shadow-small">
               <RelatedImages

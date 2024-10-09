@@ -41,7 +41,11 @@ export default async function ProfileUserPage({ params }) {
           />
         </div>
       </div>
-      <Gallery profileUserId={profileUser.id} backUrl={`/@${profileUser.username}`} />
+      <Gallery
+        isAuthenticated={!!currentUser}
+        profileUserId={profileUser.id}
+        backUrl={`/@${profileUser.username}`}
+      />
     </main>
   )
 }

@@ -110,42 +110,49 @@ RETURNS TABLE (
     users_avatar_file_path TEXT 
 ) AS $$
 DECLARE
-    order_field TEXT := 'popularity_cached';
-    ascending BOOLEAN := FALSE;
+    order_field TEXT := 'uploaded_at';
+    order_direction TEXT := 'DESC';
+    query_sql TEXT;
 BEGIN
     IF sort = 'newest' THEN
         order_field := 'uploaded_at';
-        ascending := FALSE;
+        order_direction := 'DESC';
     ELSIF sort = 'oldest' THEN
         order_field := 'uploaded_at';
-        ascending := TRUE;
+        order_direction := 'ASC';
+    ELSE
+        order_field := 'popularity_cached';
+        order_direction := 'DESC';
     END IF;
 
-    RETURN QUERY
-    SELECT 
-        images.id,
-        images.title,
-        images.preview, 
-        images.url_slug,
-        images.orientation, 
-        images.uploaded_at,
-        images.file_sizes,
-        images.original_file_path,
-        users.id AS users_id, 
-        users.username AS users_username,  
-        users.avatar_file_path AS users_avatar_file_path 
-    FROM public.images
-    JOIN public.users ON images.user_id = users.id 
-    WHERE 
-        images.fts @@ to_tsquery('english', query)
-        AND (orientation_param IS NULL OR orientation_param = 'all' OR images.orientation = orientation_param)
-        AND (filter IS NULL OR filter = 'All' OR (filter = 'AI Generated' AND images.is_ai_generated = TRUE) 
-        OR (filter = 'Made by human' AND images.is_ai_generated = FALSE)) 
-    ORDER BY 
-        CASE WHEN order_field = 'uploaded_at' THEN images.uploaded_at END
-        NULLS LAST,
-        CASE WHEN order_field = 'popularity_cached' THEN images.popularity_cached END
-        DESC
-    LIMIT page_size OFFSET (page - 1) * page_size; 
+    query_sql := format(
+        'SELECT 
+            images.id,
+            images.title,
+            images.preview, 
+            images.url_slug,
+            images.orientation, 
+            images.uploaded_at,
+            images.file_sizes,
+            images.original_file_path,
+            users.id AS users_id, 
+            users.username AS users_username,  
+            users.avatar_file_path AS users_avatar_file_path 
+        FROM public.images
+        JOIN public.users ON images.user_id = users.id 
+        WHERE 
+            images.fts @@ to_tsquery(''english'', %L)
+            AND (%L IS NULL OR %L = ''all'' OR images.orientation = %L)
+            AND (%L IS NULL OR %L = ''All'' OR (%L = ''AI Generated'' AND images.is_ai_generated = TRUE) 
+            OR (%L = ''Made by human'' AND images.is_ai_generated = FALSE))
+        ORDER BY %I %s
+        LIMIT %s OFFSET %s',
+        query, orientation_param, orientation_param, orientation_param,
+        filter, filter, filter, filter, order_field, order_direction, 
+        page_size, (page - 1) * page_size
+    );
+
+    RETURN QUERY EXECUTE query_sql;
 END;
 $$ LANGUAGE plpgsql;
+
