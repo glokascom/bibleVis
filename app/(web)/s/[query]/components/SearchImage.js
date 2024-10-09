@@ -52,12 +52,12 @@ export default function SearchPage({
 
   const sortMap = {
     0: 'newest',
-    1: 'latest',
+    1: 'oldest',
     2: 'popularity',
   }
 
   const handleSortChange = (newSortDirection) => {
-    const sortText = sortMap[newSortDirection] || 'latest'
+    const sortText = sortMap[newSortDirection] || 'newest'
     updateUrlParams({ sort: sortText })
   }
 

@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react'
+
 import CopyButton from './CopyButton'
 import LikesCounter from './LikesCounter'
+import ShareComponent from './ShareComponent'
 
 const StatItem = ({ label, value }) => (
   <div className="flex justify-between font-medium">
@@ -15,6 +18,14 @@ function formatDate(dateString) {
 }
 
 function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, totalLikes }) {
+  const [currentUrl, setCurrentUrl] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.href)
+    }
+  }, [])
+
   const statistics = [
     { label: 'Views', value: imageInfo.total_views },
     { label: 'Downloads', value: totalDownloads },
@@ -27,12 +38,16 @@ function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, total
 
   return (
     <div className="mb-5 flex flex-col gap-5 border-b-1 py-5 text-small">
-      <LikesCounter
-        imageInfo={imageInfo}
-        isLike={isLike}
-        isAuthenticated={isAuthenticated}
-        totalLikes={totalLikes}
-      />
+      <div className="relative flex items-center gap-2.5">
+        <LikesCounter
+          imageInfo={imageInfo}
+          isLike={isLike}
+          isAuthenticated={isAuthenticated}
+          totalLikes={totalLikes}
+        />
+        {currentUrl && <ShareComponent currentUrl={currentUrl} />}{' '}
+      </div>
+
       <div className="flex flex-col gap-5">
         <p className="text-large font-bold">{imageInfo.title}</p>
         {imageInfo.description && <p>{imageInfo.description}</p>}
@@ -40,9 +55,9 @@ function Description({ imageInfo, isLike, totalDownloads, isAuthenticated, total
           <div className="flex">
             <p className="mr-4 font-bold">Prompt</p>
             <CopyButton textToCopy={imageInfo.prompt} />
-            <p>{imageInfo.prompt}</p>
           </div>
         )}
+        {imageInfo.prompt && <p>{imageInfo.prompt}</p>}
       </div>
 
       <div className="flex flex-col gap-3">
