@@ -13,6 +13,8 @@ export const getImageCounts = async (query) => {
 
     if (totalError) throw totalError
 
+    const totalImagesCount = totalImages ? totalImages.length : 0
+
     const { data: aiImages, error: aiError } = await supabaseService
       .from('images')
       .select('id', { count: 'exact' })
@@ -21,19 +23,15 @@ export const getImageCounts = async (query) => {
 
     if (aiError) throw aiError
 
-    const { data: humanImages, error: humanError } = await supabaseService
-      .from('images')
-      .select('id', { count: 'exact' })
-      .eq('is_ai_generated', false)
-      .textSearch('fts', formattedQuery)
+    const aiImagesCount = aiImages ? aiImages.length : 0
 
-    if (humanError) throw humanError
+    const humanMadeCount = totalImagesCount - aiImagesCount
 
     return {
       counters: {
-        total: totalImages.length,
-        aiGenerated: aiImages.length,
-        humanMade: humanImages.length,
+        total: totalImagesCount,
+        aiGenerated: aiImagesCount,
+        humanMade: humanMadeCount >= 0 ? humanMadeCount : 0,
       },
     }
   } catch (error) {
