@@ -131,7 +131,7 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
       {isDropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full z-10 mt-2 w-48 rounded-lg border bg-white shadow-lg"
+          className="absolute right-0 top-full z-10 mt-2 w-48 rounded-lg border bg-white shadow-lg"
         >
           <ul className="flex flex-col gap-2 p-2">
             <li className="rounded-md p-2 hover:bg-blue-100">
