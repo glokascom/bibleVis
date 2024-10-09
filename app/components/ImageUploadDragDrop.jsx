@@ -88,25 +88,12 @@ function ImageUploadDragDrop({ onImageChange }) {
         >
           <div className="relative h-24 w-24 2xl:h-32">
             <svg
-              width="93"
-              height="93"
-              viewBox="0 0 93 93"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={`${isOverDropZone ? 'opacity-0' : 'opacity-100'} absolute inset-0 h-full w-full transition-opacity duration-300 ease-in-out`}
-            >
-              <path
-                d="M46.5 0L51.169 41.831L93 46.5L51.169 51.169L46.5 93L41.831 51.169L0 46.5L41.831 41.831L46.5 0Z"
-                fill="#01AB6C"
-              />
-            </svg>
-            <svg
               width="226"
               height="226"
               viewBox="0 0 226 226"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className={`absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 transform opacity-0 transition-opacity duration-300 ease-in-out ${isOverDropZone ? 'opacity-100' : ''}`}
+              className={`absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 transform opacity-0 transition-opacity duration-300 ease-in-out 2xl:h-56 2xl:w-56 ${isOverDropZone ? 'opacity-100' : ''}`}
             >
               <circle cx="113" cy="113" r="113" fill="white" fillOpacity="0.4" />
               <path
@@ -118,7 +105,7 @@ function ImageUploadDragDrop({ onImageChange }) {
         </div>
 
         <p
-          className={`absolute bottom-10 left-1/2 -translate-x-1/2 transform text-mega font-medium text-white transition-all duration-300 ease-in-out 2xl:bottom-20 ${
+          className={`absolute bottom-14 left-1/2 -translate-x-1/2 transform text-mega font-medium text-white transition-all duration-300 ease-in-out 2xl:bottom-20 ${
             isOverDropZone ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
         >
@@ -133,8 +120,20 @@ function ImageUploadDragDrop({ onImageChange }) {
           <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
 
           <div className="group hidden flex-col items-center justify-center font-medium md:flex">
-            <p className="mt-28 text-xxlarge leading-9 2xl:text-mega">Drag and Drop</p>
-            <p className="my-5 text-xlarge 2xl:my-7">or</p>
+            <div className="text-balance text-center font-medium md:w-[55%] md:self-center">
+              <p className="text-xlarge 2xl:text-xxlarge">Upload your image</p>
+              <p className="mt-5 text-wrap text-small text-secondary-400">
+                Join our community of creators and showcase your talent by uploading your
+                media! Learn more about the BibleVis{' '}
+                <a href="/pages/license" className="underline">
+                  Content License
+                </a>
+                .
+              </p>
+            </div>
+
+            <p className="mt-10 text-xlarge">Drag and Drop</p>
+            <p className="my-4 text-small 2xl:my-5">or</p>
           </div>
 
           <BVButton size="lg" onClick={openFileDialog}>

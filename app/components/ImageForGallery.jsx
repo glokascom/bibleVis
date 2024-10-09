@@ -1,9 +1,10 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 import {
   Dropdown,
@@ -17,6 +18,7 @@ import {
   getLikeCountForImage,
   toggleLike as toggleLikeAction,
 } from '../(web)/[@username]/actions/imagesActions'
+import { useGallery } from '../GaleryContext'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
@@ -28,6 +30,13 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const searchParams = useSearchParams()
+  const { setSearchParams } = useGallery()
+  useEffect(() => {
+    setSearchParams(searchParams)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true)
@@ -104,7 +113,10 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
     >
       <Link
         className="group absolute h-full w-full cursor-pointer"
-        href={`/image/${image.url_slug}`}
+        href={{
+          pathname: `/image/${image.url_slug}`,
+          query: searchParams.toString(),
+        }}
         onClick={onClick}
         scroll={false}
       >

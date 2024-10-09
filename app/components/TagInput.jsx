@@ -51,7 +51,7 @@ export default function TagInput({
 
   const handleBlur = () => {
     if (isClickingSuggestion.current) return
-    if (label === 'Software Used') {
+    if (label === '*Software Used') {
       setInputValue('')
       return
     }
@@ -97,7 +97,7 @@ export default function TagInput({
   }
 
   const filterTagsByType = useCallback(() => {
-    if (label === 'Software Used') {
+    if (label === '*Software Used') {
       return allTags.filter((tag) =>
         isAIGeneration ? tag.type === 'ai' : tag.type === 'manual'
       )

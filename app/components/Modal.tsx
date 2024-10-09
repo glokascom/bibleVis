@@ -7,13 +7,16 @@ import { ModalProps } from '../types/api'
 
 export function Modal({ closeModal, showCloseButton = false, children }: ModalProps) {
   const router = useRouter()
-  const { basePageUrl } = useGallery()
+  const { basePageUrl, searchParams } = useGallery()
 
   function onDismiss() {
     if (closeModal) {
       closeModal()
     } else if (basePageUrl) {
-      router.push(basePageUrl, { scroll: false })
+      const urlWithParams = searchParams
+        ? `${basePageUrl}?${searchParams.toString()}`
+        : basePageUrl
+      router.push(urlWithParams, { scroll: false })
     } else {
       router.back()
     }

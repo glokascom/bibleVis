@@ -232,7 +232,7 @@ function ImageFormDisplay({
         <form onSubmit={handleSubmit} className="md:w-1/3">
           <div className="flex flex-col gap-5 rounded-medium border p-5 shadow-small">
             <TagInput
-              label="Title"
+              label="*Title"
               isTagInput={false}
               isSmallHeight={true}
               limitLettersAllTags={140}
@@ -241,7 +241,7 @@ function ImageFormDisplay({
               initialValue={initialFormData?.title || ''}
             />
             <TagInput
-              label="Description"
+              label="*Description"
               isTagInput={false}
               limitLettersAllTags={280}
               placeholder="Add optional description of the image"
@@ -259,7 +259,7 @@ function ImageFormDisplay({
             </Switch>
             {isAIGeneration && (
               <TagInput
-                label="Prompt"
+                label="*Prompt"
                 isTagInput={false}
                 limitLettersAllTags={280}
                 placeholder="Add AI prompt that you used to create the image"
@@ -268,7 +268,7 @@ function ImageFormDisplay({
               />
             )}
             <TagInput
-              label="Software Used"
+              label="*Software Used"
               showCounter={false}
               onBlur={handleInputBlur('software')}
               initialTags={softwareOptions}
