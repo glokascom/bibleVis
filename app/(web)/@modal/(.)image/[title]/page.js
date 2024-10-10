@@ -1,3 +1,4 @@
+import { getImageInfoBySlug } from '@/app/(web)/user/[uuid]/actions/getImage'
 import ImagePageComponent from '@/app/components/ImagePage'
 import { Modal } from '@/app/components/Modal'
 
