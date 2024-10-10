@@ -20,23 +20,12 @@ export async function generateMetadata({ params: { title } }, parent) {
     return parent
   }
 
-  const meta = await parent
   return {
-    ...meta,
     title: image.title,
     description: image.description,
     openGraph: {
-      ...meta?.openGraph,
       title: image.title,
       description: image.description,
-      images: [
-        {
-          url: image.imagePath,
-          width: image.file_sizes.original.width,
-          height: image.file_sizes.original.height,
-        },
-        ...meta.openGraph.images,
-      ],
     },
   }
 }
