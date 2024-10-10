@@ -10,9 +10,8 @@ const pages = [
   //  'user/{uuid}',
   //  'user/edit',
   'pages/license',
-  'pages/toc',
-  'pages/tou',
-  'pages/submition',
+  'pages/tos',
+  'pages/about',
   's/test',
 ]
 
