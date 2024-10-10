@@ -1,11 +1,27 @@
+import { Metadata } from 'next'
+
+import { openGraph } from '../../meta'
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description:
+    'Understand how we protect your privacy and manage your data at BibleVis. Read our comprehensive privacy policy',
+  openGraph: {
+    ...openGraph,
+    title: 'Privacy Policy',
+    description:
+      'Understand how we protect your privacy and manage your data at BibleVis. Read our comprehensive privacy policy',
+  },
+}
+
 export default function Privacy() {
   return (
     <>
-      <section class="mx-auto px-4 py-8">
-        <h1 class="mb-4 text-3xl font-bold">Privacy Policy</h1>
-        <p class="mb-8 text-sm text-gray-500">Effective Date: 10 October 2024</p>
+      <section className="mx-auto px-4 py-8">
+        <h1 className="mb-4 text-3xl font-bold">Privacy Policy</h1>
+        <p className="mb-8 text-sm text-gray-500">Effective Date: 10 October 2024</p>
 
-        <p class="mb-4">
+        <p className="mb-4">
           Thank you for using BibleVis. Your privacy is important to us, and we are
           committed to protecting your personal information. This Privacy Policy explains
           what information we collect, how we use it, and your rights in relation to it.
@@ -13,9 +29,9 @@ export default function Privacy() {
           described in this policy.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">1. Information We Collect</h2>
-        <p class="mb-4">We collect the following types of information:</p>
-        <ul class="mb-4 list-disc space-y-2 pl-5">
+        <h2 className="mb-4 text-2xl font-semibold">1. Information We Collect</h2>
+        <p className="mb-4">We collect the following types of information:</p>
+        <ul className="mb-4 list-disc space-y-2 pl-5">
           <li>
             <strong>Personal Information:</strong> When you create an account, submit
             content, or contact us, we may collect personal information such as your name,
@@ -40,9 +56,9 @@ export default function Privacy() {
           </li>
         </ul>
 
-        <h2 class="mb-4 text-2xl font-semibold">2. How We Use Your Information</h2>
-        <p class="mb-4">We use your information to:</p>
-        <ul class="mb-4 list-disc space-y-2 pl-5">
+        <h2 className="mb-4 text-2xl font-semibold">2. How We Use Your Information</h2>
+        <p className="mb-4">We use your information to:</p>
+        <ul className="mb-4 list-disc space-y-2 pl-5">
           <li>
             <strong>Provide and Improve the Platform:</strong> We use your information to
             operate and maintain BibleVis, personalize your experience, and improve the
@@ -64,12 +80,12 @@ export default function Privacy() {
           </li>
         </ul>
 
-        <h2 class="mb-4 text-2xl font-semibold">3. Sharing Your Information</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">3. Sharing Your Information</h2>
+        <p className="mb-4">
           We do not sell your personal information to third parties. However, we may share
           your information in the following circumstances:
         </p>
-        <ul class="mb-4 list-disc space-y-2 pl-5">
+        <ul className="mb-4 list-disc space-y-2 pl-5">
           <li>
             <strong>With Service Providers:</strong> We may share your information with
             third-party service providers who perform services on our behalf, such as
@@ -91,8 +107,8 @@ export default function Privacy() {
           </li>
         </ul>
 
-        <h2 class="mb-4 text-2xl font-semibold">4. Security of Your Information</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">4. Security of Your Information</h2>
+        <p className="mb-4">
           We implement appropriate technical and organizational measures to protect your
           information from unauthorized access, disclosure, alteration, and destruction.
           However, no method of transmission over the Internet or electronic storage is
@@ -100,12 +116,12 @@ export default function Privacy() {
           guarantee absolute security.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">5. Your Rights and Choices</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">5. Your Rights and Choices</h2>
+        <p className="mb-4">
           Depending on your location, you may have the following rights regarding your
           personal information:
         </p>
-        <ul class="mb-4 list-disc space-y-2 pl-5">
+        <ul className="mb-4 list-disc space-y-2 pl-5">
           <li>
             <strong>Access and Update:</strong> You can access and update your personal
             information through your account settings.
@@ -125,16 +141,16 @@ export default function Privacy() {
             your personal information in a structured, machine-readable format.
           </li>
         </ul>
-        <p class="mb-4">
+        <p className="mb-4">
           If you would like to exercise any of these rights, please contact us at{' '}
-          <a href="mailto:support@biblevis.com" class="text-blue-600 underline">
+          <a href="mailto:support@biblevis.com" className="text-blue-600 underline">
             support@biblevis.com
           </a>
           .
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">6. Children’s Privacy</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">6. Children’s Privacy</h2>
+        <p className="mb-4">
           BibleVis is not intended for children under 13. We do not knowingly collect
           personal information from children under 13. If you are a parent or guardian and
           believe that your child has provided us with personal information, please
@@ -142,8 +158,8 @@ export default function Privacy() {
           a child under 13, we will take steps to delete such information.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">7. International Data Transfers</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">7. International Data Transfers</h2>
+        <p className="mb-4">
           BibleVis is operated from the country of Georgia, and your information may be
           transferred to and processed in other countries. If you are accessing the
           Platform from outside the country of Georgia, you consent to the transfer and
@@ -151,8 +167,8 @@ export default function Privacy() {
           where privacy laws may differ.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">8. Changes to This Privacy Policy</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">8. Changes to This Privacy Policy</h2>
+        <p className="mb-4">
           We may update this Privacy Policy from time to time to reflect changes in our
           practices or legal requirements. We will notify you of any significant changes
           by posting the new policy on the Platform and updating the effective date. Your
@@ -160,18 +176,18 @@ export default function Privacy() {
           acceptance of the updated policy.
         </p>
 
-        <h2 class="mb-4 text-2xl font-semibold">9. Contact Us</h2>
-        <p class="mb-4">
+        <h2 className="mb-4 text-2xl font-semibold">9. Contact Us</h2>
+        <p className="mb-4">
           If you have any questions or concerns about this Privacy Policy, please contact
           us at:
         </p>
-        <p class="mb-8">
-          <a href="mailto:support@biblevis.com" class="text-blue-600 underline">
+        <p className="mb-8">
+          <a href="mailto:support@biblevis.com" className="text-blue-600 underline">
             support@biblevis.com
           </a>
         </p>
 
-        <p class="mb-4">
+        <p className="mb-4">
           We are committed to protecting your privacy and ensuring that your experience
           with BibleVis is safe, secure, and transparent. Thank you for being a part of
           our community!

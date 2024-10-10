@@ -1,4 +1,7 @@
 import { Image } from '@nextui-org/react'
+import { Metadata } from 'next'
+
+import { openGraph } from '../../meta'
 
 const allowedRules = [
   'Images on BibleVis are free to use',
@@ -14,6 +17,18 @@ const notAllowedRules = [
   'Do not use the images as part of a trademark, design mark, trade name, business name, or service mark.',
   'Collecting images from BibleVis to create a similar or competing service.',
 ]
+
+export const metadata: Metadata = {
+  title: 'License',
+  description:
+    'Explore the licensing terms for using BibleVis content, including permissions, restrictions, and guidelines for sharing and adapting our AI-generated visuals',
+  openGraph: {
+    ...openGraph,
+    title: 'License',
+    description:
+      'Explore the licensing terms for using BibleVis content, including permissions, restrictions, and guidelines for sharing and adapting our AI-generated visuals',
+  },
+}
 
 export default function License() {
   return (
@@ -55,7 +70,19 @@ export default function License() {
   )
 }
 
-const RuleColumn = ({ title, rules, iconSrc, iconAlt, isDanger = false }) => (
+const RuleColumn = ({
+  title,
+  rules,
+  iconSrc,
+  iconAlt,
+  isDanger = false,
+}: {
+  title: string
+  rules: string[]
+  iconSrc: string
+  iconAlt: string
+  isDanger?: boolean
+}) => (
   <div className="md:w-1/2">
     <div className="mb-5 flex items-center justify-center gap-2.5 text-xlarge font-medium md:mb-10 md:text-semimega">
       <p>{title}</p>

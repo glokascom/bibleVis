@@ -1,7 +1,23 @@
+import { Metadata } from 'next'
+
+import { openGraph } from '../../meta'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description:
+    'Review the terms and conditions governing your use of BibleVis. Stay informed about our guidelines and policies',
+  openGraph: {
+    ...openGraph,
+    title: 'Terms of Service',
+    description:
+      'Review the terms and conditions governing your use of BibleVis. Stay informed about our guidelines and policies',
+  },
+}
+
 export default function Tos() {
   return (
     <div className="mt-12">
-      <h1 class="text-2xl font-bold">Terms of Service</h1>
+      <h1 className="text-2xl font-bold">Terms of Service</h1>
       <p>
         Welcome to BibleVis! These Terms of Service (&quot;Terms&quot;) govern your access
         to and use of the BibleVis platform, website, and services (&quot;Platform&quot;).
@@ -9,14 +25,14 @@ export default function Tos() {
         use the Platform. Please read them carefully.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">1. Acceptance of Terms</h2>
+      <h2 className="mt-6 text-xl font-semibold">1. Acceptance of Terms</h2>
       <p>
         By accessing or using BibleVis, you confirm that you have read, understood, and
         agree to be bound by these Terms and any additional guidelines, policies, or rules
         provided by BibleVis.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">2. Use of the Platform</h2>
+      <h2 className="mt-6 text-xl font-semibold">2. Use of the Platform</h2>
       <p>
         <strong>Eligibility:</strong> You must be at least 13 years old to use BibleVis.
         By using the Platform, you affirm that you are 13 or older, or if under 18, that
@@ -31,7 +47,7 @@ export default function Tos() {
       <p>
         <strong>Prohibited Activities:</strong> You agree not to:
       </p>
-      <ul class="list-inside list-disc">
+      <ul className="list-inside list-disc">
         <li>
           Modify, copy, distribute, or create derivative works based on the Platform
           without permission.
@@ -41,7 +57,7 @@ export default function Tos() {
         <li>Upload or transmit any harmful content, viruses, or spam.</li>
       </ul>
 
-      <h2 class="mt-6 text-xl font-semibold">3. Content Ownership and Licensing</h2>
+      <h2 className="mt-6 text-xl font-semibold">3. Content Ownership and Licensing</h2>
       <p>
         <strong>BibleVis Content:</strong> All images, texts, graphics, logos, and other
         content provided on BibleVis (&quot;BibleVis Content&quot;) are owned or licensed
@@ -62,7 +78,7 @@ export default function Tos() {
         respect the terms of these licenses when using community content.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">4. Privacy Policy</h2>
+      <h2 className="mt-6 text-xl font-semibold">4. Privacy Policy</h2>
       <p>
         Your privacy is important to us. Our Privacy Policy explains how we collect, use,
         and protect your personal information when you use BibleVis. By using the
@@ -70,7 +86,7 @@ export default function Tos() {
         Privacy Policy.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">
+      <h2 className="mt-6 text-xl font-semibold">
         5. Disclaimers and Limitation of Liability
       </h2>
       <p>
@@ -87,14 +103,14 @@ export default function Tos() {
         possibility of such damages.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">6. Termination</h2>
+      <h2 className="mt-6 text-xl font-semibold">6. Termination</h2>
       <p>
         We reserve the right to terminate or suspend your access to the Platform at our
         sole discretion, with or without notice, for conduct that we believe violates
         these Terms or is harmful to other users or the Platform.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">7. Changes to the Terms</h2>
+      <h2 className="mt-6 text-xl font-semibold">7. Changes to the Terms</h2>
       <p>
         BibleVis may update these Terms from time to time. We will notify you of any
         significant changes by posting the new Terms on our Platform. Your continued use
@@ -102,11 +118,11 @@ export default function Tos() {
         the updated Terms.
       </p>
 
-      <h2 class="mt-6 text-xl font-semibold">8. Contact Us</h2>
+      <h2 className="mt-6 text-xl font-semibold">8. Contact Us</h2>
       <p>If you have any questions about these Terms, please contact us at:</p>
       <p>
         Email:{' '}
-        <a href="mailto:support@biblevis.com" class="text-blue-600 underline">
+        <a href="mailto:support@biblevis.com" className="text-blue-600 underline">
           support@biblevis.com
         </a>
       </p>
