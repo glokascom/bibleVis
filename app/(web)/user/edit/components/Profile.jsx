@@ -18,8 +18,8 @@ function Profile({ userInfo }) {
           <ImageUpload
             label="Cover image"
             buttonLabel="Upload new cover image"
-            requiredWidth={1280}
-            requiredHeight={400}
+            recomendedWidth={1280}
+            recomendedHeight={400}
             previewSize={{ width: 384, height: 120 }}
             userInfo={userInfo}
           />

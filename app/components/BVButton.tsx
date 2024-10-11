@@ -99,6 +99,7 @@ const BVButton = React.forwardRef(
             removeWrapper
             height={24}
             width={24}
+            property="true"
             src="/spinner.svg"
             alt="Loading spinner"
             radius="none"

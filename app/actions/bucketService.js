@@ -150,8 +150,12 @@ async function updateAvatar(newAvatarFile) {
 
 async function updateCover(newCoverFile) {
   const coverType = 'cover'
+  const { user, error } = await getUser()
 
-  const { id: userId } = (await getUser()).user
+  if (error) {
+    throw new Error(error)
+  }
+  const userId = user.id
 
   let fileBuffer
   try {

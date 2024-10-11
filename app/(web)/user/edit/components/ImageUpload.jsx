@@ -11,8 +11,8 @@ function ImageUpload({
   label,
   buttonLabel,
   isAvatar = false,
-  requiredWidth,
-  requiredHeight,
+  recomendedWidth,
+  recomendedHeight,
   previewSize = { width: 100, height: 100 },
   userInfo,
 }) {
@@ -50,14 +50,14 @@ function ImageUpload({
     setError(null)
     setIsLoading(true)
 
-    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png']
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
     if (!validImageTypes.includes(file.type)) {
       setError('Invalid file type. Please upload an image.')
       setIsLoading(false)
       return
     }
 
-    const maxFileSizeMB = 2
+    const maxFileSizeMB = 4
     if (file.size > maxFileSizeMB * 1024 * 1024) {
       setError(`Max file size is ${maxFileSizeMB}MB`)
       setIsLoading(false)
@@ -69,17 +69,6 @@ function ImageUpload({
     img.src = objectUrl
 
     img.onload = async () => {
-      if (
-        requiredWidth &&
-        requiredHeight &&
-        (img.width !== requiredWidth || img.height !== requiredHeight)
-      ) {
-        setError(`Image must be ${requiredWidth} x ${requiredHeight} pixels.`)
-        URL.revokeObjectURL(objectUrl)
-        setIsLoading(false)
-        return
-      }
-
       try {
         const formData = new FormData()
         formData.append(isAvatar ? 'avatar' : 'cover', file)
@@ -137,9 +126,9 @@ function ImageUpload({
             disabled={isLoading}
           />
         </label>
-        {requiredWidth && requiredHeight && (
+        {recomendedWidth && recomendedHeight && (
           <div className="text-center text-small">
-            {requiredWidth} x {requiredHeight} pixels
+            Recomended size: {recomendedWidth} x {recomendedHeight} pixels
           </div>
         )}
         {error && <div className="text-center text-danger-500">{error}</div>}
