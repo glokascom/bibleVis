@@ -1,3 +1,5 @@
+import { headers } from 'next/headers'
+
 import ImagePageComponent from '@/app/components/ImagePage'
 
 import { getImageInfoBySlug } from '../../user/[uuid]/actions/getImage'
@@ -20,12 +22,24 @@ export async function generateMetadata({ params: { title } }, parent) {
     return parent
   }
 
+  const headersList = headers()
+  const host = headersList.get('host')
+  const protocol = headersList.get('x-forwarded-proto') || 'http'
+  const origin = `${protocol}://${host}`
+
   return {
     title: image.title,
     description: image.description,
     openGraph: {
       title: image.title,
       description: image.description,
+      images: [
+        {
+          url: origin + '/api/og-image?src=' + encodeURIComponent(image.imagePath),
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
   }
 }
