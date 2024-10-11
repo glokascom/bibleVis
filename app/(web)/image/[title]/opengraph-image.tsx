@@ -4,8 +4,6 @@ import sharp from 'sharp'
 
 import { getImageInfoBySlug } from '../../user/[uuid]/actions/getImage'
 
-export const runtime = 'edge'
-
 export const size = {
   width: 1200,
   height: 630,
