@@ -1,14 +1,14 @@
-import { ImageResponse } from 'next/og'
+import { NextResponse } from 'next/server'
+
+import sharp from 'sharp'
 
 import { getImageInfoBySlug } from '../../user/[uuid]/actions/getImage'
-
-export const runtime = 'edge'
 
 export const size = {
   width: 1200,
   height: 630,
 }
-export const contentType = 'image/png'
+export const contentType = 'image/jpeg'
 
 export default async function Image({
   params: { title },
@@ -32,21 +32,18 @@ export default async function Image({
     return null
   }
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          backgroundImage: `url(${image.imagePath})`,
-          width: '1200px',
-          height: '630px',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      ></div>
-    ),
-    {
-      ...size,
-    }
-  )
+  const response = await fetch(image.imagePath)
+  const imageBuffer = await response.arrayBuffer()
+
+  const resizedImage = await sharp(Buffer.from(imageBuffer))
+    .resize(1200, 630)
+    .jpeg({ quality: 80 })
+    .toBuffer()
+
+  return new NextResponse(resizedImage, {
+    headers: {
+      'Content-Type': 'image/jpeg',
+      'Content-Disposition': 'inline',
+    },
+  })
 }
