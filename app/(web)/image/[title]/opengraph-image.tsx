@@ -4,6 +4,8 @@ import sharp from 'sharp'
 
 import { getImageInfoBySlug } from '../../user/[uuid]/actions/getImage'
 
+export const runtime = 'edge'
+
 export const size = {
   width: 1200,
   height: 630,
@@ -37,13 +39,13 @@ export default async function Image({
 
   const resizedImage = await sharp(Buffer.from(imageBuffer))
     .resize(1200, 630)
-    .jpeg({ quality: 80 })
+    .jpeg({ quality: 60 })
     .toBuffer()
 
   return new NextResponse(resizedImage, {
     headers: {
       'Content-Type': 'image/jpeg',
-      'Content-Disposition': 'inline',
+      //  'Content-Disposition': 'inline',
     },
   })
 }
