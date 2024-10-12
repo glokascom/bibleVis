@@ -275,6 +275,7 @@ export async function getUserImagesWithLikes(
 
         return {
           ...image,
+          url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           users: user,
@@ -421,16 +422,19 @@ export async function getRandomImagesExcluding(
     const shuffledImages = filteredImages.sort(() => 0.5 - Math.random())
     const randomImages = shuffledImages.slice(0, numberOfImages)
 
-    const imagesWithPaths = randomImages.map((image: { original_file_path: unknown }) => {
-      const imagePath = image.original_file_path
-        ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
-        : null
+    const imagesWithPaths = randomImages.map(
+      (image: { original_file_path: unknown; url_slug: string; title: string }) => {
+        const imagePath = image.original_file_path
+          ? `${process.env.STORAGE_URL}/object/public/profile/${image.original_file_path}`
+          : null
 
-      return {
-        ...image,
-        imagePath,
+        return {
+          ...image,
+          url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
+          imagePath,
+        }
       }
-    })
+    )
 
     return imagesWithPaths
   } catch (error) {
