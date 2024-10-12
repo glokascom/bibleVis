@@ -28,11 +28,16 @@ export async function generateMetadata({ params: { title } }, parent) {
   const origin = `${protocol}://${host}`
 
   return {
-    title: image.title,
-    description: image.description,
+    title: 'Image by @' + image.users.username,
+    description:
+      image.title + ' | Download this image by @' + image.users.username + ' on BibleVis',
     openGraph: {
-      title: image.title,
-      description: image.description,
+      title: 'Image by @' + image.users.username,
+      description:
+        image.title +
+        ' | Download this image by @' +
+        image.users.username +
+        ' on BibleVis',
       images: [
         {
           url: origin + '/api/og-image?src=' + encodeURIComponent(image.imagePath),
