@@ -1,3 +1,4 @@
+import { openGraph } from '@/app/(web)/meta'
 import ForgotForm from '@/app/components/ForgotForm'
 
 export const metadata = {

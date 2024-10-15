@@ -1,6 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+import { openGraph } from '@/app/(web)/meta'
 import ResetForm from '@/app/components/ResetForm'
 
 export const metadata = {

@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 
+import { openGraph } from '@/app/(web)/meta'
 import AuthForm from '@/app/components/AuthForm'
 
 export const metadata = {

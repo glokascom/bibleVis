@@ -5,7 +5,7 @@ export const openGraph = {
   siteName: 'BibleVis',
   images: [
     {
-      url: 'https://deploy-preview-245--biblevis.netlify.app/social.png', // Must be an absolute URL
+      url: 'https://biblevis.com/social.png', // Must be an absolute URL
       width: 1200,
       height: 630,
     },
