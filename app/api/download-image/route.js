@@ -36,7 +36,7 @@ export async function POST(request) {
     return new Response(resizedBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
-        'Content-Disposition': `inline; filename="${width ? `processed_${width}` : 'original'}.jpg"`,
+        'Content-Disposition': `inline; filename="biblevis_${width ? `processed_${width}` : 'original'}.jpg"`,
       },
     })
   } catch (error) {
@@ -79,7 +79,7 @@ export async function GET(request) {
     return new Response(resizedBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
-        'Content-Disposition': `attachment; filename="${width ? `image_${width}` : 'image_original'}.jpg"`,
+        'Content-Disposition': `attachment; filename="biblevis_${width ? `image_${width}` : 'image_original'}.jpg"`,
       },
     })
   } catch (error) {

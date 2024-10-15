@@ -275,7 +275,10 @@ export async function getUserImagesWithLikes(
 
         return {
           ...image,
-          url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
+          url_slug:
+            encodeURIComponent(image.title.trim().toLowerCase().replace(/\s+/g, '-')) +
+            '-' +
+            image.url_slug,
           liked_by_current_user: likedImages.has(image.id),
           imagePath,
           users: user,
@@ -430,7 +433,10 @@ export async function getRandomImagesExcluding(
 
         return {
           ...image,
-          url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
+          url_slug:
+            encodeURIComponent(image.title.trim().toLowerCase().replace(/\s+/g, '-')) +
+            '-' +
+            image.url_slug,
           imagePath,
         }
       }

@@ -53,8 +53,8 @@ export default async function ImagePage({ params }) {
   const { title } = params
 
   return (
-    <main className="mx-auto mt-7 w-full max-w-[1806px] flex-auto md:px-12">
+    <div className="mx-auto mt-7 w-full max-w-[1806px] flex-auto md:px-12">
       <ImagePageComponent title={title} isModal={false} />
-    </main>
+    </div>
   )
 }
