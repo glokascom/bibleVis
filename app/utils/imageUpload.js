@@ -3,9 +3,9 @@ const heightLimit = 1000
 const maxSize = 4
 
 export const validateAndLoadImage = (file, onImageChange) => {
-  const validTypes = ['image/jpeg', 'image/png']
+  const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
   if (!validTypes.includes(file.type)) {
-    onImageChange(file, 'Invalid file format. Please upload JPG or PNG.')
+    onImageChange(file, 'Invalid file format. Please upload JPEG, JPG, PNG or WEBP.')
     return
   }
 
@@ -38,7 +38,7 @@ export const validateAndLoadImage = (file, onImageChange) => {
 export const openFileDialog = (onFileSelect) => {
   const input = document.createElement('input')
   input.type = 'file'
-  input.accept = 'image/jpeg,image/png'
+  input.accept = 'image/jpeg,image/png,image/jpg,image/webp'
   input.onchange = (e) => {
     const files = e.target.files
     if (files && files.length > 0) {

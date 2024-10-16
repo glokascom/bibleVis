@@ -6,16 +6,24 @@ import '@/styles/globals.css'
 
 import React from 'react'
 
+import { Metadata } from 'next'
 import { Toaster } from 'react-hot-toast'
+
+import { openGraph } from './(web)/meta'
+import GoogleAnalytics from './components/GoogleAnalytics'
 
 const baseFont = Wix_Madefor_Text({
   subsets: ['cyrillic', 'latin'],
   weight: ['400', '500', '600', '700'],
 })
 
-export const metadata = {
-  title: 'BibleVis',
-  description: 'Some description here',
+export const metadata: Metadata = {
+  title: {
+    template: '%s | BibleVis',
+    default: 'Images inspired by Bible | BibleVis',
+  },
+  description:
+    'BibleVis offers stunning, royalty-free, AI-generated Bible and Christian images. Discover and share high-quality visuals inspired by Scripture',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -26,7 +34,7 @@ export const metadata = {
     other: [{ rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#5bbad5' }],
   },
   manifest: '/site.webmanifest',
-  msTileColor: '#da532c',
+  openGraph: { ...openGraph },
 }
 
 export const viewport = {
@@ -43,6 +51,7 @@ export default function RootLayout(props: { children: React.ReactNode }): JSX.El
           <div className="flex min-h-screen w-full flex-col">{children}</div>
         </Providers>
         <Toaster />
+        <GoogleAnalytics />
       </body>
     </html>
   )

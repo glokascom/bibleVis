@@ -9,7 +9,7 @@ import { Button, Image } from '@nextui-org/react'
 import Gallery from '@/app/(web)/[@username]/components/Gallery'
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
-import { Chevron } from '@/app/components/Chevron'
+import { ChevronIcon } from '@/app/components/svg/ChevronIcon'
 
 export default function SearchPage({
   searchQuery = null,
@@ -92,8 +92,8 @@ export default function SearchPage({
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] px-6 pt-14 md:px-12 md:pt-24">
-      <h1 className="mb-10 text-5xl font-medium">Free {searchQuery} Photos</h1>
+    <div className="mx-auto w-full max-w-[1806px] px-6 pt-14 md:px-12 md:pt-24">
+      <h1 className="mb-10 text-5xl font-medium">Free {searchQuery} Images</h1>
 
       <div className="-mx-6 mb-5 flex overflow-x-auto scrollbar-hide md:mx-0 md:items-center md:justify-between">
         <div className="flex h-12 gap-2.5 whitespace-nowrap px-6 md:px-0">
@@ -119,7 +119,7 @@ export default function SearchPage({
             onClick={() => setIsOpenFilters(!isOpenFilters)}
             startContent={<Image src={'/filter.svg'} alt="filter" radius="none" />}
             endContent={
-              <Chevron
+              <ChevronIcon
                 className={`transition-transform ${isOpenFilters ? 'rotate-180' : ''}`}
               />
             }
@@ -158,6 +158,6 @@ export default function SearchPage({
           backUrl={`/s/${searchQuery}`}
         />
       </div>
-    </main>
+    </div>
   )
 }

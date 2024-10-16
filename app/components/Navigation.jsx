@@ -108,7 +108,9 @@ function Navigation({ user }) {
         </NavbarContent>
         <div className="flex items-center gap-2">
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
-            <BVLink href="/pages/license">License</BVLink>
+            <BVLink as={Link} href="/pages/license">
+              License
+            </BVLink>
           </NavbarItem>
           {user?.is_creator ? (
             <NavbarItem className="hidden lg:block">
@@ -174,6 +176,7 @@ function Navigation({ user }) {
                 ) : null}
                 <DropdownItem
                   key="license"
+                  as={Link}
                   href="/pages/license"
                   showDivider
                   className="block md:hidden"

@@ -61,6 +61,7 @@ export async function getImageInfoBySlug(imageSlug) {
       error: null,
       data: {
         ...image,
+        url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
         tags: tags,
         software: software,
         imagePath: imagePath,
@@ -134,6 +135,7 @@ export async function getImageInfoById(imageId) {
       error: null,
       data: {
         ...image,
+        url_slug: encodeURIComponent(image.title) + '-' + image.url_slug,
         tags: tags,
         software: software,
         imagePath: imagePath,

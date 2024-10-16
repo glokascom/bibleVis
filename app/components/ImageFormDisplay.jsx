@@ -293,8 +293,10 @@ function ImageFormDisplay({
 
           <BVButton
             onClick={() => setIsSaveModalOpen(true)}
-            isDisabled={!isFormFilled || isLoading}
-            className={`my-7 w-full ${initialFormData ? '' : 'bg-secondary-50 text-inherit'}`}
+            fullWidth
+            isDisabled={!isFormFilled}
+            isLoading={isLoading}
+            className={`my-7`}
           >
             {initialFormData ? 'Save' : 'Publish'}
           </BVButton>

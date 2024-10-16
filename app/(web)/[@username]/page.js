@@ -2,11 +2,26 @@ import { notFound } from 'next/navigation'
 
 import { getUser } from '@/app/actions/getUser'
 
+import { openGraph } from '../meta'
 import { getUserByUsername } from '../user/edit/actions/userService'
 import { checkIfSubscribed } from './actions/userActions'
 import Cover from './components/Cover'
 import Gallery from './components/Gallery'
 import UserInfo from './components/UserInfo'
+
+export async function generateMetadata({ params }) {
+  const username = decodeURIComponent(params['@username'] ?? '')
+
+  return {
+    title: 'Images by ' + username,
+    description: 'See the best free to download images by ' + username + ' on BibleVis',
+    openGraph: {
+      ...openGraph,
+      title: 'Images by @' + username,
+      description: 'See the best free to download images by ' + username + ' on BibleVis',
+    },
+  }
+}
 
 export default async function ProfileUserPage({ params }) {
   const username = decodeURIComponent(params['@username'])
@@ -27,7 +42,7 @@ export default async function ProfileUserPage({ params }) {
   const isFollowed = currentUser ? await checkIfSubscribed(profileUser.id) : false
 
   return (
-    <main className="mx-auto w-full max-w-[1806px] flex-auto px-6 md:px-12">
+    <div className="mx-auto w-full max-w-[1806px] flex-auto px-6 md:px-12">
       <div className="mb-12 mt-2.5 flex max-h-[400px] flex-col items-stretch gap-7 px-4 md:mt-9 md:flex-row md:gap-[10px] md:px-0">
         <div className="flex-initial md:flex-[2_0_0] xl:flex-[3_0_0]">
           <Cover isCurrentUser={isCurrentUser} profileUser={profileUser} />
@@ -46,6 +61,6 @@ export default async function ProfileUserPage({ params }) {
         profileUserId={profileUser.id}
         backUrl={`/@${profileUser.username}`}
       />
-    </main>
+    </div>
   )
 }

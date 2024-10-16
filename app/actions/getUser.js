@@ -4,8 +4,8 @@ import { supabaseService } from '@/app/supabase/service'
 import { getAvatars } from './getAvatars'
 
 export async function getUser() {
-  const supabase = createClient()
   try {
+    const supabase = createClient()
     const { data, error } = await supabase.auth.getUser()
 
     if (error || !data?.user) {

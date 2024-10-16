@@ -28,7 +28,7 @@
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "react-infinite-scroll-component": "^6.1.0",
-    "react-responsive-masonry": "^2.3.0",
+    "react-responsive-masonry": "2.3.0",
     "sharp": "^0.33.5",
     "swagger-ui-react": "^5.17.14"
   },
@@ -41,6 +41,7 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
