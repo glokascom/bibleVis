@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "BibleVis",
+    "short_name": "BibleVis",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

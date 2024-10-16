@@ -1,4 +1,7 @@
 import { Image } from '@nextui-org/react'
+import { Metadata } from 'next'
+
+import { openGraph } from '../../meta'
 
 const allowedRules = [
   'Images on BibleVis are free to use',
@@ -15,10 +18,22 @@ const notAllowedRules = [
   'Collecting images from BibleVis to create a similar or competing service.',
 ]
 
+export const metadata: Metadata = {
+  title: 'License',
+  description:
+    'Explore the licensing terms for using BibleVis content, including permissions, restrictions, and guidelines for sharing and adapting our AI-generated visuals',
+  openGraph: {
+    ...openGraph,
+    title: 'License',
+    description:
+      'Explore the licensing terms for using BibleVis content, including permissions, restrictions, and guidelines for sharing and adapting our AI-generated visuals',
+  },
+}
+
 export default function License() {
   return (
     <>
-      <div className="mx-auto w-full max-w-[1096px] flex-grow px-6 text-center md:px-12">
+      <div className="text-center">
         <h2 className="my-20 text-4xl font-medium md:my-24 md:text-5xl">License</h2>
 
         <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:gap-5">
@@ -55,7 +70,19 @@ export default function License() {
   )
 }
 
-const RuleColumn = ({ title, rules, iconSrc, iconAlt, isDanger = false }) => (
+const RuleColumn = ({
+  title,
+  rules,
+  iconSrc,
+  iconAlt,
+  isDanger = false,
+}: {
+  title: string
+  rules: string[]
+  iconSrc: string
+  iconAlt: string
+  isDanger?: boolean
+}) => (
   <div className="md:w-1/2">
     <div className="mb-5 flex items-center justify-center gap-2.5 text-xlarge font-medium md:mb-10 md:text-semimega">
       <p>{title}</p>

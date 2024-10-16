@@ -211,6 +211,103 @@ function AuthForm() {
                 base: 'mx-5',
               }}
             >
+              <Tab key="log-in" title="Log in">
+                <Button
+                  variant="bordered"
+                  color="default"
+                  size="lg"
+                  className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
+                  fullWidth
+                  radius="full"
+                  onClick={() => push('/api/auth/google')}
+                >
+                  <Image
+                    src="/google.svg"
+                    alt="google"
+                    width={23}
+                    height={22}
+                    className="absolute left-6 md:left-12"
+                  />
+                  Continue with Google
+                </Button>
+                <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
+                  <span className="text-medium font-medium text-secondary">or</span>
+                </div>
+                <label
+                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'email') ? 'text-danger' : ''}`}
+                >
+                  *Email
+                </label>
+                <BVInput
+                  type="email"
+                  variant="bordered"
+                  size="sm"
+                  autoComplete="email"
+                  value={emailLogin}
+                  onChange={(e) => setEmailLogin(e.target.value)}
+                  isRequired
+                  isInvalid={loginErrors?.fields.some((error) => error.field === 'email')}
+                  errorMessage={loginErrors?.fields
+                    .filter((error) => error.field === 'email')
+                    .map((error) => <p key={error.message}>{error.message}</p>)}
+                />
+                <label
+                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'password') ? 'text-danger' : ''}`}
+                >
+                  *Password
+                </label>
+                <BVInput
+                  variant="bordered"
+                  size="sm"
+                  value={passwordLogin}
+                  onChange={(e) => setPasswordLogin(e.target.value)}
+                  endContent={
+                    <div onClick={toggleLoginVisibility}>
+                      {isLoginVisible ? (
+                        <Image
+                          src={'/eye-open.svg'}
+                          alt="eye open"
+                          width={18}
+                          height={18}
+                          className="mr-4 h-[38px] w-[38px] p-2"
+                        />
+                      ) : (
+                        <Image
+                          src={'/eye-close.svg'}
+                          alt="eye close"
+                          width={16}
+                          height={16}
+                          className="mr-4 h-9 w-9 p-2"
+                        />
+                      )}
+                    </div>
+                  }
+                  type={isLoginVisible ? 'text' : 'password'}
+                  isRequired
+                  isInvalid={loginErrors?.fields.some(
+                    (error) => error.field === 'password'
+                  )}
+                  errorMessage={loginErrors?.fields
+                    .filter((error) => error.field === 'password')
+                    .map((error) => <p key={error.message}>{error.message}</p>)}
+                />
+
+                {loginErrors?.message && (
+                  <p className="my-4 text-small text-danger">{loginErrors.message}</p>
+                )}
+                <BVButton fullWidth onClick={handleLogin} isLoading={loading}>
+                  {'Log in'}
+                </BVButton>
+                <BVLink
+                  as={Link}
+                  color="primary"
+                  size="md"
+                  className="mt-8 flex justify-center font-[500]"
+                  href="/forgot-password"
+                >
+                  Forgot password?
+                </BVLink>
+              </Tab>
               <Tab key="sign-up" title="Sign up">
                 <Button
                   variant="bordered"
@@ -326,103 +423,6 @@ function AuthForm() {
                 <BVButton fullWidth onClick={handleSignup} isLoading={loading}>
                   {'Join'}
                 </BVButton>
-              </Tab>
-              <Tab key="log-in" title="Log in">
-                <Button
-                  variant="bordered"
-                  color="default"
-                  size="lg"
-                  className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
-                  fullWidth
-                  radius="full"
-                  onClick={() => push('/api/auth/google')}
-                >
-                  <Image
-                    src="/google.svg"
-                    alt="google"
-                    width={23}
-                    height={22}
-                    className="absolute left-6 md:left-12"
-                  />
-                  Continue with Google
-                </Button>
-                <div className="divider my-5 flex items-center text-center before:mr-7 after:ml-7">
-                  <span className="text-medium font-medium text-secondary">or</span>
-                </div>
-                <label
-                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'email') ? 'text-danger' : ''}`}
-                >
-                  *Email
-                </label>
-                <BVInput
-                  type="email"
-                  variant="bordered"
-                  size="sm"
-                  autoComplete="email"
-                  value={emailLogin}
-                  onChange={(e) => setEmailLogin(e.target.value)}
-                  isRequired
-                  isInvalid={loginErrors?.fields.some((error) => error.field === 'email')}
-                  errorMessage={loginErrors?.fields
-                    .filter((error) => error.field === 'email')
-                    .map((error) => <p key={error.message}>{error.message}</p>)}
-                />
-                <label
-                  className={`mb-2 text-medium font-medium ${loginErrors?.fields.some((error) => error.field === 'password') ? 'text-danger' : ''}`}
-                >
-                  *Password
-                </label>
-                <BVInput
-                  variant="bordered"
-                  size="sm"
-                  value={passwordLogin}
-                  onChange={(e) => setPasswordLogin(e.target.value)}
-                  endContent={
-                    <div onClick={toggleLoginVisibility}>
-                      {isLoginVisible ? (
-                        <Image
-                          src={'/eye-open.svg'}
-                          alt="eye open"
-                          width={18}
-                          height={18}
-                          className="mr-4 h-[38px] w-[38px] p-2"
-                        />
-                      ) : (
-                        <Image
-                          src={'/eye-close.svg'}
-                          alt="eye close"
-                          width={16}
-                          height={16}
-                          className="mr-4 h-9 w-9 p-2"
-                        />
-                      )}
-                    </div>
-                  }
-                  type={isLoginVisible ? 'text' : 'password'}
-                  isRequired
-                  isInvalid={loginErrors?.fields.some(
-                    (error) => error.field === 'password'
-                  )}
-                  errorMessage={loginErrors?.fields
-                    .filter((error) => error.field === 'password')
-                    .map((error) => <p key={error.message}>{error.message}</p>)}
-                />
-
-                {loginErrors?.message && (
-                  <p className="my-4 text-small text-danger">{loginErrors.message}</p>
-                )}
-                <BVButton fullWidth onClick={handleLogin} isLoading={loading}>
-                  {'Log in'}
-                </BVButton>
-                <BVLink
-                  as={Link}
-                  color="primary"
-                  size="md"
-                  className="mt-8 flex justify-center font-[500]"
-                  href="/forgot-password"
-                >
-                  Forgot password?
-                </BVLink>
               </Tab>
             </Tabs>
           </div>
