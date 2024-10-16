@@ -1,4 +1,4 @@
-export const Chevron = ({ fill = 'currentColor', filled, ...props }) => {
+export const ChevronIcon = ({ fill = 'currentColor', filled, ...props }) => {
   return (
     <svg
       width="12"

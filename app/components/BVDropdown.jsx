@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from '@nextui-org/react'
 
-import { Chevron } from './Chevron'
+import { ChevronIcon } from './svg/ChevronIcon'
 
 const BVDropdown = ({
   defaultSelectedKey = 0,
@@ -68,7 +68,7 @@ const BVDropdown = ({
           ref={buttonRef}
           className="w-full border bg-background py-6 text-medium font-semibold md:flex md:justify-between md:p-7"
           endContent={
-            <Chevron
+            <ChevronIcon
               className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
             />
           }

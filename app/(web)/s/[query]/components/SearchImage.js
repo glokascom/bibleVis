@@ -9,7 +9,7 @@ import { Button, Image } from '@nextui-org/react'
 import Gallery from '@/app/(web)/[@username]/components/Gallery'
 import BVButton from '@/app/components/BVButton'
 import BVDropdown from '@/app/components/BVDropdown'
-import { Chevron } from '@/app/components/Chevron'
+import { ChevronIcon } from '@/app/components/svg/ChevronIcon'
 
 export default function SearchPage({
   searchQuery = null,
@@ -119,7 +119,7 @@ export default function SearchPage({
             onClick={() => setIsOpenFilters(!isOpenFilters)}
             startContent={<Image src={'/filter.svg'} alt="filter" radius="none" />}
             endContent={
-              <Chevron
+              <ChevronIcon
                 className={`transition-transform ${isOpenFilters ? 'rotate-180' : ''}`}
               />
             }
