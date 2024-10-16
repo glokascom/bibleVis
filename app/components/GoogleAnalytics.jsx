@@ -17,11 +17,10 @@ export default function GoogleAnalytics() {
       if (consent) {
         allowAnalytics = JSON.parse(consent).analytics ?? false
       }
-      const isProtectedRoute = !(
+      const isProtectedRoute =
         url.startsWith('/reset-password') ||
         url.startsWith('/user/') ||
         url.startsWith('/forgot-password')
-      )
 
       if (allowAnalytics && !isProtectedRoute) {
         window.gtag('config', 'G-BLWEBXRQL3', {
@@ -38,11 +37,10 @@ export default function GoogleAnalytics() {
   if (consent) {
     allowAnalytics = JSON.parse(consent).analytics ?? false
   }
-  const isProtectedRoute = !(
+  const isProtectedRoute =
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/user/') ||
     pathname.startsWith('/forgot-password')
-  )
 
   if (!allowAnalytics || isProtectedRoute) {
     return null
