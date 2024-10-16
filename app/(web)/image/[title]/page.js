@@ -29,6 +29,9 @@ export async function generateMetadata({ params: { title } }, parent) {
 
   return {
     title: 'Image by @' + image.users.username,
+    alternates: {
+      canonical: '/image/' + image.url_slug,
+    },
     description:
       image.title + ' | Download this image by @' + image.users.username + ' on BibleVis',
     openGraph: {

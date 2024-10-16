@@ -17,7 +17,7 @@ export const metadata = {
 
 export default function LoginModal() {
   return (
-    <Modal showCloseButton={true}>
+    <Modal isCloseButton={true}>
       <AuthForm />
     </Modal>
   )

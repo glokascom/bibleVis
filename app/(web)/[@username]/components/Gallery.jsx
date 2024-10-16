@@ -110,7 +110,7 @@ function Gallery({
         <div className="mb-5 mt-10 flex items-center">
           {isMainPage ? (
             <BVButton color="secondary" isDisabled>
-              Photos
+              Images
             </BVButton>
           ) : (
             <>

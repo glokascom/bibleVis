@@ -4,7 +4,7 @@ import { Modal } from '@/app/components/Modal'
 
 export default function Loading() {
   return (
-    <Modal showCloseButton={false}>
+    <Modal isCloseButton={false}>
       <Spinner />
     </Modal>
   )
