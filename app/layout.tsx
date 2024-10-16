@@ -10,6 +10,7 @@ import { Metadata } from 'next'
 import { Toaster } from 'react-hot-toast'
 
 import { openGraph } from './(web)/meta'
+import GoogleAnalytics from './components/GoogleAnalytics'
 
 const baseFont = Wix_Madefor_Text({
   subsets: ['cyrillic', 'latin'],
@@ -50,6 +51,7 @@ export default function RootLayout(props: { children: React.ReactNode }): JSX.El
           <div className="flex min-h-screen w-full flex-col">{children}</div>
         </Providers>
         <Toaster />
+        <GoogleAnalytics />
       </body>
     </html>
   )

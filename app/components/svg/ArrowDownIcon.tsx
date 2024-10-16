@@ -1,10 +1,8 @@
-import { ComponentProps } from 'react'
-
 export default function ArrowDownIcon({
   color = 'currentColor',
   ...props
 }: {
-  color?: string & ComponentProps<'svg'>
+  color?: string
 }) {
   return (
     <svg
