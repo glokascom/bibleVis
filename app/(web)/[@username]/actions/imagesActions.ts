@@ -189,6 +189,10 @@ export async function getImagesSearch(
 
         return {
           ...image,
+          url_slug:
+            encodeURIComponent(image.title.trim().toLowerCase().replace(/\s+/g, '-')) +
+            '-' +
+            image.url_slug,
           users: {
             id: image.users_id,
             username: image.users_username,
