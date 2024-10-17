@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
@@ -29,7 +30,7 @@ function ImagePageContent({
 }) {
   const { images, currentIndex, setCurrentIndex } = useGallery()
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
-
+  const { push } = useRouter()
   const incrementDownloads = () => {
     setTotalDownloads((prevTotalDownloads) => prevTotalDownloads + 1)
   }
@@ -47,6 +48,35 @@ function ImagePageContent({
 
     await getImageStats(imageInfo.id)
   }
+
+  useEffect(() => {
+    const handleKeyDown = async (event) => {
+      console.log(event.key)
+      switch (event.key) {
+        case 'ArrowLeft':
+          await handlePreviousImage()
+          push(
+            `/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`
+          )
+          break
+        case 'ArrowRight':
+          await handleNextImage()
+          push(
+            `/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`
+          )
+          break
+        default:
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div
@@ -152,9 +182,8 @@ function ImagePageContent({
                 isAuthenticated={isAuthenticated}
               />
             </div>
-
             {!isModal && imageInfo.software?.length > 0 && (
-              <div className="hidden rounded-medium border bg-background p-5 shadow-small md:block">
+              <div className="rounded-medium border bg-background p-5 shadow-small">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
             )}
