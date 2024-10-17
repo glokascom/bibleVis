@@ -17,6 +17,8 @@ import DeleteConfirmationModal from './DeleteConfirmationModal'
 import SaveConfirmationModal from './SaveConfirmationModal'
 import { useToast } from './ToastProvider'
 
+const LETTERS_LIMIT = 1000
+
 function ImageFormDisplay({
   initialFormData,
   imageFile = null,
@@ -243,7 +245,7 @@ function ImageFormDisplay({
             <TagInput
               label="*Description"
               isTagInput={false}
-              limitLettersAllTags={280}
+              limitLettersAllTags={LETTERS_LIMIT}
               placeholder="Add optional description of the image"
               onBlur={handleInputBlur('description')}
               initialValue={initialFormData?.description || ''}
@@ -261,7 +263,7 @@ function ImageFormDisplay({
               <TagInput
                 label="*Prompt"
                 isTagInput={false}
-                limitLettersAllTags={280}
+                limitLettersAllTags={LETTERS_LIMIT}
                 placeholder="Add AI prompt that you used to create the image"
                 onBlur={handleInputBlur('prompt')}
                 initialValue={initialFormData?.prompt || ''}
