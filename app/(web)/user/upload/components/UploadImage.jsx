@@ -161,7 +161,7 @@ export default function UploadImage({ user, softwareOptions, tagsOptions }) {
           </Link>
         </div>
 
-        <BVAvatar size="md" src={user.avatarUrl} />
+        <BVAvatar as={Link} href={`/@${user.username}`} size="md" src={user.avatarUrl} />
 
         <p className="pb-7 pt-5 text-large font-semibold md:pb-12 md:pt-6">
           {`Great, ${user.username || 'User'}! Your image has been uploaded successfully`}
