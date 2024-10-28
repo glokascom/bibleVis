@@ -21,14 +21,15 @@ import {
 import { useGallery } from '../GaleryContext'
 import { BVAvatar } from './BVAvatar'
 import { BVLink } from './BVLink'
-import DeleteConfirmationModal from './DeleteConfirmationModal'
+import ConfirmationModal from './ConfirmationModal'
+import { useToast } from './ToastProvider'
 
 function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated }) {
+  const { error: showToastError } = useToast()
   const [isLiked, setIsLiked] = useState(!!image.liked_by_current_user)
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false)
-  const [deleteError, setDeleteError] = useState(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const searchParams = useSearchParams()
@@ -87,11 +88,10 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
     const result = await deleteImage(image.id)
 
     if (result.error) {
-      setDeleteError(result.error)
+      showToastError('Failed to delete image, please try again later')
       setIsDeleteSuccess(false)
     } else {
       setIsDeleteSuccess(true)
-      setDeleteError(null)
       setTimeout(() => {
         setIsDeleteModalOpen(false)
         setIsDeleteSuccess(false)
@@ -103,7 +103,6 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
     setIsDeleteSuccess(false)
-    setDeleteError(null)
   }
   return (
     <div
@@ -203,13 +202,14 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
           </DropdownMenu>
         </Dropdown>
       )}
-      <DeleteConfirmationModal
-        isDeleteModalOpen={isDeleteModalOpen}
-        closeModal={closeDeleteModal}
-        handleDelete={handleDeleteImage}
-        isDeleteSuccess={isDeleteSuccess}
-        deleteError={deleteError}
-      />
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          closeModal={closeDeleteModal}
+          handle={handleDeleteImage}
+          isHandleSuccess={isDeleteSuccess}
+          type="delete"
+        />
+      )}
     </div>
   )
 }

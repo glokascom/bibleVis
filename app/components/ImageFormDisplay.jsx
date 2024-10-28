@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import NextImage from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -13,8 +13,7 @@ import TagInput from '@/app/components/TagInput'
 
 import { deleteImage } from '../(web)/[@username]/actions/imagesActions'
 import { openFileDialog, validateAndLoadImage } from '../utils/imageUpload'
-import DeleteConfirmationModal from './DeleteConfirmationModal'
-import SaveConfirmationModal from './SaveConfirmationModal'
+import ConfirmationModal from './ConfirmationModal'
 import { useToast } from './ToastProvider'
 
 const LETTERS_LIMIT = 1000
@@ -31,6 +30,7 @@ function ImageFormDisplay({
   tagsOptions = [],
   isLoading = false,
 }) {
+  const formRef = useRef(null)
   const [imageUrl, setImageUrl] = useState(initialFormData?.imagePath || '')
   const [error, setError] = useState(null)
   const [errorImage, setErrorImage] = useState(null)
@@ -52,10 +52,9 @@ function ImageFormDisplay({
     setIsDeleteSuccess(false)
   }
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
+  const handleFormSubmit = async () => {
     try {
-      await handleSubmit(e)
+      await formRef.current?.requestSubmit()
       closeModal()
     } catch (error) {
       console.error('Error uploading the image:', error)
@@ -121,7 +120,7 @@ function ImageFormDisplay({
   const handleDeleteImage = async () => {
     const result = await deleteImage(initialFormData.id)
     if (result.error) {
-      showToastError(result.error)
+      showToastError(result.error.message)
     } else {
       showToastSuccess('Image deleted successfully')
       router.push(`/@${initialFormData.username}`)
@@ -129,7 +128,7 @@ function ImageFormDisplay({
   }
 
   return (
-    <div className="my-11 md:mt-20">
+    <div className="my-11">
       {error && (
         <div className="mb-7 flex flex-row justify-center rounded-medium bg-gradient-to-r from-danger-300 to-danger-400 px-5 py-6 text-secondary-50 md:mb-5 md:gap-12 md:p-6">
           <div className="flex md:gap-4">
@@ -176,7 +175,7 @@ function ImageFormDisplay({
       )}
 
       <div className="flex flex-col gap-7 md:flex-row md:items-start md:gap-2.5">
-        <div className="rounded-medium bg-secondary-50 md:w-2/3 md:p-2.5">
+        <div className="md:w-2/3">
           <div className="relative rounded-medium bg-secondary-50">
             {imageUrl ? (
               <Image
@@ -212,26 +211,24 @@ function ImageFormDisplay({
             </button>
           </div>
 
-          {!imageUrl && (
-            <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
-              <p className="md:w-1/3">
-                <span className="font-bold">File Formats and Size:</span> Acceptable
-                formats are JPG and PNG, with a maximum file size of 4MB and at least 1000
-                pixels on one side.
-              </p>
-              <p className="md:w-1/3">
-                <span className="font-bold">Ownership:</span> Only upload original media
-                to which you own the rights.
-              </p>
-              <p className="md:w-1/3">
-                <span className="font-bold">Content Restrictions:</span> Do not upload
-                images containing graphic nudity, violence, or hate speech.
-              </p>
-            </div>
-          )}
+          <div className="mt-14 hidden flex-row gap-10 px-4 text-large md:flex">
+            <p className="md:w-1/3">
+              <span className="font-bold">File Formats and Size:</span> Acceptable formats
+              are JPG and PNG, with a maximum file size of 4MB and at least 1000 pixels on
+              one side.
+            </p>
+            <p className="md:w-1/3">
+              <span className="font-bold">Ownership:</span> Only upload original media to
+              which you own the rights.
+            </p>
+            <p className="md:w-1/3">
+              <span className="font-bold">Content Restrictions:</span> Do not upload
+              images containing graphic nudity, violence, or hate speech.
+            </p>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="md:w-1/3">
+        <form onSubmit={handleSubmit} ref={formRef} className="md:w-1/3">
           <div className="flex flex-col gap-5 rounded-medium border p-5 shadow-small">
             <TagInput
               label="*Title"
@@ -246,7 +243,7 @@ function ImageFormDisplay({
               label="*Description"
               isTagInput={false}
               limitLettersAllTags={LETTERS_LIMIT}
-              placeholder="Add optional description of the image"
+              placeholder="Add description of the image"
               onBlur={handleInputBlur('description')}
               initialValue={initialFormData?.description || ''}
             />
@@ -308,23 +305,23 @@ function ImageFormDisplay({
           >
             Cancel
           </p>
-
-          <SaveConfirmationModal
-            isSaveModalOpen={isSaveModalOpen}
-            closeModal={closeModal}
-            handleFormSubmit={handleFormSubmit}
-            isLoading={isLoading}
-            isNewImage={!initialFormData}
-          />
+          {isSaveModalOpen && (
+            <ConfirmationModal
+              closeModal={closeModal}
+              handle={handleFormSubmit}
+              type="save"
+            />
+          )}
         </form>
       </div>
-
-      <DeleteConfirmationModal
-        isDeleteModalOpen={isDeleteModalOpen}
-        closeModal={closeModal}
-        handleDelete={handleDeleteImage}
-        isDeleteSuccess={isDeleteSuccess}
-      />
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          closeModal={closeModal}
+          handle={handleDeleteImage}
+          isHandleSuccess={isDeleteSuccess}
+          type="delete"
+        />
+      )}
     </div>
   )
 }

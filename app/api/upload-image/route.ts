@@ -184,9 +184,11 @@ export async function POST(
       )
     }
 
-    return NextResponse.json<ApiSuccess<{ imageId: string }>>({
+    return NextResponse.json<
+      ApiSuccess<{ imageId: string; size: { width: number; height: number } }>
+    >({
       status: 'success',
-      data: { imageId },
+      data: { imageId, size: sizesImages.original },
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

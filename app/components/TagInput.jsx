@@ -99,9 +99,7 @@ export default function TagInput({
 
   const filterTagsByType = useCallback(() => {
     if (label === '*Software Used') {
-      return allTags.filter((tag) =>
-        isAIGeneration ? tag.type === 'ai' : tag.type === 'manual'
-      )
+      return allTags.filter((tag) => (isAIGeneration ? true : tag.type === 'manual'))
     }
     return allTags
   }, [label, isAIGeneration, allTags])

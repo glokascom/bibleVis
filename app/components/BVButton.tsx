@@ -11,6 +11,7 @@ const ExtendedButton = extendVariants(Button, {
       primary: 'text-white bg-primary',
       secondary: 'text-white bg-secondary',
       danger: 'text-white bg-danger',
+      default: 'text-foreground bg-secondary-50',
     },
     isDisabled: {
       true: 'opacity-70 cursor-not-allowed',

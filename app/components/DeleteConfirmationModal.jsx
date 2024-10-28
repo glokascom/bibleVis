@@ -25,10 +25,13 @@ const DeleteConfirmationModal = ({
         <Modal closeModal={closeModal}>
           <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
             {isDeleteSuccess ? (
-              <p className="py-7">The image was successfully deleted</p>
+              <p className="py-7">The image has been successfully deleted</p>
             ) : (
               <>
-                <p>Are you sure to delete the file?</p>
+                <p>
+                  Are you sure you want to delete this image? This action cannot be
+                  undone.
+                </p>
                 {deleteError && <p className="mt-4 text-red-600">{deleteError}</p>}
                 <div className="mt-12 flex justify-center gap-2">
                   <BVButton

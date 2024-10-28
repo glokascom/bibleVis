@@ -2,11 +2,11 @@
 
 import { createClient } from '@/app/supabase/server'
 
-export async function getSoftwares() {
+export async function getTags() {
   try {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('softwares')
+      .from('tags')
       .select('*')
       .order('name', { ascending: true })
     if (error) {
@@ -16,7 +16,7 @@ export async function getSoftwares() {
   } catch (error) {
     return {
       status: 'error',
-      message: error.message || `Unexpected error fetching data from softwares`,
+      message: error.message || `Unexpected error fetching data from tags`,
     }
   }
 }
