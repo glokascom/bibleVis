@@ -51,7 +51,6 @@ function ImagePageContent({
 
   useEffect(() => {
     const handleKeyDown = async (event) => {
-      console.log(event.key)
       switch (event.key) {
         case 'ArrowLeft':
           await handlePreviousImage()

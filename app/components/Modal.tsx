@@ -38,7 +38,7 @@ export function Modal({ closeModal, isCloseButton = true, children }: ModalProps
         {isCloseButton && (
           <button
             onClick={onDismiss}
-            className={`absolute -right-12 top-0 hidden h-10 w-10 items-center justify-center rounded-full bg-secondary-50 text-secondary md:flex`}
+            className="absolute -right-12 top-0 hidden h-10 w-10 items-center justify-center rounded-full bg-secondary-50 text-secondary md:flex"
           >
             <CloseIcon />
           </button>

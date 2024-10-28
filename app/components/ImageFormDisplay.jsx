@@ -309,7 +309,7 @@ function ImageFormDisplay({
             <ConfirmationModal
               closeModal={closeModal}
               handle={handleFormSubmit}
-              type="save"
+              type={initialFormData ? 'save' : 'publish'}
             />
           )}
         </form>
