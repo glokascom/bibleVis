@@ -25,6 +25,7 @@ export default function TagInput({
   const [suggestions, setSuggestions] = useState([])
   const [allTags, setAllTags] = useState(initialTags)
   const tagsContainerRef = useRef(null)
+  const scrollContainerRef = useRef(null)
   const inputRef = useRef(null)
   const initialAIGeneration = useRef(isAIGeneration)
   const totalChars =
@@ -76,8 +77,8 @@ export default function TagInput({
   }
 
   const scrollToBottom = () => {
-    if (tagsContainerRef.current) {
-      tagsContainerRef.current.scrollTop = tagsContainerRef.current.scrollHeight
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
     }
   }
 
@@ -98,9 +99,7 @@ export default function TagInput({
 
   const filterTagsByType = useCallback(() => {
     if (label === '*Software Used') {
-      return allTags.filter((tag) =>
-        isAIGeneration ? tag.type === 'ai' : tag.type === 'manual'
-      )
+      return allTags.filter((tag) => (isAIGeneration ? true : tag.type === 'manual'))
     }
     return allTags
   }, [label, isAIGeneration, allTags])
@@ -256,8 +255,8 @@ export default function TagInput({
   }, [])
 
   useEffect(() => {
-    if (inputRef.current && inputRef.current.scrollIntoView) {
-      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    if (scrollContainerRef.current && scrollContainerRef.current.scrollHeight) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
     }
   }, [selectedTags])
 
@@ -280,6 +279,7 @@ export default function TagInput({
         className="rounded-medium border border-secondary-50 bg-secondary-50 p-5 text-small font-medium focus-within:ring-1 focus-within:ring-secondary"
       >
         <div
+          ref={scrollContainerRef}
           className={`flex ${
             isSmallHeight ? '' : 'h-[6.125rem]'
           } flex-wrap content-start items-start gap-2.5 overflow-y-auto`}

@@ -105,7 +105,6 @@ export default function ResetForm() {
       setLoading(false)
       router.push('/')
     } catch (error) {
-      console.log({ error })
       setResetErrors({
         message: error.message || 'An unknown error occurred.',
         fields: [],

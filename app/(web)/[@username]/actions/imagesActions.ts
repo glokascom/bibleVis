@@ -189,6 +189,10 @@ export async function getImagesSearch(
 
         return {
           ...image,
+          url_slug:
+            encodeURIComponent(image.title.trim().toLowerCase().replace(/\s+/g, '-')) +
+            '-' +
+            image.url_slug,
           users: {
             id: image.users_id,
             username: image.users_username,
@@ -355,7 +359,17 @@ export interface DeleteResponse {
 
 export async function deleteImage(imageId: number): Promise<DeleteResponse> {
   try {
-    const { id: userId } = (await getUser()).user
+    const { user } = await getUser()
+
+    if (!user) {
+      return {
+        error: {
+          message: 'User not authenticated',
+        } as PostgrestError,
+        data: null,
+      }
+    }
+    const { id: userId } = user
 
     const { data: image, error: fetchError } = await supabaseService
       .from('images')
