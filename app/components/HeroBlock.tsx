@@ -31,10 +31,7 @@ function HeroBlock() {
       <div className="relative z-10 flex flex-col items-center justify-center px-6">
         <p className="mb-5 max-w-3xl text-balance text-center text-2xl font-semibold text-white md:whitespace-normal md:text-4xl">
           <span className="md:inline-block md:w-full">
-            BibleVis offers stunning, royalty-free,
-          </span>
-          <span className="md:inline-block md:w-full">
-            AI-generated Bible and Christian images.
+            AI-generated Bible & Christian images
           </span>
         </p>
         <p className="mb-10 text-center text-semixlarge text-white">

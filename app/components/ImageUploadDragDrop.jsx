@@ -1,19 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { validateAndLoadImage } from '../utils/imageUpload'
 import { BVButton } from './BVButton'
 
 function ImageUploadDragDrop({ onImageChange }) {
   const [isOverDropZone, setIsOverDropZone] = useState(false)
-  const [containerHeight, setContainerHeight] = useState('auto')
-  const containerRef = useRef(null)
-  const fileInputRef = useRef(null)
-
-  useEffect(() => {
-    if (containerRef.current) {
-      setContainerHeight(`${containerRef.current.offsetHeight}px`)
-    }
-  }, [])
 
   function preventEventPropagation(e) {
     e.preventDefault()
@@ -64,15 +55,9 @@ function ImageUploadDragDrop({ onImageChange }) {
     }
   }
 
-  const openFileDialog = () => {
-    fileInputRef.current.click()
-  }
-
   return (
     <div
-      ref={containerRef}
-      style={{ height: containerHeight }}
-      className={`relative overflow-hidden transition-all duration-300 ease-in-out ${
+      className={`relative h-64 min-h-40 overflow-hidden transition-all duration-300 ease-in-out md:h-[50vh] md:min-h-[420px] 2xl:min-h-[480px] ${
         isOverDropZone ? 'border-0 p-0' : 'border border-dashed p-2.5 md:p-6 2xl:p-9'
       } rounded-medium shadow-small`}
       onDragEnter={handleDragEnter}
@@ -81,7 +66,7 @@ function ImageUploadDragDrop({ onImageChange }) {
       onDrop={handleDrop}
     >
       <div
-        className={`flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r py-10 text-center md:py-14 ${isOverDropZone ? 'from-[#73ABC2]/50 to-primary-500/50' : 'from-[#73ABC2]/30 to-primary-500/30'} 2xl:pb-32 2xl:pt-24`}
+        className={`relative flex h-full flex-col items-center justify-center rounded-medium bg-gradient-to-r py-10 text-center before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#73ABC2]/50 before:to-primary-500/50 before:transition-all before:duration-300 before:ease-in-out md:py-14 ${isOverDropZone ? 'before:opacity-100' : 'before:opacity-0'} from-[#73ABC2]/30 to-primary-500/30 2xl:pb-32 2xl:pt-24`}
       >
         <div
           className={`pointer-events-none absolute left-1/2 hidden -translate-x-1/2 transform transition-all duration-300 ease-in-out md:block ${isOverDropZone ? 'top-1/2 -translate-y-1/2' : 'top-20'}`}
@@ -105,7 +90,7 @@ function ImageUploadDragDrop({ onImageChange }) {
         </div>
 
         <p
-          className={`absolute bottom-14 left-1/2 -translate-x-1/2 transform text-mega font-medium text-white transition-all duration-300 ease-in-out 2xl:bottom-20 ${
+          className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 transform text-mega font-medium text-white transition-all duration-300 ease-in-out md:bottom-14 2xl:bottom-20 ${
             isOverDropZone ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
         >
@@ -118,7 +103,6 @@ function ImageUploadDragDrop({ onImageChange }) {
           }`}
         >
           <p className="mb-7 text-xxlarge font-medium md:hidden">Add a file</p>
-
           <div className="group hidden flex-col items-center justify-center font-medium md:flex">
             <div className="text-balance text-center font-medium md:w-[55%] md:self-center">
               <p className="text-xlarge 2xl:text-xxlarge">Upload your image</p>
@@ -135,17 +119,15 @@ function ImageUploadDragDrop({ onImageChange }) {
             <p className="mt-10 text-xlarge">Drag and Drop</p>
             <p className="my-4 text-small 2xl:my-5">or</p>
           </div>
-
-          <BVButton size="lg" onClick={openFileDialog}>
+          <BVButton as={'label'} htmlFor="image" size="lg">
             Browse file
           </BVButton>
         </div>
-
         <input
           type="file"
-          ref={fileInputRef}
           onChange={handleFileInput}
           className="hidden"
+          id="image"
           accept="image/jpeg,image/jpg,image/png,image/webp"
         />
       </div>

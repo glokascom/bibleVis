@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
-import { BVButton } from '@/app/components/BVButton'
+import ConfirmationModal from '@/app/components/ConfirmationModal'
 import ImageFormDisplay from '@/app/components/ImageFormDisplay'
-import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/components/ToastProvider'
 
 export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
+  const { push, refresh } = useRouter()
   const [isFormFilled, setIsFormFilled] = useState(false)
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [formData, setFormData] = useState({
@@ -65,15 +65,15 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
 
       if (!response.ok) {
         const errorResponse = await response.json()
-        throw new Error(errorResponse?.message || 'Failed to upload image.')
+        throw new Error(errorResponse?.message || 'Failed to upload image')
       }
 
       await response.json()
 
-      showToastSuccess('Form successfully submitted')
+      showToastSuccess('Image updated successfully')
       closeModal()
     } catch (error) {
-      console.error('Error during image loading:', error)
+      console.error('Error during image loading: ', error)
       showToastError(`Error: ${error.message}`)
     } finally {
       setIsLoading(false)
@@ -92,34 +92,28 @@ export default function EditImage({ imageInfo, softwareOptions, tagsOptions }) {
         setFormData={setFormData}
         isFormFilled={isFormFilled}
         handleSubmit={handleSubmit}
-        handleCancel={() => setIsCancelModalOpen(true)}
+        handleCancel={() => {
+          if (isFormFilled) {
+            setIsCancelModalOpen(true)
+          } else {
+            push(`/@${initialFormData.username}`)
+            refresh()
+          }
+        }}
         softwareOptions={softwareOptions}
         tagsOptions={tagsOptions}
         setValidImage={setValidImage}
         isLoading={isLoading}
       />
-
       {isCancelModalOpen && (
-        <Modal closeModal={closeModal}>
-          <div className="rounded-xlarge bg-background p-10 text-semixlarge font-medium">
-            <p>Are you sure you want to cancel?</p>
-            <div className="mt-12 flex justify-center gap-2">
-              <BVButton
-                className="w-1/2 bg-secondary-50 text-inherit"
-                onClick={closeModal}
-              >
-                Cancel
-              </BVButton>
-              <BVButton
-                as={Link}
-                href={`/@${initialFormData.username}`}
-                className="w-1/2 bg-danger"
-              >
-                Confirm
-              </BVButton>
-            </div>
-          </div>
-        </Modal>
+        <ConfirmationModal
+          closeModal={closeModal}
+          handle={() => {
+            push(`/@${initialFormData.username}`)
+            refresh()
+          }}
+          type="cancel"
+        />
       )}
     </>
   )

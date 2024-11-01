@@ -25,6 +25,7 @@ END $$;
 
 
 INSERT INTO public.softwares (name, type) VALUES
+    ('Recraft', 'ai'),
     ('Leonardo', 'ai'),
     ('Playground.ai', 'ai'),
     ('DALL-E 2 by OpenAI', 'ai'),
