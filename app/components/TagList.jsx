@@ -18,7 +18,7 @@ function TagList({ tags = [] }) {
       <div className="flex flex-wrap gap-2.5">
         {tags.map(({ id, name }) => (
           <Link
-            href={`/s/${name}`}
+            href={`/s/${encodeURIComponent((name ?? '').toLowerCase().replace(/\s+/g, '-'))}`}
             key={id}
             className="flex items-center justify-center rounded-medium bg-secondary-100 px-5 py-2.5"
           >

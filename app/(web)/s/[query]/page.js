@@ -11,7 +11,7 @@ export async function generateMetadata({ params: { query } }) {
     title: searchQuery ?? 'Search',
     alternates: {
       canonical:
-        '/image/' +
+        '/s/' +
         encodeURIComponent((searchQuery ?? '').toLowerCase().replace(/\s+/g, '-')),
     },
     description:
