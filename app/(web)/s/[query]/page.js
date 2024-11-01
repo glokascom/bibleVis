@@ -9,6 +9,11 @@ export async function generateMetadata({ params: { query } }) {
 
   return {
     title: searchQuery ?? 'Search',
+    alternates: {
+      canonical:
+        '/s/' +
+        encodeURIComponent((searchQuery ?? '').toLowerCase().replace(/\s+/g, '-')),
+    },
     description:
       "Browse BibleVis's collection of AI-generated Christian images categorized by topic for easy discovery and inspiration",
     openGraph: {
