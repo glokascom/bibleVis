@@ -60,7 +60,7 @@ function Gallery({
       profileUserId,
       page,
       searchQuery,
-      10
+      15
     )
 
     setImages((prevImages) => {
