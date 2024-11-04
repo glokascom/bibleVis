@@ -135,7 +135,17 @@ function ImageForGallery({ image, onClick, onDelete, allImages, isAuthenticated 
       </Link>
 
       <div className="absolute bottom-5 left-5 right-5 z-10 hidden flex-col font-bold text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
-        <div className="ml-12 line-clamp-4 group-hover:opacity-80">{image.title}</div>
+        <Link
+          className="ml-12 line-clamp-4 group-hover:opacity-80"
+          href={{
+            pathname: `/image/${image.url_slug}`,
+            query: searchParams.toString(),
+          }}
+          onClick={onClick}
+          scroll={false}
+        >
+          {image.title}
+        </Link>
         <BVLink className="flex items-center gap-2" href={`/@${image.users.username}`}>
           <BVAvatar className="h-10 w-10" src={image.users.avatarUrl} />
           <div className="text-large font-bold text-background">
