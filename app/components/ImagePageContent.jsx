@@ -79,12 +79,14 @@ function ImagePageContent({
 
   return (
     <div
-      className={`${isModal ? 'rounded-t-medium bg-background p-5 md:h-[90vh] md:w-[90vw] md:bg-transparent md:p-0' : 'px-5 md:px-0'}`}
+      className={`${isModal ? 'rounded-t-medium bg-background p-5 lg:h-[calc(100vh-6.5rem)] lg:w-[calc(100vw-13rem)] lg:bg-transparent lg:p-0' : 'px-5 lg:px-0'}`}
     >
       <div
-        className={`flex flex-col md:flex-row md:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
+        className={`flex flex-col lg:flex-row lg:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
       >
-        <div className="relative rounded-medium bg-secondary-50 md:w-3/4 md:p-2.5">
+        <div
+          className={`relative w-full rounded-medium bg-secondary-50 md:p-2.5 lg:w-2/3 xl:w-3/4 ${isModal && images.length > 1 ? '' : 'mb-5'}`}
+        >
           {imageInfo.imagePath ? (
             <>
               {children}
@@ -149,7 +151,7 @@ function ImagePageContent({
           </div>
         )}
 
-        <div className="rounded-medium md:w-1/4 md:bg-secondary-50 md:p-2.5">
+        <div className="w-full rounded-medium md:bg-secondary-50 md:p-2.5 lg:w-1/3 xl:w-1/4">
           <div className="flex flex-col gap-5 rounded-medium pb-28 md:pb-0">
             <div className="rounded-medium border bg-background p-5 shadow-small">
               <Download imageInfo={imageInfo} onDownload={incrementDownloads} />

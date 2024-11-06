@@ -53,7 +53,7 @@ export default async function ImagePage({ params }) {
   const { title } = params
 
   return (
-    <Modal>
+    <Modal isCloseButton showCloseOnMobile>
       <ImagePageComponent title={title} isModal />
     </Modal>
   )
