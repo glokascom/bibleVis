@@ -17,6 +17,7 @@ export type ApiSuccess<T> = {
 export interface ModalProps {
   children: React.ReactNode
   isCloseButton?: boolean
+  showCloseOnMobile?: boolean
   closeModal?: () => void
 }
 
