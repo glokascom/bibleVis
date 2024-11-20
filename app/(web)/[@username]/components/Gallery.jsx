@@ -32,6 +32,7 @@ function Gallery({
   isMainPage = false,
   isShowHeader = true,
   searchQuery = null,
+  loadFavoriteImages = null,
 }) {
   const { setImages: setGalleryImages, setCurrentIndex, setBasePageUrl } = useGallery()
 
@@ -56,15 +57,12 @@ function Gallery({
     if (isLoadingRef.current || !hasMore) return
 
     isLoadingRef.current = true
-    const { images: newImages, totalCount } = await loadNextPage(
-      profileUserId,
-      page,
-      searchQuery,
-      15
-    )
+
+    const { images: newImages, totalCount } = loadFavoriteImages
+      ? await loadFavoriteImages(page)
+      : await loadNextPage(profileUserId, page, searchQuery, 15)
 
     setImages((prevImages) => {
-      // TODO не до конца понимаю, для чего тут фильтруются картинки и откуда тут дубликаты
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
       return [...prevImages, ...filteredNewImages]
@@ -79,7 +77,7 @@ function Gallery({
 
     isLoadingRef.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileUserId, page, hasMore, searchQuery])
+  }, [profileUserId, page, hasMore, searchQuery, loadFavoriteImages])
 
   useEffect(() => {
     setGalleryImages(images.map((image) => image.url_slug))
