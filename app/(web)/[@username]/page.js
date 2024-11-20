@@ -53,6 +53,7 @@ export default async function ProfileUserPage({ params }) {
             user={currentUser}
             profileUser={profileUser}
             initialIsFollowed={isFollowed}
+            bordered
           />
         </div>
       </div>

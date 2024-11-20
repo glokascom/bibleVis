@@ -33,7 +33,7 @@ export async function getUserByUsername(username) {
   if (data.length === 0) {
     throw new Error('Error fetching username: user not found')
   } else {
-    const { avatarUrl, coverUrl } = await getAvatars(data[0])
+    const { avatarUrl, coverUrl } = getAvatars(data[0])
     return { ...data[0], avatarUrl, coverUrl }
   }
 }
