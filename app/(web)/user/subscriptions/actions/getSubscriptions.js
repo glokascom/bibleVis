@@ -6,7 +6,7 @@ import { supabaseService } from '@/app/supabase/service'
 export const getSubscriptions = async () => {
   const { user } = await getUser()
   if (!user) {
-    throw new Error('User not found')
+    return { status: 'error', error: new Error('User not authenticated') }
   }
   const { data, error } = await supabaseService
     .from('subscriptions')

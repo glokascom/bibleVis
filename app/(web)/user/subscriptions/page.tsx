@@ -1,5 +1,6 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
+import { getUser } from '@/app/actions/getUser'
 import CreatorDetails from '@/app/components/CreatorDetails'
 import RelatedImages from '@/app/components/RelatedImages'
 
@@ -8,6 +9,10 @@ import { getSubscriptions } from './actions/getSubscriptions'
 
 async function SubscriptionsPage() {
   const res = await getSubscriptions()
+  const { user } = await getUser()
+  if (!user) {
+    redirect('/login?redirectedFrom=/user/subscriptions')
+  }
   if (res.status === 'error') {
     console.error(res.error)
     notFound()
@@ -30,7 +35,7 @@ async function SubscriptionsPage() {
                 <div className="hidden lg:block">
                   <UserInfo
                     isCurrentUser={false}
-                    user={{ id: '123', username: '123', avatarUrl: '', coverUrl: '' }}
+                    user={user}
                     profileUser={creator}
                     initialIsFollowed={true}
                   />
