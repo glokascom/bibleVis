@@ -16,7 +16,7 @@ export const getSubscriptions = async () => {
     .eq('follower_id', user.id)
     .order('subscribed_at', { ascending: false })
   const subscriptions = data?.map(async (record) => {
-    const { avatarUrl, coverUrl } = getAvatars(record.creator)
+    const { avatarUrl, coverUrl } = await getAvatars(record.creator)
     const relatedImages = await getRandomImagesExcluding(record.creator.id, null, 9)
     return {
       creator: {

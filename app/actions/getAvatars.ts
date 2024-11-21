@@ -10,6 +10,5 @@ export const getAvatars = (userData: {
   const coverUrl = userData.cover_file_path
     ? `${process.env.STORAGE_URL}/object/public/profile/${userData.cover_file_path}`
     : `/cover.svg`
-
   return { avatarUrl, coverUrl }
 }

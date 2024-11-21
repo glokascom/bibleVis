@@ -28,11 +28,7 @@ export interface UserInfoProps {
   bordered?: boolean
 }
 
-export interface ProfileUserCover extends User {
-  cover_file_exists: boolean
-}
-
 export interface CoverProps {
   isCurrentUser: boolean
-  profileUser: ProfileUserCover
+  profileUser: ProfileUser
 }

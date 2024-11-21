@@ -22,7 +22,7 @@ export async function getUser() {
       return { user: null, error: userError }
     }
 
-    const { avatarUrl, coverUrl } = getAvatars(userData)
+    const { avatarUrl, coverUrl } = await getAvatars(userData)
     const user = {
       ...userData,
       provider: data.user.app_metadata.provider,
