@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { notFound, useRouter, useSearchParams } from 'next/navigation'
 
@@ -21,7 +21,6 @@ export default function SearchPage({
 
   const [activeButton, setActiveButton] = useState(searchParams.get('filter') || 'All')
 
-  const [key, setKey] = useState(0)
   const [isOpenFilters, setIsOpenFilters] = useState(false)
 
   const buttonData = useMemo(() => {
@@ -32,10 +31,6 @@ export default function SearchPage({
       { name: 'Made by human', result: safeCounters.humanMade.toString() },
     ]
   }, [counters])
-
-  useEffect(() => {
-    setKey((prevKey) => prevKey + 1)
-  }, [searchParams])
 
   if (!searchQuery) {
     notFound()
@@ -151,7 +146,7 @@ export default function SearchPage({
 
       <div className="mt-10">
         <Gallery
-          key={key}
+          key={`${searchQuery}?${searchParams}`}
           isAuthenticated={isAuthenticated}
           isShowHeader={false}
           searchQuery={`${searchQuery}?${searchParams}`}

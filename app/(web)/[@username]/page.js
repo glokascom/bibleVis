@@ -53,6 +53,7 @@ export default async function ProfileUserPage({ params }) {
             user={currentUser}
             profileUser={profileUser}
             initialIsFollowed={isFollowed}
+            className="border-0 md:h-full md:rounded-medium md:border md:px-5 md:py-8 lg:border-secondary-200"
           />
         </div>
       </div>
