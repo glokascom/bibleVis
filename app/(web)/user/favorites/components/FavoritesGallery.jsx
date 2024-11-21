@@ -8,7 +8,7 @@ import { useUrlParams } from '@/app/utils/updateUrlParams'
 
 import { getFavoriteImages } from '../actions/getFavoriteImages'
 
-export default function FavoritesGallery({ isAuthenticated, counters }) {
+export default function FavoritesGallery({ counters }) {
   const { searchParams } = useUrlParams('/user/favorites')
   const [key, setKey] = useState(0)
 
@@ -35,7 +35,7 @@ export default function FavoritesGallery({ isAuthenticated, counters }) {
 
       <Gallery
         key={key}
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={true}
         isShowHeader={false}
         backUrl="/user/favorites"
         loadFavoriteImages={loadFavorites}

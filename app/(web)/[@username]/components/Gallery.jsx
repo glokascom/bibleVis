@@ -63,6 +63,7 @@ function Gallery({
       : await loadNextPage(profileUserId, page, searchQuery, 15)
 
     setImages((prevImages) => {
+      // TODO не до конца понимаю, для чего тут фильтруются картинки и откуда тут дубликаты
       const existingImageIds = new Set(prevImages.map((img) => img.id))
       const filteredNewImages = newImages.filter((img) => !existingImageIds.has(img.id))
       return [...prevImages, ...filteredNewImages]
