@@ -25,7 +25,7 @@ export interface UserInfoProps {
   profileUser: ProfileUser
   initialIsFollowed: boolean
   user: User
-  bordered?: boolean
+  className?: string
 }
 
 export interface CoverProps {

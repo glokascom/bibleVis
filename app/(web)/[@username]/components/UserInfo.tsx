@@ -16,7 +16,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   profileUser,
   initialIsFollowed,
   user,
-  bordered = false,
+  className = '',
 }) => {
   const pathname = usePathname()
   const [isFollowed, setIsFollowed] = useState<boolean>(initialIsFollowed || false)
@@ -38,9 +38,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   }
 
   return (
-    <div
-      className={`border-0 md:h-full md:rounded-medium ${bordered ? 'md:border' : ''} md:px-5 md:py-8 lg:border-secondary-200`}
-    >
+    <div className={className}>
       <div className="relative flex w-full flex-col items-center justify-between md:gap-3 lg:gap-5">
         {pathname === `/@${profileUser.username}` ? (
           <>
@@ -70,26 +68,30 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <div className="text-small">{totalFollowers}</div>
         </div>
       </div>
-      <div>
+      <div className="flex justify-center">
         {isCurrentUser ? (
-          <BVButton as={Link} href="/user/edit" fullWidth className="mt-5">
+          <BVButton
+            as={Link}
+            href="/user/edit"
+            color="primary"
+            fullWidth
+            className="mt-5"
+          >
             Edit Profile
           </BVButton>
         ) : !user ? (
           <BVButton
             as={Link}
             href={`/login?redirectedFrom=${pathname}`}
-            fullWidth
             color="primary"
-            className="mt-5"
+            className="mt-5 w-full md:w-auto md:min-w-48"
           >
             Follow
           </BVButton>
         ) : (
           <BVButton
-            fullWidth
             color={isFollowed ? 'secondary' : 'primary'}
-            className="mt-5"
+            className="mt-5 w-full md:w-auto md:min-w-48"
             onClick={handleToggleFollow}
           >
             {isFollowed ? 'Unfollow' : 'Follow'}

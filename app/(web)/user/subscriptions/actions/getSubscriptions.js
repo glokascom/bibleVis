@@ -1,13 +1,8 @@
 import { getRandomImagesExcluding } from '@/app/(web)/[@username]/actions/imagesActions'
 import { getAvatars } from '@/app/actions/getAvatars'
-import { getUser } from '@/app/actions/getUser'
 import { supabaseService } from '@/app/supabase/service'
 
-export const getSubscriptions = async () => {
-  const { user } = await getUser()
-  if (!user) {
-    return { status: 'error', error: new Error('User not authenticated') }
-  }
+export const getSubscriptions = async (user) => {
   const { data, error } = await supabaseService
     .from('subscriptions')
     .select(

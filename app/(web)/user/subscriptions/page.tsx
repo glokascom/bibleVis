@@ -8,11 +8,11 @@ import UserInfo from '../../[@username]/components/UserInfo'
 import { getSubscriptions } from './actions/getSubscriptions'
 
 async function SubscriptionsPage() {
-  const res = await getSubscriptions()
   const { user } = await getUser()
   if (!user) {
     redirect('/login?redirectedFrom=/user/subscriptions')
   }
+  const res = await getSubscriptions(user)
   if (res.status === 'error') {
     console.error(res.error)
     notFound()
@@ -31,16 +31,17 @@ async function SubscriptionsPage() {
               key={creator.id}
               className="flex w-full flex-col gap-5 rounded-medium border border-secondary-200 p-2.5 md:p-4 lg:flex-row"
             >
-              <div className="flex-1">
+              <div className="flex flex-1 items-center justify-center">
                 <div className="hidden lg:block">
                   <UserInfo
                     isCurrentUser={false}
                     user={user}
                     profileUser={creator}
                     initialIsFollowed={true}
+                    className="h-full py-4"
                   />
                 </div>
-                <div className="block lg:hidden">
+                <div className="block w-full lg:hidden">
                   <CreatorDetails
                     creator={creator}
                     followUserId={'123'}
