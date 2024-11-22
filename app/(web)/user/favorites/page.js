@@ -1,4 +1,5 @@
-import { getImageCounts } from '../../s/[query]/actions/getImageCounts'
+import { getImageCounts } from '@/app/actions/getImageCounts'
+
 import FavoritesGallery from './components/FavoritesGallery'
 
 export const dynamic = 'force-dynamic'
