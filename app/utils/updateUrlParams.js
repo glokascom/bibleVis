@@ -8,11 +8,11 @@ export function useUrlParams(basePath) {
 
   const updateUrlParams = (params) => {
     const newParams = new URLSearchParams(searchParams.toString())
-    Object.keys(params).forEach((key) => {
-      if (params[key] === null || params[key] === undefined) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
         newParams.delete(key)
       } else {
-        newParams.set(key, params[key])
+        newParams.set(key, value)
       }
     })
     router.push(`${basePath}?${newParams.toString()}`)
