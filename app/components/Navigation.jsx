@@ -166,6 +166,12 @@ function Navigation({ user }) {
                 <DropdownItem key="my_profile" href={`/@${user.username}`} showDivider>
                   My Profile
                 </DropdownItem>
+                <DropdownItem key="liked_images" href="/user/favorites" showDivider>
+                  Liked images
+                </DropdownItem>
+                <DropdownItem key="subscriptions" href="/user/subscriptions" showDivider>
+                  Subscriptions
+                </DropdownItem>
                 <DropdownItem key="account_settings" href="/user/edit" showDivider>
                   Account Settings
                 </DropdownItem>
