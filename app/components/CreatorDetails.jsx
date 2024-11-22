@@ -8,13 +8,7 @@ import { toggleSubscription } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 
-function CreatorDetails({
-  creator,
-  followUserId,
-  isFollowed,
-  isCurrentUser,
-  isAuthenticated,
-}) {
+function CreatorDetails({ creator, isFollowed, isCurrentUser, isAuthenticated }) {
   const [follow, setFollow] = useState(isFollowed)
   const [isNarrow, setIsNarrow] = useState(false)
   const [totalFollowers, setTotalFollowers] = useState(creator.total_followers || 0)
@@ -59,7 +53,7 @@ function CreatorDetails({
     setIsLoading(true)
 
     try {
-      const result = await toggleSubscription(followUserId)
+      const result = await toggleSubscription(creator.id)
 
       if (result === null || result.error) {
         setFollow(previousFollow)
@@ -106,8 +100,8 @@ function CreatorDetails({
       {!isCurrentUser && isAuthenticated && (
         <BVButton
           variant="solid"
-          color={follow ? 'secondary' : 'background'}
-          onClick={handleToggleFollow}
+          color={follow ? 'secondary' : 'primary'}
+          onPress={handleToggleFollow}
           disabled={isLoading}
         >
           {follow ? 'Unfollow' : 'Follow'}

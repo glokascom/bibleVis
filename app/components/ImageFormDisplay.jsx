@@ -291,7 +291,7 @@ function ImageFormDisplay({
           </div>
 
           <BVButton
-            onClick={() => setIsSaveModalOpen(true)}
+            onPress={() => setIsSaveModalOpen(true)}
             fullWidth
             isDisabled={!isFormFilled}
             isLoading={isLoading}

@@ -48,7 +48,7 @@ function CookiesBanner() {
               <CookiesModal handleAfterClick={() => setShowBanner(false)}>
                 <BVButton color="secondary">Manage Cookies</BVButton>
               </CookiesModal>
-              <BVButton color="primary" onClick={handleAcceptAll}>
+              <BVButton color="primary" onPress={handleAcceptAll}>
                 Accept All
               </BVButton>
             </div>

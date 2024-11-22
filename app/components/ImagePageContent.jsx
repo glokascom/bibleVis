@@ -184,7 +184,6 @@ function ImagePageContent({
               />
               <CreatorDetails
                 creator={imageInfo.users}
-                followUserId={imageInfo.users.id}
                 isFollowed={isFollowed}
                 isCurrentUser={isCurrentUser}
                 isAuthenticated={isAuthenticated}

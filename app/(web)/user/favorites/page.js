@@ -4,6 +4,10 @@ import FavoritesGallery from './components/FavoritesGallery'
 
 export const dynamic = 'force-dynamic'
 
+export const metadata = {
+  title: 'Liked images',
+}
+
 export default async function FavoritesPage() {
   let counters = {
     total: 0,

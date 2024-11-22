@@ -7,6 +7,10 @@ import RelatedImages from '@/app/components/RelatedImages'
 import UserInfo from '../../[@username]/components/UserInfo'
 import { getSubscriptions } from './actions/getSubscriptions'
 
+export const metadata = {
+  title: 'Subscriptions',
+}
+
 async function SubscriptionsPage() {
   const { user } = await getUser()
   if (!user) {
@@ -52,7 +56,6 @@ async function SubscriptionsPage() {
                 <div className="block w-full lg:hidden">
                   <CreatorDetails
                     creator={creator}
-                    followUserId={'123'}
                     isAuthenticated={true}
                     isCurrentUser={false}
                     isFollowed={true}

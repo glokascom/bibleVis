@@ -72,7 +72,7 @@ const TopBar = ({ counters, basePath }) => {
               key={button.name}
               className={getButtonStyle(button.name)}
               color="secondary"
-              onClick={() => handleButtonClick(button.name)}
+              onPress={() => handleButtonClick(button.name)}
             >
               {button.name}
               <span
@@ -86,7 +86,7 @@ const TopBar = ({ counters, basePath }) => {
 
         <div className="hidden px-6 md:block md:px-0">
           <Button
-            onClick={() => setIsOpenFilters(!isOpenFilters)}
+            onPress={() => setIsOpenFilters(!isOpenFilters)}
             startContent={<Image src={'/filter.svg'} alt="filter" radius="none" />}
             endContent={
               <ChevronIcon

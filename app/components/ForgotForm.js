@@ -107,7 +107,7 @@ export default function ForgotForm() {
                 )}
                 <BVButton
                   fullWidth
-                  onClick={handle}
+                  onPress={handle}
                   isDisabled={email === '' || loading}
                   color="primary"
                 >

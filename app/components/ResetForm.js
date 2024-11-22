@@ -210,7 +210,7 @@ export default function ResetForm() {
               )}
               <BVButton
                 fullWidth
-                onClick={handleReset}
+                onPress={handleReset}
                 isDisabled={password === '' || confirmPassword === '' || loading}
                 color="primary"
               >

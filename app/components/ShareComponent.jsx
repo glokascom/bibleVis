@@ -49,7 +49,7 @@ function ShareComponent({ currentUrl }) {
         color="background"
         aria-label="Share"
         className="w-1/2 leading-4"
-        onClick={toggleDropdown}
+        onPress={toggleDropdown}
         isIconOnly
       >
         <Image src="/share.svg" alt="share" radius="none" width={20} height={20} />

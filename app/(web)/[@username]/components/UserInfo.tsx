@@ -92,7 +92,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <BVButton
             color={isFollowed ? 'secondary' : 'primary'}
             className="mt-5 w-full md:w-auto md:min-w-48"
-            onClick={handleToggleFollow}
+            onPress={handleToggleFollow}
           >
             {isFollowed ? 'Unfollow' : 'Follow'}
           </BVButton>

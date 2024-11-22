@@ -56,7 +56,7 @@ function ConfirmationModal({ closeModal, handle, type, isHandleSuccess }) {
               <BVButton
                 color="default"
                 className="w-1/2"
-                onClick={isLoading ? () => {} : closeModal}
+                onPress={isLoading ? () => {} : closeModal}
                 isDisabled={isLoading}
               >
                 {typeList[type].left}
@@ -64,7 +64,7 @@ function ConfirmationModal({ closeModal, handle, type, isHandleSuccess }) {
 
               <BVButton
                 color={typeList[type].color}
-                onClick={handleClick}
+                onPress={handleClick}
                 className="w-1/2"
                 isLoading={isLoading}
               >
