@@ -28,7 +28,7 @@ function ImagePageContent({
   isModal = false,
   children,
 }) {
-  const { images, currentIndex, setCurrentIndex } = useGallery()
+  const { images, currentIndex, setCurrentIndex, basePageUrl } = useGallery()
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
   const { push } = useRouter()
   const incrementDownloads = () => {
@@ -183,7 +183,7 @@ function ImagePageContent({
                 isAuthenticated={isAuthenticated}
               />
             </div>
-            {!isModal && imageInfo.software?.length > 0 && (
+            {imageInfo.software?.length > 0 && (
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
@@ -196,10 +196,8 @@ function ImagePageContent({
             )}
 
             <div className="rounded-medium border bg-background p-5 shadow-small">
-              <RelatedImages
-                relatedImages={relatedImages}
-                username={imageInfo.users.username}
-              />
+              <p className="mb-5 font-bold">More by {imageInfo.users.username}</p>
+              <RelatedImages images={relatedImages} baseUrl={basePageUrl} />
             </div>
           </div>
         </div>

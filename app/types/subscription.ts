@@ -1,36 +1,31 @@
-export interface ToggleSubscriptionResult {
-  isFollowed?: boolean
-  error?: string
-}
-
-export interface ProfileUser {
-  id: string
-  username: string
-  total_followers: number
-  avatar_file_exists: boolean
-  isFollowed: boolean
-  cover_file_exists: boolean
-  coverUrl: string
-  avatarUrl: string
-}
-
 export interface User {
   id: string
   username: string
-  avatarUrl: string
+  avatarUrl: string | null
   coverUrl: string
 }
 
-export interface UserProps {
+export interface ProfileUser extends User {
+  total_followers: number
+  avatar_file_path: boolean
+  isFollowed: boolean
+  cover_file_path: boolean
+}
+
+export interface Image {
+  url_slug: string
+  title: string
+  imagePath: string
+}
+export interface Creator extends ProfileUser {
+  images: Image[]
+}
+export interface UserInfoProps {
   isCurrentUser: boolean
   profileUser: ProfileUser
   initialIsFollowed: boolean
   user: User
-}
-
-export interface ProfileUser {
-  id: string
-  cover_file_exists: boolean
+  className?: string
 }
 
 export interface CoverProps {

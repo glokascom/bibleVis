@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import { notFound } from 'next/navigation'
 
 import Gallery from '@/app/(web)/[@username]/components/Gallery'
@@ -14,11 +12,6 @@ export default function SearchPage({
   isAuthenticated = false,
 }) {
   const { searchParams } = useUrlParams(`/s/${searchQuery}`)
-  const [key, setKey] = useState(0)
-
-  useEffect(() => {
-    setKey((prevKey) => prevKey + 1)
-  }, [searchParams])
 
   if (!searchQuery) {
     notFound()
@@ -30,7 +23,7 @@ export default function SearchPage({
       <TopBar counters={counters} basePath={`/s/${searchQuery}`} />
 
       <Gallery
-        key={key}
+        key={`${searchQuery}?${searchParams}`}
         isAuthenticated={isAuthenticated}
         isShowHeader={false}
         searchQuery={`${searchQuery}?${searchParams}`}

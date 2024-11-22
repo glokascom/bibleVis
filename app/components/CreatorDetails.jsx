@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import Link from 'next/link'
 
-import { Image } from '@nextui-org/image'
-
 import { toggleSubscription } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
@@ -107,20 +105,10 @@ function CreatorDetails({
 
       {!isCurrentUser && isAuthenticated && (
         <BVButton
-          variant="light"
-          color="background"
-          className="rounded-medium px-4 text-large"
+          variant="solid"
+          color={follow ? 'secondary' : 'background'}
           onClick={handleToggleFollow}
           disabled={isLoading}
-          startContent={
-            <Image
-              src={follow ? '/unfollow.svg' : '/follow.svg'}
-              alt={follow ? 'unfollow' : 'follow'}
-              width={20}
-              height={20}
-              radius="none"
-            />
-          }
         >
           {follow ? 'Unfollow' : 'Follow'}
         </BVButton>
