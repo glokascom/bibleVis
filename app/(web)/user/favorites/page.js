@@ -1,4 +1,4 @@
-import { getFavoriteCounts } from './actions/getFavoriteCounts'
+import { getImageCounts } from '../../s/[query]/actions/getImageCounts'
 import FavoritesGallery from './components/FavoritesGallery'
 
 export const dynamic = 'force-dynamic'
@@ -11,7 +11,7 @@ export default async function FavoritesPage() {
   }
 
   try {
-    const favoritesResult = await getFavoriteCounts()
+    const favoritesResult = await getImageCounts(null, true)
     counters = favoritesResult.counters
   } catch (err) {
     console.error(err)
