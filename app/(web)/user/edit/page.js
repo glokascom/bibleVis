@@ -4,6 +4,10 @@ import ProfileCard from './components/ProfileCard'
 
 export const dynamic = 'force-dynamic'
 
+export const metadata = {
+  title: 'Edit profile',
+}
+
 export default async function EditUser() {
   let user = null
 

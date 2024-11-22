@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import CreatorDetails from '@/app/components/CreatorDetails'
 import Description from '@/app/components/Description'
@@ -28,7 +28,8 @@ function ImagePageContent({
   isModal = false,
   children,
 }) {
-  const { images, currentIndex, setCurrentIndex } = useGallery()
+  const { images, currentIndex, setCurrentIndex, basePageUrl } = useGallery()
+  const searchParams = useSearchParams()
   const [totalDownloads, setTotalDownloads] = useState(imageInfo.total_downloads || 0)
   const { push } = useRouter()
   const incrementDownloads = () => {
@@ -49,20 +50,26 @@ function ImagePageContent({
     await getImageStats(imageInfo.id)
   }
 
+  const nextUrl = useMemo(() => {
+    const nextIndex = (currentIndex + 1) % images.length
+    return `/image/${images[nextIndex]}${searchParams ? `?${searchParams.toString()}` : ''}`
+  }, [currentIndex, images, searchParams])
+
+  const prevUrl = useMemo(() => {
+    const previousIndex = currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1
+    return `/image/${images[previousIndex]}${searchParams ? `?${searchParams.toString()}` : ''}`
+  }, [currentIndex, images, searchParams])
+
   useEffect(() => {
     const handleKeyDown = async (event) => {
       switch (event.key) {
         case 'ArrowLeft':
           await handlePreviousImage()
-          push(
-            `/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`
-          )
+          push(prevUrl)
           break
         case 'ArrowRight':
           await handleNextImage()
-          push(
-            `/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`
-          )
+          push(nextUrl)
           break
         default:
           break
@@ -111,7 +118,7 @@ function ImagePageContent({
           {images.length > 1 && isModal && (
             <div className="hidden md:block">
               <Link
-                href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
+                href={prevUrl}
                 onClick={handlePreviousImage}
                 className="absolute left-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary-50"
                 scroll={false}
@@ -119,7 +126,7 @@ function ImagePageContent({
                 <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
               </Link>
               <Link
-                href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
+                href={nextUrl}
                 onClick={handleNextImage}
                 className="absolute right-5 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 rotate-180 items-center justify-center rounded-full bg-secondary-50"
                 scroll={false}
@@ -133,7 +140,7 @@ function ImagePageContent({
         {isModal && images.length > 1 && (
           <div className="my-2.5 flex justify-between md:hidden">
             <Link
-              href={`/image/${images[currentIndex - 1 < 0 ? images.length - 1 : currentIndex - 1]}`}
+              href={prevUrl}
               onClick={handlePreviousImage}
               scroll={false}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50"
@@ -141,7 +148,7 @@ function ImagePageContent({
               <Image width={14} height={16} src="/polygon.svg" alt="previous image" />
             </Link>
             <Link
-              href={`/image/${images[currentIndex + 1 > images.length - 1 ? 0 : currentIndex + 1]}`}
+              href={nextUrl}
               onClick={handleNextImage}
               scroll={false}
               className="flex h-10 w-10 rotate-180 items-center justify-center rounded-full bg-secondary-50"
@@ -177,13 +184,12 @@ function ImagePageContent({
               />
               <CreatorDetails
                 creator={imageInfo.users}
-                followUserId={imageInfo.users.id}
                 isFollowed={isFollowed}
                 isCurrentUser={isCurrentUser}
                 isAuthenticated={isAuthenticated}
               />
             </div>
-            {!isModal && imageInfo.software?.length > 0 && (
+            {imageInfo.software?.length > 0 && (
               <div className="rounded-medium border bg-background p-5 shadow-small">
                 <SoftwareUsed software={imageInfo.software} />
               </div>
@@ -196,10 +202,8 @@ function ImagePageContent({
             )}
 
             <div className="rounded-medium border bg-background p-5 shadow-small">
-              <RelatedImages
-                relatedImages={relatedImages}
-                username={imageInfo.users.username}
-              />
+              <p className="mb-5 font-bold">More by {imageInfo.users.username}</p>
+              <RelatedImages images={relatedImages} baseUrl={basePageUrl} />
             </div>
           </div>
         </div>

@@ -4,19 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 
 import Link from 'next/link'
 
-import { Image } from '@nextui-org/image'
-
 import { toggleSubscription } from '../(web)/[@username]/actions/userActions'
 import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 
-function CreatorDetails({
-  creator,
-  followUserId,
-  isFollowed,
-  isCurrentUser,
-  isAuthenticated,
-}) {
+function CreatorDetails({ creator, isFollowed, isCurrentUser, isAuthenticated }) {
   const [follow, setFollow] = useState(isFollowed)
   const [isNarrow, setIsNarrow] = useState(false)
   const [totalFollowers, setTotalFollowers] = useState(creator.total_followers || 0)
@@ -61,7 +53,7 @@ function CreatorDetails({
     setIsLoading(true)
 
     try {
-      const result = await toggleSubscription(followUserId)
+      const result = await toggleSubscription(creator.id)
 
       if (result === null || result.error) {
         setFollow(previousFollow)
@@ -107,20 +99,10 @@ function CreatorDetails({
 
       {!isCurrentUser && isAuthenticated && (
         <BVButton
-          variant="light"
-          color="background"
-          className="rounded-medium px-4 text-large"
-          onClick={handleToggleFollow}
+          variant="solid"
+          color={follow ? 'secondary' : 'primary'}
+          onPress={handleToggleFollow}
           disabled={isLoading}
-          startContent={
-            <Image
-              src={follow ? '/unfollow.svg' : '/follow.svg'}
-              alt={follow ? 'unfollow' : 'follow'}
-              width={20}
-              height={20}
-              radius="none"
-            />
-          }
         >
           {follow ? 'Unfollow' : 'Follow'}
         </BVButton>

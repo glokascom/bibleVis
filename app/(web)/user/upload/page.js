@@ -8,6 +8,11 @@ import { getTags } from './actions/getTags'
 import UploadImage from './components/UploadImage'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata = {
+  title: 'Upload your image',
+}
+
 export default async function UploadImagePage() {
   const getSoftwaresResult = await getSoftwares()
   if (getSoftwaresResult.status === 'error') {

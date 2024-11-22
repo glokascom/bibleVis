@@ -219,7 +219,7 @@ function AuthForm() {
                   className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
                   fullWidth
                   radius="full"
-                  onClick={() => push('/api/auth/google')}
+                  onPress={() => push('/api/auth/google')}
                 >
                   <Image
                     src="/google.svg"
@@ -295,7 +295,7 @@ function AuthForm() {
                 {loginErrors?.message && (
                   <p className="my-4 text-small text-danger">{loginErrors.message}</p>
                 )}
-                <BVButton fullWidth onClick={handleLogin} isLoading={loading}>
+                <BVButton fullWidth onPress={handleLogin} isLoading={loading}>
                   {'Log in'}
                 </BVButton>
                 <BVLink
@@ -316,7 +316,7 @@ function AuthForm() {
                   className="relative mb-2 mt-5 h-14 border-1 hover:shadow-medium"
                   fullWidth
                   radius="full"
-                  onClick={() =>
+                  onPress={() =>
                     push(
                       '/api/auth/google?redirectedFrom=' +
                         (searchParams.get('redirectedFrom') ?? '/')
@@ -420,7 +420,7 @@ function AuthForm() {
                 {signupErrors?.message && (
                   <p className="my-4 text-small text-danger">{signupErrors.message}</p>
                 )}
-                <BVButton fullWidth onClick={handleSignup} isLoading={loading}>
+                <BVButton fullWidth onPress={handleSignup} isLoading={loading}>
                   {'Join'}
                 </BVButton>
               </Tab>

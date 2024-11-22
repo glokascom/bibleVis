@@ -64,7 +64,7 @@ function Download({ imageInfo = {}, onDownload }) {
       <ButtonGroup radius="full" fullWidth ref={buttonGroupRef}>
         <Button
           className="h-14 w-4/5 justify-start bg-primary pl-12 text-medium font-semibold text-white"
-          onClick={() => downloadImage('original')}
+          onPress={() => downloadImage('original')}
         >
           <Image src="/download.svg" alt="Download" width={24} height={24} priority />
           <p>Download</p>

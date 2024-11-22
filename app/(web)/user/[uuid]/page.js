@@ -5,6 +5,10 @@ import { getTags } from '../upload/actions/getTags'
 import { getImageInfoById } from './actions/getImage'
 import EditImage from './components/EditImage'
 
+export const metadata = {
+  title: 'Edit image',
+}
+
 export default async function Page({ params }) {
   const { uuid } = params
   if (!uuid) {

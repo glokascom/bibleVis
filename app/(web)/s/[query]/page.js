@@ -1,7 +1,7 @@
+import { getImageCounts } from '@/app/actions/getImageCounts'
 import { getUser } from '@/app/actions/getUser'
 
 import { openGraph } from '../../meta'
-import { getImageCounts } from './actions/getImageCounts'
 import SearchImage from './components/SearchImage'
 
 export async function generateMetadata({ params: { query } }) {

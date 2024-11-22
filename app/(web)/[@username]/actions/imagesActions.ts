@@ -430,7 +430,6 @@ export async function getRandomImagesExcluding(
       'get_random_images',
       { user_id: userId, limit_images: numberOfImages }
     )
-
     if (fetchError) throw fetchError
 
     const filteredImages = images.filter(

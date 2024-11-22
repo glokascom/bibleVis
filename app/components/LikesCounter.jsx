@@ -60,7 +60,7 @@ function LikesCounter({ imageInfo, isLike, isAuthenticated, totalLikes }) {
         variant="bordered"
         color="background"
         className={commonButtonClasses}
-        onClick={handleLikeClick}
+        onPress={handleLikeClick}
         disabled={isLoading}
         startContent={
           <Image
