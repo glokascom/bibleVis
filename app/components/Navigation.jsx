@@ -107,6 +107,80 @@ function Navigation({ user }) {
           />
         </NavbarContent>
         <div className="flex items-center gap-2">
+          <NavbarItem className="mx-6 hidden md:block lg:ml-16">
+            <Dropdown
+              placement="bottom-end"
+              className="bg-secondary-50"
+              classNames={{
+                content: 'py-1 px-2 shadow-none mt-4',
+              }}
+            >
+              <DropdownTrigger>
+                <div className="flex cursor-pointer items-center gap-1">
+                  <span className="mr-2 text-base font-semibold">Explore</span>
+                  <svg
+                    width="11"
+                    height="8"
+                    viewBox="0 0 11 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1 1.25L5.5 5.75L10 1.25"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Profile Actions"
+                variant="light"
+                as={`div`}
+                color="primary"
+                itemClasses={{
+                  title: 'font-[600] text-medium',
+                  base: 'py-2.5',
+                }}
+              >
+                <DropdownItem key="about_b_V" href="" showDivider>
+                  About BibleVis
+                </DropdownItem>
+                <DropdownItem key="privacy_policy" href="" showDivider>
+                  Privacy Policy
+                </DropdownItem>
+                <DropdownItem key="terms_of_use" href="" showDivider>
+                  Terms of Use
+                </DropdownItem>
+                <DropdownItem key="social" textValue="social">
+                  <div className="flex items-center">
+                    <a
+                      target="_blank"
+                      href="https://youtube.com/@levelbible?si=RU5mp2w7xO9QnkFp"
+                    >
+                      <Image src="/Youtube.svg" alt="youtube" />
+                    </a>
+                    <a target="_blank" href="">
+                      <Image src="/Twitter.svg" alt="twitter" className="p-2" />
+                    </a>
+                    <a
+                      target="_blank"
+                      href="https://www.instagram.com/biblevis?igsh=MTZieDVmbWw1eDIybw=="
+                    >
+                      <Image src="/Instagram.svg" alt="instagram" />
+                    </a>
+                    <a target="_blank" href="">
+                      <Image src="/Facebook.svg" alt="facebook" />
+                    </a>
+                    <a target="_blank" href="">
+                      <Image src="/Linkedin.svg" alt="linkedin" />
+                    </a>
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarItem>
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink as={Link} href="/pages/license">
               License
