@@ -19,6 +19,7 @@ import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import Social from './Social'
 
 function formatSearchQuery(query) {
   if (!query) return ''
@@ -155,29 +156,7 @@ function Navigation({ user }) {
                     Terms of Use
                   </DropdownItem>
                   <DropdownItem key="social" textValue="social">
-                    <div className="flex items-center">
-                      <a
-                        target="_blank"
-                        href="https://youtube.com/@levelbible?si=RU5mp2w7xO9QnkFp"
-                      >
-                        <Image src="/Youtube.svg" alt="youtube" />
-                      </a>
-                      <a target="_blank" href="">
-                        <Image src="/Twitter.svg" alt="twitter" className="p-2" />
-                      </a>
-                      <a
-                        target="_blank"
-                        href="https://www.instagram.com/biblevis?igsh=MTZieDVmbWw1eDIybw=="
-                      >
-                        <Image src="/Instagram.svg" alt="instagram" />
-                      </a>
-                      <a target="_blank" href="">
-                        <Image src="/Facebook.svg" alt="facebook" />
-                      </a>
-                      <a target="_blank" href="">
-                        <Image src="/Linkedin.svg" alt="linkedin" />
-                      </a>
-                    </div>
+                    <Social />
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
