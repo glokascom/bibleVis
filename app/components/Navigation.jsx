@@ -20,6 +20,7 @@ import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
 import Explore from './Explore'
+import ExploreMobile from './ExploreMobile'
 
 function formatSearchQuery(query) {
   if (!query) return ''
@@ -109,7 +110,7 @@ function Navigation({ user }) {
         </NavbarContent>
         <div className="flex items-center gap-2">
           <NavbarItem className="mx-6 hidden md:block lg:ml-16">
-            {user ? <Explore /> : <></>}
+            <Explore />
           </NavbarItem>
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink as={Link} href="/pages/license">
@@ -200,7 +201,7 @@ function Navigation({ user }) {
                   className="block md:hidden"
                   textValue="explore"
                 >
-                  <Explore />
+                  <ExploreMobile />
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
@@ -277,6 +278,15 @@ function Navigation({ user }) {
                   >
                     <DropdownItem key="license" href="/pages/license" showDivider>
                       License
+                    </DropdownItem>
+                    <DropdownItem
+                      key="explore"
+                      closeOnSelect={false}
+                      showDivider
+                      className="block md:hidden"
+                      textValue="explore"
+                    >
+                      <ExploreMobile />
                     </DropdownItem>
                     <DropdownItem key="login" className="text-primary">
                       <Link scroll={false} href={`/login?redirectedFrom=${pathname}`}>
