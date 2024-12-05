@@ -164,7 +164,7 @@ function Navigation({ user }) {
                 as={`div`}
                 color="primary"
                 itemClasses={{
-                  title: 'font-[600] text-medium',
+                  title: 'font-semibold text-medium',
                   base: 'py-2.5',
                 }}
               >
@@ -272,7 +272,7 @@ function Navigation({ user }) {
                     as="div"
                     color="primary"
                     itemClasses={{
-                      title: 'font-[600] text-medium',
+                      title: 'font-semibold text-medium',
                       base: 'py-2.5',
                     }}
                   >
