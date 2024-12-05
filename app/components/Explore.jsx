@@ -13,7 +13,7 @@ function Explore() {
     >
       <DropdownTrigger>
         <div className="flex cursor-pointer items-center gap-1">
-          <span className="mr-2 text-base font-semibold">Explore</span>
+          <span className="mr-2 py-3 text-base font-semibold">Explore</span>
           <svg
             width="11"
             height="8"
@@ -31,7 +31,7 @@ function Explore() {
         </div>
       </DropdownTrigger>
       <DropdownMenu
-        aria-label="Profile Actions"
+        aria-label="Explore"
         variant="light"
         as={`div`}
         color="primary"

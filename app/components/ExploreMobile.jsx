@@ -12,7 +12,7 @@ function ExploreMobile() {
       itemClasses={{
         trigger: 'p-0',
         title: 'text-base font-semibold p-0',
-        indicator: 'text-black',
+        indicator: 'text-black data-[open=true]:-rotate-180',
       }}
     >
       <AccordionItem
