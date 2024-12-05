@@ -39,20 +39,20 @@ function ExploreMobile() {
         }
       >
         <div className="flex flex-col">
-          <BVLink key="about_b_V" href="/pages/about" className="border-b py-2.5 text-sm">
+          <BVLink key="about_b_V" href="/pages/about" className="border-b py-2.5 text-xs">
             About BibleVis
           </BVLink>
           <BVLink
             key="privacy_policy"
             href="/pages/privacy"
-            className="border-b py-2.5 text-sm"
+            className="border-b py-2.5 text-xs"
           >
             Privacy Policy
           </BVLink>
           <BVLink
             key="terms_of_use"
             href="/pages/tos"
-            className="border-b py-2.5 text-sm"
+            className="border-b py-2.5 text-xs"
           >
             Terms of Use
           </BVLink>
