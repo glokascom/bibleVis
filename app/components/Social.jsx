@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 function Social() {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-between">
       <Link href="https://youtube.com/@levelbible?si=RU5mp2w7xO9QnkFp" target="_blank">
         <Image src="/Youtube.svg" alt="youtube" height={28} width={28} />
       </Link>
