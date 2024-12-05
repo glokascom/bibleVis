@@ -269,7 +269,7 @@ function Navigation({ user }) {
                   <DropdownMenu
                     aria-label="Menu"
                     variant="light"
-                    as={`div`}
+                    as="div"
                     color="primary"
                     itemClasses={{
                       title: 'font-[600] text-medium',

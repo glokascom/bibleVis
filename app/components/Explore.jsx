@@ -33,7 +33,7 @@ function Explore() {
       <DropdownMenu
         aria-label="Explore"
         variant="light"
-        as={`div`}
+        as="div"
         color="primary"
         itemClasses={{
           title: 'font-[600] text-medium',
