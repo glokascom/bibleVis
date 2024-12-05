@@ -11,7 +11,4 @@
     "javascriptreact",
     "typescriptreact"
   ],
-  "conventionalCommits.scopes": [
-    "Social.jsx"
-  ]
 }
