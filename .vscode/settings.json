@@ -12,6 +12,7 @@
     "typescriptreact"
   ],
   "conventionalCommits.scopes": [
-    "Social.jsx"
+    "Social.jsx",
+    "CropImage ImageRedactor"
   ]
 }

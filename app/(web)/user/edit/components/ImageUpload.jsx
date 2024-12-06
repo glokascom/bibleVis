@@ -4,8 +4,10 @@ import Image from 'next/image'
 
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
+import { Modal } from '@/app/components/Modal'
 
 import { uploadImage } from '../actions/uploadImage'
+import ImageRedactor from './ImageRedactor'
 
 function ImageUpload({
   label,
@@ -19,6 +21,8 @@ function ImageUpload({
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [parentWidth, setParentWidth] = useState(0)
+  const [imageURL, setImageURL] = useState('')
+  const [isShowModal, setIsShowModal] = useState(false)
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -66,6 +70,10 @@ function ImageUpload({
 
     const img = new window.Image()
     const objectUrl = URL.createObjectURL(file)
+
+    setIsShowModal(true)
+    setImageURL(objectUrl)
+
     img.src = objectUrl
 
     img.onload = async () => {
@@ -133,6 +141,11 @@ function ImageUpload({
         )}
         {error && <div className="text-center text-danger-500">{error}</div>}
       </div>
+      {isShowModal && (
+        <Modal isCloseButton={false}>
+          <ImageRedactor imageURL={imageURL} />
+        </Modal>
+      )}
     </div>
   )
 }
