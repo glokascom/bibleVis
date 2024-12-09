@@ -19,6 +19,8 @@ import { BVAvatar } from './BVAvatar'
 import { BVButton } from './BVButton'
 import { BVInput } from './BVInput'
 import { BVLink } from './BVLink'
+import Explore from './Explore'
+import ExploreMobile from './ExploreMobile'
 
 function formatSearchQuery(query) {
   if (!query) return ''
@@ -107,6 +109,9 @@ function Navigation({ user }) {
           />
         </NavbarContent>
         <div className="flex items-center gap-2">
+          <NavbarItem className="mx-6 hidden md:block lg:ml-16">
+            <Explore />
+          </NavbarItem>
           <NavbarItem className="mx-6 hidden md:block lg:mx-16">
             <BVLink as={Link} href="/pages/license">
               License
@@ -159,7 +164,7 @@ function Navigation({ user }) {
                 as={`div`}
                 color="primary"
                 itemClasses={{
-                  title: 'font-[600] text-medium',
+                  title: 'font-semibold text-medium',
                   base: 'py-2.5',
                 }}
               >
@@ -188,6 +193,15 @@ function Navigation({ user }) {
                   className="block md:hidden"
                 >
                   License
+                </DropdownItem>
+                <DropdownItem
+                  key="explore"
+                  closeOnSelect={false}
+                  showDivider
+                  className="block md:hidden"
+                  textValue="explore"
+                >
+                  <ExploreMobile />
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
@@ -255,15 +269,24 @@ function Navigation({ user }) {
                   <DropdownMenu
                     aria-label="Menu"
                     variant="light"
-                    as={`div`}
+                    as="div"
                     color="primary"
                     itemClasses={{
-                      title: 'font-[600] text-medium',
+                      title: 'font-semibold text-medium',
                       base: 'py-2.5',
                     }}
                   >
                     <DropdownItem key="license" href="/pages/license" showDivider>
                       License
+                    </DropdownItem>
+                    <DropdownItem
+                      key="explore"
+                      closeOnSelect={false}
+                      showDivider
+                      className="block md:hidden"
+                      textValue="explore"
+                    >
+                      <ExploreMobile />
                     </DropdownItem>
                     <DropdownItem key="login" className="text-primary">
                       <Link scroll={false} href={`/login?redirectedFrom=${pathname}`}>
