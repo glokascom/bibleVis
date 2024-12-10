@@ -4,9 +4,24 @@ import Cropper from 'react-easy-crop'
 
 import BVButton from '@/app/components/BVButton'
 
-import getCroppedImg from './CropImage'
+import getCroppedImg from '../helper/сropImage'
 
-function ImageRedactor({ image, setCroppedImage, setIsShowModal, buttonLabel }) {
+function ImageRedactor({ image, setCroppedImage, setIsShowModal, type }) {
+  const config = {
+    avatar: {
+      cropShape: 'round',
+      aspect: 1,
+      classes: 'h-[120vw] w-[90vw]  sm:h-[66vw] sm:w-[50vw] md:h-[73vh] md:w-[55vh]',
+    },
+    cover: {
+      cropShape: 'rect',
+      aspect: 3 / 1,
+      classes: 'w-[90vw] h-[53vw]  sm:w-[66vw] sm:h-[39vw] md:w-[80vh] md:h-[47vh]',
+    },
+  }
+
+  const currentConfig = config[type] || {}
+
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
@@ -31,11 +46,7 @@ function ImageRedactor({ image, setCroppedImage, setIsShowModal, buttonLabel }) 
 
   const getClasses = () => {
     const baseClasses = 'relative flex flex-col items-center'
-
-    const changingClasses =
-      buttonLabel === 'Upload new avatar'
-        ? 'h-[120vw] w-[90vw]  sm:h-[66vw] sm:w-[50vw] md:h-[73vh] md:w-[55vh]'
-        : 'w-[90vw] h-[53vw]  sm:w-[66vw] sm:h-[39vw] md:w-[80vh] md:h-[47vh]'
+    const changingClasses = currentConfig.classes
 
     return `${baseClasses} ${changingClasses}`
   }
@@ -45,10 +56,10 @@ function ImageRedactor({ image, setCroppedImage, setIsShowModal, buttonLabel }) 
       <div className="flex flex-col items-center">
         <Cropper
           image={image}
+          aspect={currentConfig.aspect}
+          cropShape={currentConfig.cropShape}
           crop={crop}
           zoom={zoom}
-          cropShape={buttonLabel === 'Upload new avatar' ? 'round' : 'rect'}
-          aspect={buttonLabel === 'Upload new avatar' ? 1 : 3 / 1}
           objectFit="horizontal-cover"
           showGrid={false}
           onCropChange={setCrop}

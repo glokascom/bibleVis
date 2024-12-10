@@ -26,6 +26,8 @@ function ImageUpload({
   const [croppedImage, setCroppedImage] = useState(null)
   const containerRef = useRef(null)
 
+  const type = isAvatar ? 'avatar' : 'cover'
+
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -121,7 +123,7 @@ function ImageUpload({
     try {
       setIsLoading(true)
       const formData = new FormData()
-      formData.append(isAvatar ? 'avatar' : 'cover', blob)
+      formData.append(type, blob)
 
       const { error } = await uploadImage(formData)
       if (error) {
@@ -185,7 +187,7 @@ function ImageUpload({
             image={base64}
             setCroppedImage={setCroppedImage}
             setIsShowModal={setIsShowModal}
-            buttonLabel={buttonLabel}
+            type={type}
           />
         </Modal>
       )}
