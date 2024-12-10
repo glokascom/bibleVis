@@ -1,3 +1,5 @@
+'use client'
+
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react'
 
 import Social from './Social'
