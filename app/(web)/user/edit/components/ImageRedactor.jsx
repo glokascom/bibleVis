@@ -6,45 +6,65 @@ import BVButton from '@/app/components/BVButton'
 
 import getCroppedImg from './CropImage'
 
-function ImageRedactor({ imageURL }) {
-  const [cropRectabgle, setCropRectabgle] = useState({ x: 0, y: 0 })
-  const [zoomRectabgle, setZoomRectabgle] = useState(1)
-  const [croppedAreaPixelsRectangle, setCroppedAreaPixelsRectangle] = useState(null)
-  const [croppedImageRectangle, setCroppedImageRectangle] = useState(null)
-  console.log('🚀 ~ ImageRedactor ~ croppedImageRectangle:', croppedImageRectangle)
+function ImageRedactor({ image, setCroppedImage, setIsShowModal, buttonLabel }) {
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 
-  const onCropCompleteRectangle = (croppedArea, croppedImageRectangle) => {
-    setCroppedAreaPixelsRectangle(croppedImageRectangle)
+  const onCropComplete = (croppedArea, croppedImage) => {
+    setCroppedAreaPixels(croppedImage)
   }
 
-  const showCroppedImageRectangle = async () => {
+  const onCancel = () => {
+    setIsShowModal(false)
+  }
+
+  const showCroppedImage = async () => {
     try {
-      const croppedImage = await getCroppedImg(img1, croppedAreaPixelsRectangle)
-      console.log('donee', { croppedImage })
-      setCroppedImageRectangle(croppedImage)
+      const croppedImage = await getCroppedImg(image, croppedAreaPixels)
+      setCroppedImage(croppedImage)
+      setIsShowModal(false)
     } catch (e) {
       console.error(e)
     }
   }
 
+  const getClasses = () => {
+    const baseClasses = 'relative flex flex-col items-center'
+
+    const changingClasses =
+      buttonLabel === 'Upload new avatar'
+        ? 'h-[120vw] w-[90vw]  sm:h-[66vw] sm:w-[50vw] md:h-[73vh] md:w-[55vh]'
+        : 'w-[90vw] h-[53vw]  sm:w-[66vw] sm:h-[39vw] md:w-[80vh] md:h-[47vh]'
+
+    return `${baseClasses} ${changingClasses}`
+  }
+
   return (
-    <div className="flex h-96 w-96 flex-col items-center">
+    <div className={getClasses()}>
       <div className="flex flex-col items-center">
         <Cropper
-          image={imageURL}
-          crop={cropRectabgle}
-          zoom={zoomRectabgle}
-          aspect={1}
-          cropShape="round"
+          image={image}
+          crop={crop}
+          zoom={zoom}
+          cropShape={buttonLabel === 'Upload new avatar' ? 'round' : 'rect'}
+          aspect={buttonLabel === 'Upload new avatar' ? 1 : 3 / 1}
+          objectFit="horizontal-cover"
           showGrid={false}
-          onCropChange={setCropRectabgle}
-          onCropComplete={onCropCompleteRectangle}
-          onZoomChange={setZoomRectabgle}
+          onCropChange={setCrop}
+          onCropComplete={onCropComplete}
+          onZoomChange={setZoom}
+          classes={{
+            containerClassName: 'rounded-xl',
+          }}
         />
       </div>
-      <BVButton className="" onClick={showCroppedImageRectangle}>
-        Show Result
-      </BVButton>
+      <div className="absolute -bottom-20 flex gap-5">
+        <BVButton color="secondary" onClick={onCancel}>
+          Cancel
+        </BVButton>
+        <BVButton onClick={showCroppedImage}>Set an image</BVButton>
+      </div>
     </div>
   )
 }
