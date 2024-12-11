@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
 
@@ -99,7 +99,35 @@ function ImageUpload({
     })
   }
 
-  const handleImageUpload = async () => {
+  const fetchBlobFromUrl = useCallback(async (url) => {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
+    }
+    return await response.blob()
+  }, [])
+
+  const uploadCroppedImage = useCallback(
+    async (blob) => {
+      try {
+        setIsLoading(true)
+        const formData = new FormData()
+        formData.append(type, blob)
+
+        const { error } = await uploadImage(formData)
+        if (error) {
+          throw new Error(error)
+        }
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [type]
+  )
+
+  const handleImageUpload = useCallback(async () => {
     if (!croppedImage) return
 
     try {
@@ -109,36 +137,11 @@ function ImageUpload({
       console.error('Error uploading cropped image:', error)
       setError('Failed to upload cropped image.')
     }
-  }
-
-  const fetchBlobFromUrl = async (url) => {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.status}`)
-    }
-    return await response.blob()
-  }
-
-  const uploadCroppedImage = async (blob) => {
-    try {
-      setIsLoading(true)
-      const formData = new FormData()
-      formData.append(type, blob)
-
-      const { error } = await uploadImage(formData)
-      if (error) {
-        throw new Error(error)
-      }
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [croppedImage, fetchBlobFromUrl, uploadCroppedImage])
 
   useEffect(() => {
     handleImageUpload()
-  }, [croppedImage])
+  }, [croppedImage, handleImageUpload])
 
   return (
     <div className="mx-auto w-full max-w-sm">

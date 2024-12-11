@@ -12,6 +12,10 @@ export default async function getCroppedImg(
   pixelCrop,
   flip = { horizontal: false, vertical: false }
 ) {
+  if (!imageSrc) {
+    return null
+  }
+
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -54,7 +58,15 @@ export default async function getCroppedImg(
 
   return new Promise((resolve) => {
     croppedCanvas.toBlob((file) => {
-      resolve(URL.createObjectURL(file))
+      if (file) {
+        const objectURL = URL.createObjectURL(file)
+        resolve({
+          objectURL,
+          revoke: () => URL.revokeObjectURL(objectURL),
+        })
+      } else {
+        resolve(null)
+      }
     }, 'image/jpeg')
   })
 }
