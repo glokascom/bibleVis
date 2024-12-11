@@ -1,6 +1,6 @@
 'use client'
 
-import { MouseEvent } from 'react'
+import { MouseEvent, useRef } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -16,6 +16,7 @@ export function Modal({
 }: ModalProps) {
   const router = useRouter()
   const { basePageUrl, searchParams } = useGallery()
+  const mouseDownInside = useRef(false)
 
   function onDismiss() {
     if (closeModal) {
@@ -29,15 +30,26 @@ export function Modal({
       router.back()
     }
   }
-  const handleClickOutside = (event: MouseEvent<HTMLDivElement>) => {
+
+  const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    mouseDownInside.current = event.target !== event.currentTarget
+  }
+
+  const handleMouseUp = (event: MouseEvent<HTMLDivElement>) => {
+    if (mouseDownInside.current) {
+      return
+    }
+
     if (event.target === event.currentTarget) {
       onDismiss()
     }
   }
+
   return (
     <div
       className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-secondary/90"
-      onClick={handleClickOutside}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       <div
         className={`relative ${showCloseOnMobile ? 'mt-14 max-h-[calc(100vh-3.5rem)]' : 'mx-5'}`}
