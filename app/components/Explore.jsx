@@ -10,6 +10,7 @@ function Explore() {
       placement="bottom-end"
       className="bg-secondary-50"
       classNames={{
+        base: 'drop-shadow',
         content: 'py-1 px-2 shadow-none mt-4',
       }}
     >
