@@ -66,7 +66,7 @@ function ImageRedactor({ image, setCroppedImage, setIsShowModal, type }) {
           onCropComplete={onCropComplete}
           onZoomChange={setZoom}
           classes={{
-            containerClassName: 'rounded-xl',
+            containerClassName: 'rounded-xl bg-foreground',
           }}
         />
       </div>
