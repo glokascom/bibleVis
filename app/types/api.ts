@@ -18,6 +18,7 @@ export interface ModalProps {
   children: React.ReactNode
   isCloseButton?: boolean
   showCloseOnMobile?: boolean
+  isFullScreen?: boolean
   closeModal?: () => void
 }
 
