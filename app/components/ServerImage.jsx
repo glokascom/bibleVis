@@ -9,7 +9,7 @@ function ServerImage({ image }) {
       placeholder="blur"
       width={image.file_sizes.original.width}
       height={image.file_sizes.original.height}
-      className="aspect-video h-auto w-full rounded-medium bg-secondary-50 !bg-contain object-contain"
+      className="h-auto w-full rounded-medium object-contain"
     />
   )
 }
