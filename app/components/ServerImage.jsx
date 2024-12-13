@@ -24,6 +24,11 @@ function ServerImage({ image }) {
     }, 100)
   }, [setIsShowImage])
 
+  const objectClass =
+    image.file_sizes.original.width > image.file_sizes.original.height
+      ? 'object-cover md:aspect-video w-full'
+      : 'object-contain w-80'
+
   return (
     <>
       <Image
@@ -34,7 +39,7 @@ function ServerImage({ image }) {
         placeholder="blur"
         width={image.file_sizes.original.width}
         height={image.file_sizes.original.height}
-        className="w-1/1 cursor-zoom-in rounded-medium border-3 border-orange-700 object-contain md:aspect-video"
+        className={`cursor-zoom-in rounded-medium ${objectClass}`}
       />
       {isShowImage && (
         <FullScreenImage image={image} onHideImage={onHideImage} emergence={emergence} />

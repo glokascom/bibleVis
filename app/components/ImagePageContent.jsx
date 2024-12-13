@@ -92,7 +92,7 @@ function ImagePageContent({
         className={`flex flex-col lg:flex-row lg:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
       >
         <div
-          className={`relative rounded-medium bg-secondary-50 md:p-2.5 lg:w-2/3 xl:w-3/4 ${isModal && images.length > 1 ? '' : 'mb-5'}`}
+          className={`relative flex justify-center rounded-medium bg-secondary-50 md:p-2.5 lg:w-2/3 xl:w-3/4 ${isModal && images.length > 1 ? '' : 'mb-5'}`}
         >
           {imageInfo.imagePath ? (
             <>

@@ -12,7 +12,7 @@ function FullScreenImage({ image, onHideImage, emergence }) {
       className="object-contain duration-200"
     >
       <div className="pointer-events-none fixed right-5 top-5 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-background">
-        <Image src="/maximize.png" alt="edit" width={17} height={17} radius="none" />
+        <Image src="/minimize.png" alt="edit" width={17} height={17} radius="none" />
       </div>
       <Image
         onClick={onHideImage}
