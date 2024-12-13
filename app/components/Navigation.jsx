@@ -132,6 +132,7 @@ function Navigation({ user }) {
               className="bg-secondary-50"
               classNames={{
                 content: 'py-1 px-2 shadow-none mt-4',
+                base: 'drop-shadow',
               }}
             >
               <DropdownTrigger>
@@ -230,6 +231,7 @@ function Navigation({ user }) {
                   className="bg-secondary-50"
                   classNames={{
                     content: 'py-1 px-2 shadow-none mt-4',
+                    base: 'drop-shadow',
                   }}
                 >
                   <DropdownTrigger>

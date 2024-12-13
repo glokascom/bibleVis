@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
 
 import { BVAvatar } from '@/app/components/BVAvatar'
 import { BVButton } from '@/app/components/BVButton'
+import { Modal } from '@/app/components/Modal'
 
 import { uploadImage } from '../actions/uploadImage'
+import ImageRedactor from './ImageRedactor'
 
 function ImageUpload({
   label,
@@ -19,13 +21,18 @@ function ImageUpload({
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [parentWidth, setParentWidth] = useState(0)
+  const [isShowModal, setIsShowModal] = useState(false)
+  const [base64, setBase64] = useState('')
+  const [croppedImage, setCroppedImage] = useState(null)
   const containerRef = useRef(null)
+
+  const type = isAvatar ? 'avatar' : 'cover'
 
   useEffect(() => {
     if (!containerRef.current) return
 
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         setParentWidth(entry.contentRect.width)
       }
     })
@@ -48,30 +55,64 @@ function ImageUpload({
     if (!file) return
 
     setError(null)
-    setIsLoading(true)
 
+    if (!isValidFile(file)) {
+      setIsLoading(false)
+      return
+    }
+
+    await loadFileAsBase64(file)
+    setIsShowModal(true)
+
+    e.target.value = ''
+  }
+
+  const isValidFile = (file) => {
     const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    const maxFileSizeMB = 4
+
     if (!validImageTypes.includes(file.type)) {
       setError('Invalid file type. Please upload an image.')
-      setIsLoading(false)
-      return
+      return false
     }
 
-    const maxFileSizeMB = 4
     if (file.size > maxFileSizeMB * 1024 * 1024) {
       setError(`Max file size is ${maxFileSizeMB}MB`)
-      setIsLoading(false)
-      return
+      return false
     }
 
-    const img = new window.Image()
-    const objectUrl = URL.createObjectURL(file)
-    img.src = objectUrl
+    return true
+  }
 
-    img.onload = async () => {
+  const loadFileAsBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setBase64(reader.result)
+        resolve()
+      }
+      reader.onerror = (error) => {
+        setError('Failed to read file.')
+        reject(error)
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const fetchBlobFromUrl = useCallback(async (url) => {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
+    }
+    return await response.blob()
+  }, [])
+
+  const uploadCroppedImage = useCallback(
+    async (blob) => {
       try {
+        setIsLoading(true)
         const formData = new FormData()
-        formData.append(isAvatar ? 'avatar' : 'cover', file)
+        formData.append(type, blob)
 
         const { error } = await uploadImage(formData)
         if (error) {
@@ -81,16 +122,26 @@ function ImageUpload({
         setError(err.message)
       } finally {
         setIsLoading(false)
-        URL.revokeObjectURL(objectUrl)
       }
-    }
+    },
+    [type]
+  )
 
-    img.onerror = () => {
-      setError('Failed to load image.')
-      setIsLoading(false)
-      URL.revokeObjectURL(objectUrl)
+  const handleImageUpload = useCallback(async () => {
+    if (!croppedImage) return
+
+    try {
+      const blob = await fetchBlobFromUrl(croppedImage)
+      await uploadCroppedImage(blob)
+    } catch (error) {
+      console.error('Error uploading cropped image:', error)
+      setError('Failed to upload cropped image.')
     }
-  }
+  }, [croppedImage, fetchBlobFromUrl, uploadCroppedImage])
+
+  useEffect(() => {
+    handleImageUpload()
+  }, [croppedImage, handleImageUpload])
 
   return (
     <div className="mx-auto w-full max-w-sm">
@@ -128,11 +179,21 @@ function ImageUpload({
         </label>
         {recomendedWidth && recomendedHeight && (
           <div className="text-center text-small">
-            Recomended size: {recomendedWidth} x {recomendedHeight} pixels
+            Recommended size: {recomendedWidth} x {recomendedHeight} pixels
           </div>
         )}
         {error && <div className="text-center text-danger-500">{error}</div>}
       </div>
+      {isShowModal && (
+        <Modal isCloseButton={false}>
+          <ImageRedactor
+            image={base64}
+            setCroppedImage={setCroppedImage}
+            setIsShowModal={setIsShowModal}
+            type={type}
+          />
+        </Modal>
+      )}
     </div>
   )
 }
