@@ -27,7 +27,7 @@ function ServerImage({ image }) {
   const objectClass =
     image.file_sizes.original.width > image.file_sizes.original.height
       ? 'object-cover md:aspect-video w-full'
-      : 'object-contain w-80'
+      : 'object-contain w-full md:w-80'
 
   return (
     <>
