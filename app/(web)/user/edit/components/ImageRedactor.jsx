@@ -47,15 +47,8 @@ function ImageRedactor({ image, setCroppedImage, setIsShowModal, type }) {
     }
   }
 
-  const getClasses = () => {
-    const baseClasses = 'relative flex flex-col items-center'
-    const changingClasses = currentConfig.classes
-
-    return `${baseClasses} ${changingClasses}`
-  }
-
   return (
-    <div className={getClasses()}>
+    <div className={`relative flex flex-col items-center ${currentConfig.classes}`}>
       <div className="flex flex-col items-center">
         <Cropper
           image={image}

@@ -12,7 +12,6 @@ export function Modal({
   closeModal,
   isCloseButton = true,
   showCloseOnMobile = false,
-  isFullScreen = false,
   children,
 }: ModalProps) {
   const router = useRouter()
@@ -52,22 +51,19 @@ export function Modal({
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
-      {isFullScreen && <div className="h-[100vh] w-full">{children}</div>}
-      {!isFullScreen && (
-        <div
-          className={`relative ${showCloseOnMobile ? 'mt-14 max-h-[calc(100vh-3.5rem)]' : 'mx-5'}`}
-        >
-          {isCloseButton && (
-            <button
-              onClick={onDismiss}
-              className={`absolute -top-12 right-5 h-10 w-10 items-center justify-center rounded-full bg-secondary-50 text-secondary md:-right-12 md:top-0 ${showCloseOnMobile ? 'flex' : 'hidden md:flex'}`}
-            >
-              <CloseIcon />
-            </button>
-          )}
-          {children}
-        </div>
-      )}
+      <div
+        className={`relative ${showCloseOnMobile ? 'mt-14 max-h-[calc(100vh-3.5rem)]' : 'mx-5'}`}
+      >
+        {isCloseButton && (
+          <button
+            onClick={onDismiss}
+            className={`absolute -top-12 right-5 h-10 w-10 items-center justify-center rounded-full bg-secondary-50 text-secondary md:-right-12 md:top-0 ${showCloseOnMobile ? 'flex' : 'hidden md:flex'}`}
+          >
+            <CloseIcon />
+          </button>
+        )}
+        {children}
+      </div>
     </div>
   )
 }
