@@ -26,9 +26,13 @@ export default async function getCroppedImg(
   }
 
   const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
 
-  if (!ctx) {
+  let ctx
+
+  try {
+    ctx = canvas.getContext('2d')
+  } catch (error) {
+    console.error(`Error: Unable to get canvas context: ${error.message}`)
     return null
   }
 

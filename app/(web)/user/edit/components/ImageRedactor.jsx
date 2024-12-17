@@ -47,32 +47,25 @@ function ImageRedactor({ image, setCroppedImage, setIsShowModal, type }) {
     }
   }
 
-  const getClasses = () => {
-    const baseClasses = 'relative flex flex-col items-center'
-    const changingClasses = currentConfig.classes
-
-    return `${baseClasses} ${changingClasses}`
+  const cropperProps = {
+    image,
+    aspect: currentConfig.aspect,
+    cropShape: currentConfig.cropShape,
+    crop,
+    zoom,
+    objectFit: 'horizontal-cover',
+    showGrid: false,
+    onCropChange: setCrop,
+    onCropComplete,
+    onZoomChange: setZoom,
+    classes: {
+      containerClassName: 'rounded-xl bg-foreground',
+    },
   }
 
   return (
-    <div className={getClasses()}>
-      <div className="flex flex-col items-center">
-        <Cropper
-          image={image}
-          aspect={currentConfig.aspect}
-          cropShape={currentConfig.cropShape}
-          crop={crop}
-          zoom={zoom}
-          objectFit="horizontal-cover"
-          showGrid={false}
-          onCropChange={setCrop}
-          onCropComplete={onCropComplete}
-          onZoomChange={setZoom}
-          classes={{
-            containerClassName: 'rounded-xl bg-foreground',
-          }}
-        />
-      </div>
+    <div className={`relative flex flex-col items-center ${currentConfig.classes}`}>
+      <Cropper {...cropperProps} />
       <div className="absolute -bottom-20 flex gap-5">
         <BVButton color="secondary" onClick={onCancel}>
           Cancel

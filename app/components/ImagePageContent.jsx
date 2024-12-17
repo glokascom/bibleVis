@@ -92,24 +92,35 @@ function ImagePageContent({
         className={`flex flex-col lg:flex-row lg:items-start ${!isModal ? 'gap-7' : ''} md:gap-2.5`}
       >
         <div
-          className={`relative w-full rounded-medium bg-secondary-50 md:p-2.5 lg:w-2/3 xl:w-3/4 ${isModal && images.length > 1 ? '' : 'mb-5'}`}
+          className={`relative flex justify-center rounded-medium bg-secondary-50 md:aspect-video md:w-full md:p-2.5 lg:w-2/3 xl:w-3/4 ${isModal && images.length > 1 ? '' : 'mb-5'}`}
         >
           {imageInfo.imagePath ? (
             <>
               {children}
               {isCurrentUser && (
-                <Link
-                  href={`/user/${imageInfo.id}`}
-                  className="absolute bottom-5 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-background"
-                >
-                  <Image
-                    src="/pencil.svg"
-                    alt="edit"
-                    width={17}
-                    height={17}
-                    radius="none"
-                  />
-                </Link>
+                <>
+                  <div className="pointer-events-none absolute right-5 top-5 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-background">
+                    <Image
+                      src="/maximize.svg"
+                      alt="edit"
+                      width={17}
+                      height={17}
+                      radius="none"
+                    />
+                  </div>
+                  <Link
+                    href={`/user/${imageInfo.id}`}
+                    className="absolute bottom-5 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-background"
+                  >
+                    <Image
+                      src="/pencil.svg"
+                      alt="edit"
+                      width={17}
+                      height={17}
+                      radius="none"
+                    />
+                  </Link>
+                </>
               )}
             </>
           ) : (
