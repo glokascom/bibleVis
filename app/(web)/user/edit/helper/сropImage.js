@@ -16,7 +16,15 @@ export default async function getCroppedImg(
     return null
   }
 
-  const image = await createImage(imageSrc)
+  let image
+
+  try {
+    image = await createImage(imageSrc)
+  } catch (error) {
+    console.error(`Failed to create image: ${error.message}`)
+    return null
+  }
+
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
 
@@ -35,9 +43,12 @@ export default async function getCroppedImg(
 
   const croppedCanvas = document.createElement('canvas')
 
-  const croppedCtx = croppedCanvas.getContext('2d')
+  let croppedCtx
 
-  if (!croppedCtx) {
+  try {
+    croppedCtx = croppedCanvas.getContext('2d')
+  } catch (error) {
+    console.error(`Error: Unable to get cropped canvas context: ${error.message}`)
     return null
   }
 
